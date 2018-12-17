@@ -321,13 +321,48 @@ body {
   -webkit-text-size-adjust: none;
   -moz-user-select: none; }
 
-.header .search, .header .account {
-  border: 1px solid #000; }
-
-.header {
+#header {
   display: flex;
-  height: 3.21em; }
-  .header .search {
-    flex-grow: 1; }
-  .header .account {
-    flex-basis: 44px; }
+  height: 46px;
+  padding-left: 8px;
+  padding-right: 4px; }
+  #header .search {
+    flex-grow: 1;
+    height: 2em;
+    align-self: center;
+    overflow: hidden;
+    line-height: 2em;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #666;
+    font-size: .86em;
+    border: 1px solid #999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-right: 5px;
+    padding: 0 5px; }
+    #header .search .icon {
+      flex-basis: 15px;
+      align-self: center;
+      height: 18px;
+      overflow: hidden;
+      background: url(/ctrip/images/icon1.png) no-repeat 0 0;
+      background-size: 104px 326px;
+      background-position: -59px -276px; }
+    #header .search .text {
+      padding-left: 2px; }
+  #header .account {
+    flex-basis: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px; }
+    #header .account .icon {
+      background: url(/ctrip/images/icon1.png) no-repeat 0 0;
+      background-size: 104px 326px;
+      background-position: -59px -193px;
+      width: 24px;
+      height: 26px; }
+    #header .account .text {
+      font-size: .86em;
+      color: #2eaae0; }
