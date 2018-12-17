@@ -1,3 +1,5 @@
-let div = document.createElement('div')
-div.innerHTML = "new div"
-document.body.appendChild(div)
+var a = [1,2,3]
+function x(a,b,c){
+    console.log(a+b+c);
+}
+x(...a)

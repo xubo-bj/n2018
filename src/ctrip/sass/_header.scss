@@ -1,0 +1,17 @@
+%bd{
+    border: 1px solid #000;
+}
+
+.header{
+    display: flex;
+    height: 3.21em;
+    .search{
+        flex-grow: 1;
+        @extend %bd;
+    }
+    .account{
+        flex-basis: 44px;
+        @extend %bd;
+    }
+}
+

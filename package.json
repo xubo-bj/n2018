@@ -25,6 +25,7 @@
     "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "browser-sync": "^2.26.3",
+    "delete": "^1.1.0",
     "eslint": "^5.10.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",

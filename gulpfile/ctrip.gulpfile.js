@@ -23,8 +23,7 @@ function sassToCss() {
 
 function watch_sass(cb) {
   watch(`${srcPath}/sass/**/*.scss`, {
-    events: ['change'],
-    ignoreInitial: false
+    events: ['change']
   }, sassToCss)
   cb()
 }
@@ -54,20 +53,14 @@ var concat = require("gulp-concat");
 
 function es6ToEs5() {
   console.log("es6 to es5")
-  /*
   return src(`${srcPath}/es6/*.js`)
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ["@babel/preset-env"]
     }))
     .pipe(concat("all.js"))
-    .pipe(sourcemaps.write())
-    .pipe(dest(`${destPath}/es5/`));
-    */
-  return src(`${srcPath}/es6/*.js`)
-    .pipe(babel())
-    .pipe(dest(`${destPath}/es5/`));
-
+    .pipe(sourcemaps.write("."))
+    .pipe(dest(`${destPath}/es5`));
 }
 
 function watchEs6ToEs5(cb) {
@@ -76,7 +69,19 @@ function watchEs6ToEs5(cb) {
   }, es6ToEs5)
   cb()
 }
+
+const del = require('delete');
+
+ function delOldCss(cb) {
+  // Use the `delete` module directly, instead of using gulp-rimraf
+  del([`${destPath}/css/**`], cb);
+}
+function delOldEs5(cb){
+  del([`${destPath}/es5/**`], cb);
+}
+
+
 exports.default = parallel(
-  series(sassToCss, watch_sass),
-  series(es6ToEs5, watchEs6ToEs5),
+  series(delOldCss,sassToCss, watch_sass),
+  series(delOldEs5,es6ToEs5, watchEs6ToEs5),
   refresh)
