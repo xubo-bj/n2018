@@ -7,15 +7,22 @@ body, html {
     height: 100%;
 }
 body {
+    min-width: 320px;
     max-width: 540px;
     margin: 0 auto;
     background: #f2f2f2;
-    min-width: 320px;
     font: normal 14px/1.5 Tahoma,"Lucida Grande",Verdana,"Microsoft Yahei",STXihei,hei;
     color: #000;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: none;
     -moz-user-select: none;
+    padding-top: 46px;
+}
+a{
+    text-decoration: none;
 }
 @import 'header';
+@import 'carrousel';
+@import 'nav';
+@import 'sales';
