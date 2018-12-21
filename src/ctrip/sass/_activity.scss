@@ -1,0 +1,59 @@
+#activity {
+    margin-bottom: 8px;
+    padding: 0 8px;
+
+    .header {
+        height: 44px;
+        display: flex;
+        align-items: center;
+    background: #fff;
+    }
+
+    .icon {
+        flex-grow: 1;
+        height: 16px;
+        background: url(/ctrip/images/icon4.png) no-repeat;
+        background-size: 79px auto;
+        background-position: 0 -19px;
+        padding-left: 80px;
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 36px;
+            height: 15px;
+            background-image: url(/ctrip/images/ad.png);
+            background-size: 36px auto;
+        }
+    }
+
+    .text {
+        background: linear-gradient(to right, #ff4e63, #ff6cc9);
+        padding: 2px 12px 0 12px;
+        // height: 20px;
+        // line-height: 20px;
+        color: #fff;
+        border-radius: 10px;
+        font-size: 12px;
+
+        &::after {
+            content: '';
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(-45deg);
+        }
+    }
+    .body{
+        display:grid;
+        grid-template-columns: 50% 50%;
+            // background: #f9f9f9;
+            grid-gap: 1px;
+            padding-top: 1px;
+        img{
+            width: 100%;
+            display: block;
+        }
+    }
+}
