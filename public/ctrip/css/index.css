@@ -380,11 +380,49 @@ header
       color: #2eaae0; }
 
 /*
-**carrousel
+**carousel
 */
-#carrousel {
-  background-color: #0f0;
-  height: 75px; }
+#carousel {
+  height: 75px;
+  border: 1px solid #000;
+  overflow: hidden;
+  position: relative; }
+  #carousel .item {
+    display: none;
+    border: 1px solid #f00;
+    width: 100%;
+    height: 100%;
+    position: absolute; }
+  #carousel .active {
+    display: block; }
+  #carousel .left,
+  #carousel .right {
+    transition: transform 0.6s ease; }
+  #carousel .next {
+    display: block;
+    transform: translateX(100%); }
+  #carousel .prev {
+    display: block;
+    transform: translateX(-100%); }
+  #carousel .next.left,
+  #carousel .prev.right {
+    transform: translateX(0); }
+  #carousel .active.left {
+    transform: translateX(-100%); }
+  #carousel .active.right {
+    transform: translateX(100%); }
+  @supports (-webkit-transform-style: preserve-3d) or (transform-style: preserve-3d) {
+    #carousel .next {
+      transform: translate3d(100%, 0, 0); }
+    #carousel .prev {
+      transform: translate3d(-100%, 0, 0); }
+    #carousel .next.left,
+    #carousel .prev.right {
+      transform: translate3d(0, 0, 0); }
+    #carousel .active.left {
+      transform: translate3d(-100%, 0, 0); }
+    #carousel .active.right {
+      transform: translate3d(100%, 0, 0); } }
 
 /*
 nav1
@@ -727,3 +765,33 @@ nav1
       #footer .tool .item:nth-of-type(3)::before {
         width: 18px;
         background-position: -60px -308px; }
+  #footer .info {
+    padding: 5px 0 10px;
+    color: #999;
+    font-size: 12px; }
+    #footer .info-row {
+      text-align: center; }
+    #footer .info-a {
+      color: #999; }
+    #footer .info-icon {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      margin-right: 3px;
+      background: url(/ctrip/images/icon5.png) 0 -160px no-repeat;
+      background-size: 30px auto;
+      margin-right: 7px;
+      vertical-align: middle; }
+    #footer .info-icon-2 {
+      display: inline-block;
+      border: 1px solid #666;
+      border-top-width: 1px;
+      border-right-width: 1px;
+      border-bottom-width: 1px;
+      border-left-width: 1px;
+      border-width: 0 1px 1px 0;
+      width: 5px;
+      height: 5px;
+      transform: rotate(45deg);
+      vertical-align: 2px;
+      margin: 0 8px 0 3px; }

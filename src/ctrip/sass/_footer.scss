@@ -17,6 +17,7 @@
             color: #333;
             font-size: 12px;
             text-align: center;
+
             &::before {
                 margin: 0 auto;
                 content: "";
@@ -26,16 +27,55 @@
                 background: url(/ctrip/images/icon1.png) no-repeat 0 0;
                 background-size: 104px 326px;
             }
+
             &:nth-of-type(1)::before {
                 background-position: -60px -153px;
             }
+
             &:nth-of-type(2)::before {
                 background-position: -60px -173px;
             }
+
             &:nth-of-type(3)::before {
                 width: 18px;
                 background-position: -60px -308px;
             }
+        }
+    }
+
+    .info {
+        padding: 5px 0 10px;
+        color: #999;
+        font-size: 12px;
+        &-row{
+            text-align: center;
+        }
+        &-a{
+        color: #999;
+        }
+        &-icon {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            margin-right: 3px;
+            background: url(/ctrip/images/icon5.png) 0 -160px no-repeat;
+            background-size: 30px auto;
+            margin-right: 7px;
+            vertical-align: middle;
+        }
+        &-icon-2 {
+            display: inline-block;
+            border: 1px solid #666;
+            border-top-width: 1px;
+            border-right-width: 1px;
+            border-bottom-width: 1px;
+            border-left-width: 1px;
+            border-width: 0 1px 1px 0;
+            width: 5px;
+            height: 5px;
+            transform: rotate(45deg);
+            vertical-align: 2px;
+            margin: 0 8px 0 3px;
         }
     }
 }
