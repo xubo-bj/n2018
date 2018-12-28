@@ -13,7 +13,7 @@ function () {
     _classCallCheck(this, Carousel);
 
     this._elem = [].slice.call(document.querySelector(selector).children);
-    this.active = this._elem.indexOf();
+    this.active = this.getActive();
     this.next = null;
     this.prev = null;
   }
@@ -21,34 +21,8 @@ function () {
   _createClass(Carousel, [{
     key: "getActive",
     value: function getActive() {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = this._elem[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var i = _step.value;
-          console.log('i', i);
-          console.log('t', this._elem);
-
-          if (this._elem[i].classList.contains("active")) {
-            return i;
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
+      var active = document.querySelector("#carousel .active");
+      return this._elem.indexOf(active);
     }
   }]);
 

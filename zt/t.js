@@ -1,1 +1,17 @@
-http://m.ctrip.com/html5/mkt/sitemap/index.html?secondwakeup=true&from=http%3A%2F%2Fm.ctrip.com%2Fhtml5%2F
+class MyClass {
+
+    *createIterator() {
+        yield 1;
+        yield 2;
+        yield 3;
+    }
+
+}
+
+let instance = new MyClass();
+let iterator = instance.createIterator();
+
+var a1 = iterator.next()
+console.log('a',a1);
+var a1 = iterator.next()
+console.log('a',a1);
