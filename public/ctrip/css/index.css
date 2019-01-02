@@ -386,20 +386,17 @@ header
   overflow: hidden; }
   #carousel .inner {
     width: 1000%;
-    display: flex; }
+    display: flex;
+    transition: transform .3s;
+    transform: translateX(-10%); }
+    @supports (transform-style: preserve-3d) {
+      #carousel .inner {
+        transform: translate3d(-12.5%, 0, 0); } }
   #carousel .link {
-    flex-basis: 10%; }
+    flex-basis: 12.5%; }
   #carousel .pic {
     display: block;
     width: 100%; }
-
-.carousel-item-prev,
-.active.carousel-item-left {
-  transform: translateX(-100%); }
-  @supports (transform-style: preserve-3d) {
-    .carousel-item-prev,
-    .active.carousel-item-left {
-      transform: translate3d(-100%, 0, 0); } }
 
 /*
 nav1
