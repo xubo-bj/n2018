@@ -10,58 +10,102 @@ var Carousel =
 /*#__PURE__*/
 function () {
   function Carousel() {
+    var _this = this;
+
     _classCallCheck(this, Carousel);
 
+    this.outer = document.querySelector("#carousel");
     this.inner = document.querySelector("#carousel .inner");
+    this.current = 1;
     this.next = 2;
     this.timer = null;
+    this.start = null;
+    this.picWidth = null;
+    this.canBeMoved = true;
+
+    this.transitionEvent = function () {
+      if (_this.current >= 7) {
+        _this.inner.style.transitionDuration = "0s";
+
+        _this.translate("head"); // force browser reflow
+
+
+        _this.inner.offsetHeight;
+        _this.inner.style.transitionDuration = "0.2s";
+        _this.next = 2;
+        _this.current = 1;
+      }
+
+      if (_this.current <= 0) {
+        _this.inner.style.transitionDuration = "0s";
+
+        _this.translate("tail"); // force browser reflow
+
+
+        _this.inner.offsetHeight;
+        _this.inner.style.transitionDuration = "0.2s";
+        _this.next = 7;
+        _this.current = 6;
+      }
+
+      _this.canBeMoved = true;
+      console.log('okok');
+    };
   }
 
   _createClass(Carousel, [{
     key: "init",
     value: function init() {
-      this.onTransitionEnd();
+      this.addTransition();
       this.cycle();
       this.addSlideControl();
     }
   }, {
-    key: "addSlideControl",
-    value: function addSlideControl() {
-      var _this = this;
-
-      this.inner.addEventListener("touchstart", function (e) {
-        _this.pause();
-      });
-      this.inner.addEventListener("touchmove", function (e) {});
-      this.inner.addEventListener("touchend", function (e) {});
+    key: "addTransition",
+    value: function addTransition() {
+      this.inner.addEventListener("transitionend", this.transitionEvent);
     }
   }, {
-    key: "onTransitionEnd",
-    value: function onTransitionEnd() {
+    key: "removeTransition",
+    value: function removeTransition() {
+      this.inner.removeEventListener("transitionend", this.transitionEvent);
+    }
+  }, {
+    key: "addSlideControl",
+    value: function addSlideControl() {
       var _this2 = this;
 
-      this.inner.addEventListener("transitionend", function () {
-        if (_this2.next === 8) {
-          _this2.inner.style.transitionDuration = "0s";
+      this.inner.addEventListener("touchstart", function (e) {
+        _this2.pause();
 
-          _this2.translate("head"); // force browser reflow
+        _this2.start = e.changedTouches[0].screenX;
+        _this2.picWidth = _this2.outer.offsetWidth;
 
+        _this2.removeTransition();
+      });
+      this.inner.addEventListener("touchmove", function (e) {
+        if (_this2.canBeMoved) {
+          var distance = e.changedTouches[0].screenX - _this2.start;
 
-          _this2.inner.offsetHeight;
-          _this2.inner.style.transitionDuration = "0.3s";
-          _this2.next = 2;
+          _this2.translate(distance);
         }
+      });
+      this.inner.addEventListener("touchend", function (e) {
+        var distance = e.changedTouches[0].screenX - _this2.start;
 
-        if (_this2.next === 0) {
-          _this2.inner.style.transitionDuration = "0s";
+        if (distance > 150) {
+          _this2.current--;
+          _this2.next = _this2.current + 1;
+        } else if (distance < -150) {
+          _this2.current++;
+          _this2.next = _this2.current + 1;
+        } else {}
 
-          _this2.translate("tail"); // force browser reflow
+        _this2.addTransition();
 
+        _this2.translate("current");
 
-          _this2.inner.offsetHeight;
-          _this2.inner.style.transitionDuration = "0.3s";
-          _this2.next = 7;
-        }
+        _this2.cycle();
       });
     }
   }, {
@@ -79,14 +123,26 @@ function () {
 
       if (direction == null) {
         translate("".concat(-12.5 * this.next, "%"));
+        this.canBeMoved = false;
+      }
+
+      if (direction == "current") {
+        translate("".concat(-12.5 * this.current, "%"));
       }
 
       if (direction === "head") {
         translate("-12.5%");
+        this.canBeMoved = false;
       }
 
       if (direction === "tail") {
         translate("-75%");
+        this.canBeMoved = false;
+      }
+
+      if (typeof direction === "number") {
+        translate("".concat(-1 * this.current * this.picWidth + direction, "px"));
+        this.canBeMoved = false;
       }
     }
   }, {
@@ -97,8 +153,9 @@ function () {
       this.timer = setInterval(function () {
         _this4.translate();
 
+        _this4.current = _this4.next;
         _this4.next++;
-      }, 1000);
+      }, 13000);
     }
   }, {
     key: "pause",

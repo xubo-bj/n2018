@@ -4,9 +4,9 @@
 #carousel {
     overflow: hidden;
     .inner {
-        width: 1000%;
+        width: 800%;
         display: flex;
-        transition:transform .3s;
+        transition:transform .2s linear;
         transform: translateX(-10%);
         @supports (transform-style: preserve-3d) {
             transform: translate3d(-12.5%, 0, 0);
@@ -18,5 +18,6 @@
     .pic {
         display: block;
         width: 100%;
+        height: 100%;
     }
 }
