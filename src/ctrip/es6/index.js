@@ -1,3 +1,6 @@
+/**
+ *  implement carousel
+ */
 class Carousel {
     constructor() {
         this.outer = document.querySelector("#carousel")
@@ -28,8 +31,6 @@ class Carousel {
                 this.current = 6
             }
             this.canBeMoved = true
-            console.log('okok');
-            
         }
     }
     init(){
@@ -58,10 +59,10 @@ class Carousel {
         })
         this.inner.addEventListener("touchend", (e) => {
             let distance = e.changedTouches[0].screenX - this.start
-            if (distance > 150) {
+            if (distance > 100) {
                 this.current--
                 this.next = this.current + 1
-            } else if (distance < -150) {
+            } else if (distance < -100) {
                 this.current++
                 this.next = this.current + 1
             } else {
@@ -97,8 +98,8 @@ class Carousel {
         this.canBeMoved = false
         }
         if(typeof direction === "number"){
-            translate(`${-1 *this.current*this.picWidth+direction}px`)
-        this.canBeMoved = false
+            let location = -1*this.current*this.picWidth + direction
+            translate(`${location}px`)
         }
     }
     cycle() {
@@ -106,15 +107,35 @@ class Carousel {
                 this.translate()
                 this.current = this.next
                 this.next++
-            }, 13000)
+            }, 3000)
     }
     pause(){
         clearInterval(this.timer)
     }
 }
 
+(new Carousel()).init()
 
-let carouselInstance = new Carousel()
-carouselInstance.init()
+/*
+** fetch inform
+*/
+
+class Search{
+    constructor(){
+        this.$ = (s)=>document.querySelector(s)
+        this.indexPage = this.$("#index-page")
+        this.searchPage = this.$("#search-page")
+        this.searchBtn = this.$("#header .search")
+    }
+    init(){
+        this.searchBtn.onclick = ()=>{
+            this.indexPage.style.display = "none"
+            this.searchPage.style.display = "block"
+        }
+    }
+}
+(new Search()).init()
 
 
+
+// https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a

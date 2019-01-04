@@ -28,3 +28,16 @@ a{
 @import 'sales';
 @import 'activity';
 @import 'footer';
+@import 'search';
+
+
+#index-page{
+    display: none;
+}
+#search-page{
+    display: block;
+    border: 1px solid #000;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

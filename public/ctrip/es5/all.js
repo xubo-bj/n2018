@@ -6,6 +6,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/**
+ *  implement carousel
+ */
 var Carousel =
 /*#__PURE__*/
 function () {
@@ -49,7 +52,6 @@ function () {
       }
 
       _this.canBeMoved = true;
-      console.log('okok');
     };
   }
 
@@ -93,10 +95,10 @@ function () {
       this.inner.addEventListener("touchend", function (e) {
         var distance = e.changedTouches[0].screenX - _this2.start;
 
-        if (distance > 150) {
+        if (distance > 100) {
           _this2.current--;
           _this2.next = _this2.current + 1;
-        } else if (distance < -150) {
+        } else if (distance < -100) {
           _this2.current++;
           _this2.next = _this2.current + 1;
         } else {}
@@ -141,8 +143,8 @@ function () {
       }
 
       if (typeof direction === "number") {
-        translate("".concat(-1 * this.current * this.picWidth + direction, "px"));
-        this.canBeMoved = false;
+        var location = -1 * this.current * this.picWidth + direction;
+        translate("".concat(location, "px"));
       }
     }
   }, {
@@ -155,7 +157,7 @@ function () {
 
         _this4.current = _this4.next;
         _this4.next++;
-      }, 13000);
+      }, 3000);
     }
   }, {
     key: "pause",
@@ -167,6 +169,40 @@ function () {
   return Carousel;
 }();
 
-var carouselInstance = new Carousel();
-carouselInstance.init();
+new Carousel().init();
+/*
+** fetch inform
+*/
+
+var Search =
+/*#__PURE__*/
+function () {
+  function Search() {
+    _classCallCheck(this, Search);
+
+    this.$ = function (s) {
+      return document.querySelector(s);
+    };
+
+    this.indexPage = this.$("#index-page");
+    this.searchPage = this.$("#search-page");
+    this.searchBtn = this.$("#header .search");
+  }
+
+  _createClass(Search, [{
+    key: "init",
+    value: function init() {
+      var _this5 = this;
+
+      this.searchBtn.onclick = function () {
+        _this5.indexPage.style.display = "none";
+        _this5.searchPage.style.display = "block";
+      };
+    }
+  }]);
+
+  return Search;
+}();
+
+new Search().init(); // https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
 //# sourceMappingURL=all.js.map
