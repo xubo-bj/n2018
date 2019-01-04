@@ -11,7 +11,7 @@
         flex-basis: 45px;
         display: flex;
         justify-content: center;
-
+        align-self: stretch;
         &::after {
             align-self: center;
             content: "";
@@ -28,11 +28,11 @@
         background-color: #fff;
         flex-grow: 1;
         display: flex;
+            border-radius: 5px;
     }
 
     .icon {
         flex-basis: 30px;
-        border: 1px solid #000;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -57,8 +57,23 @@
             transform: rotate(40deg) translateY(5px) translateX(1px);
         }
     }
+    .input{
+        flex-grow: 1;
+    }
+    .clear{
+        border: 1px solid #000;
+
+    }
+
 
     .visit {
         flex-basis: 50px;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #099fde;
+    font-size: 15px;
+    font-family: Arial,"Lucida Grande",Verdana,"Microsoft YaHei",hei;
     }
 }

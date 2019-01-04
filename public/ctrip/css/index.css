@@ -782,7 +782,8 @@ nav1
   .search-box .back {
     flex-basis: 45px;
     display: flex;
-    justify-content: center; }
+    justify-content: center;
+    align-self: stretch; }
     .search-box .back::after {
       align-self: center;
       content: "";
@@ -795,10 +796,10 @@ nav1
   .search-box .form {
     background-color: #fff;
     flex-grow: 1;
-    display: flex; }
+    display: flex;
+    border-radius: 5px; }
   .search-box .icon {
     flex-basis: 30px;
-    border: 1px solid #000;
     display: flex;
     justify-content: center;
     align-items: center; }
@@ -818,8 +819,19 @@ nav1
       height: 1px;
       background-color: #A9A9A9;
       transform: rotate(40deg) translateY(5px) translateX(1px); }
+  .search-box .input {
+    flex-grow: 1; }
+  .search-box .clear {
+    border: 1px solid #000; }
   .search-box .visit {
-    flex-basis: 50px; }
+    flex-basis: 50px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #099fde;
+    font-size: 15px;
+    font-family: Arial,"Lucida Grande",Verdana,"Microsoft YaHei",hei; }
 
 #index-page {
   display: none; }
