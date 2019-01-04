@@ -123,28 +123,39 @@ function () {
         }
       };
 
-      if (direction == null) {
-        translate("".concat(-12.5 * this.next, "%"));
-        this.canBeMoved = false;
-      }
+      switch (direction) {
+        case "next":
+          {
+            translate("".concat(-12.5 * this.next, "%"));
+            this.canBeMoved = false;
+            break;
+          }
 
-      if (direction == "current") {
-        translate("".concat(-12.5 * this.current, "%"));
-      }
+        case "current":
+          {
+            translate("".concat(-12.5 * this.current, "%"));
+            break;
+          }
 
-      if (direction === "head") {
-        translate("-12.5%");
-        this.canBeMoved = false;
-      }
+        case "head":
+          {
+            translate("-12.5%");
+            this.canBeMoved = false;
+            break;
+          }
 
-      if (direction === "tail") {
-        translate("-75%");
-        this.canBeMoved = false;
-      }
+        case "tail":
+          {
+            translate("-75%");
+            this.canBeMoved = false;
+            break;
+          }
 
-      if (typeof direction === "number") {
-        var location = -1 * this.current * this.picWidth + direction;
-        translate("".concat(location, "px"));
+        default:
+          {
+            var location = -1 * this.current * this.picWidth + direction;
+            translate("".concat(location, "px"));
+          }
       }
     }
   }, {
@@ -153,7 +164,7 @@ function () {
       var _this4 = this;
 
       this.timer = setInterval(function () {
-        _this4.translate();
+        _this4.translate('next');
 
         _this4.current = _this4.next;
         _this4.next++;
@@ -171,8 +182,8 @@ function () {
 
 new Carousel().init();
 /*
-** fetch inform
-*/
+ ** fetch inform
+ */
 
 var Search =
 /*#__PURE__*/
