@@ -6,15 +6,41 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
+    div{
+      box-sizing: border-box;
+      height: 220px;
+      padding: 0px 0 90px 0;
+border: 1px solid #000;
+display: flex;
+align-items: center;
+color: #ff0000;
+    }
     span{
-    }
-    i{
-      font-style: normal;
-    }
+      display: inline-block;
+      border: 1px solid #000;
+      width: 130px;
+      height: 130px;
+
+    }  
+
   </style>
 </head>
 <body>
-  <span>abc</span>
-  <i>abc</i>
+  <div>
+    <span>456</span>
+  </div>
+  <script>
+    let div = document.querySelector("div")
+    let span = document.querySelector("span")
+    div.onclick = function(){
+      console.log("div");
+    }
+    span.onclick = function(e){
+      e.stopPropagation()
+      console.log('span');
+      
+    }
+
+  </script>
 </body>
 </html>

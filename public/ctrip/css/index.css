@@ -325,6 +325,9 @@ body {
 a {
   text-decoration: none; }
 
+p {
+  margin: 0; }
+
 /*
 header
 */
@@ -449,7 +452,7 @@ nav1
     height: 100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
+    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
     #nav2 .section .c1 {
       grid-area: c1; }
     #nav2 .section .c2 {
@@ -605,7 +608,7 @@ nav1
           font-size: 15px; }
   #sales .right {
     display: grid;
-    grid-template-areas: "g1 g1" "g2 g3";
+    grid-template-areas: "g1 g1" "g2 g3";
     grid-gap: 2px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 88px auto; }
@@ -771,6 +774,12 @@ nav1
       vertical-align: 2px;
       margin: 0 8px 0 3px; }
 
+#search-page {
+  display: none;
+  position: absolute;
+  top: 0;
+  width: 100%; }
+
 /*
 ** #search-page
 */
@@ -849,29 +858,29 @@ nav1
     font-size: 15px;
     font-family: Arial, "Lucida Grande", Verdana, "Microsoft YaHei", hei; }
 
-.before-input .download {
+.no-input .download {
   font: normal 16px/1.5 Arial, "Lucida Grande", Verdana, "Microsoft Yahei", STXihei, hei;
   color: #333;
   height: 50px;
   border: 1px solid #DDD;
   display: flex;
   align-items: center; }
-  .before-input .download .icon {
+  .no-input .download .icon {
     margin: 0 8px 0 9px;
     width: 40px;
     height: 40px;
     background: url(/ctrip/images/ctrip.png) no-repeat; }
-  .before-input .download .emphasis {
+  .no-input .download .emphasis {
     color: #ff6600;
     font: normal 18px/1.5 Verdana; }
 
-.before-input .title {
+.no-input .title {
   margin: 8px 15px 2px;
   font-weight: normal;
   font-size: 13px;
   color: #666; }
 
-.before-input .hot-list {
+.no-input .hot-list {
   list-style-type: none;
   font: normal 16px/1.5 Arial, "Lucida Grande", Verdana, "Microsoft Yahei", STXihei, hei;
   color: #000;
@@ -880,20 +889,20 @@ nav1
   padding-left: 0;
   margin: 0; }
 
-.before-input .hot-item {
+.no-input .hot-item {
   height: 45px;
   border-bottom: 1px solid #DDD;
   display: flex;
   padding-left: 35px; }
 
-.before-input .hot-text {
+.no-input .hot-text {
   flex-grow: 1;
   line-height: 44px; }
 
-.before-input .li-btn {
+.no-input .li-btn {
   flex-basis: 35px;
   position: relative; }
-  .before-input .li-btn::before {
+  .no-input .li-btn::before {
     content: "";
     position: absolute;
     top: 16px;
@@ -902,7 +911,7 @@ nav1
     height: 9px;
     border-top: 2px solid #CCC;
     border-left: 2px solid #CCC; }
-  .before-input .li-btn::after {
+  .no-input .li-btn::after {
     content: "";
     position: absolute;
     top: 22px;
@@ -912,11 +921,76 @@ nav1
     background-color: #CCC;
     transform: rotate(45deg); }
 
-#index-page {
-  display: none; }
-
-#search-page {
-  display: block;
-  position: absolute;
-  top: 0;
-  width: 100%; }
+.input-exist {
+  display: none;
+  background-color: #fff; }
+  .input-exist .download {
+    font: normal 16px/1.5 Arial, "Lucida Grande", Verdana, "Microsoft Yahei", STXihei, hei;
+    height: 48px;
+    color: #000;
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+    display: flex;
+    align-items: center; }
+  .input-exist .icon {
+    width: 20px;
+    height: 20px;
+    background: url(/ctrip/images/ctrip_small.png) no-repeat;
+    margin-left: 9px;
+    margin-right: 8px; }
+  .input-exist .text {
+    margin-top: 2px; }
+  .input-exist .emphasis {
+    color: #ff6600;
+    font: normal 18px/1.5 Verdana; }
+  .input-exist .search-result {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font: normal 16px/1.5 Arial, "Lucida Grande", Verdana, "Microsoft Yahei", STXihei, hei; }
+  .input-exist .result-item {
+    position: relative;
+    padding: 10px 35px;
+    border-bottom: 1px solid #DDD; }
+  .input-exist .result-icon {
+    position: absolute;
+    top: 13px;
+    left: 9px;
+    width: 20px;
+    height: 20px;
+    background: url(/ctrip/images/result.png) no-repeat;
+    background-size: 20px 325px; }
+  .input-exist .sub-title {
+    color: #999; }
+  .input-exist .detailed {
+    margin-right: 2px;
+    color: #ff7d13;
+    font-size: 15px; }
+  .input-exist .level {
+    margin-left: 5px;
+    font-size: 14px;
+    color: #999999; }
+  .input-exist .item-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 35px; }
+    .input-exist .item-btn::before {
+      content: "";
+      position: absolute;
+      top: 16px;
+      right: 10px;
+      width: 10px;
+      height: 9px;
+      border-top: 2px solid #CCC;
+      border-left: 2px solid #CCC; }
+    .input-exist .item-btn::after {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: 12px;
+      width: 15px;
+      height: 2px;
+      background-color: #CCC;
+      transform: rotate(45deg); }

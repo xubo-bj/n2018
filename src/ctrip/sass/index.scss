@@ -22,21 +22,24 @@ body {
 a{
     text-decoration: none;
 }
+p{
+    margin: 0;
+}
 @import 'header';
 @import 'carousel';
 @import 'nav';
 @import 'sales';
 @import 'activity';
 @import 'footer';
-@import 'search';
 
 
 #index-page{
-    display: none;
+    // display: none;
 }
 #search-page{
-    display: block;
+    display: none;
     position: absolute;
     top: 0;
     width: 100%;
 }
+@import 'search';

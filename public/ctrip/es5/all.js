@@ -198,6 +198,12 @@ function () {
     this.indexPage = this.$("#index-page");
     this.searchPage = this.$("#search-page");
     this.searchBtn = this.$("#header .search");
+    this.input = this.$("#search-page .input");
+    this.url = 'https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=';
+    this.noInput = this.$("#search-page .no-input");
+    this.inputExist = this.$("#search-page .input-exist");
+    this.back = this.$("#search-page .back");
+    this.clear = this.$("#search-page .clear");
   }
 
   _createClass(Search, [{
@@ -208,12 +214,51 @@ function () {
       this.searchBtn.onclick = function () {
         _this5.indexPage.style.display = "none";
         _this5.searchPage.style.display = "block";
+
+        _this5.input.focus();
       };
+
+      this.back.onclick = function () {
+        _this5.indexPage.style.display = "block";
+        _this5.searchPage.style.display = "none";
+      };
+
+      this.clear.onclick = function () {
+        if (_this5.input.value.length !== 0) {
+          _this5.input.value = "";
+          _this5.noInput.style.display = "block";
+          _this5.inputExist.style.display = "none";
+        }
+      };
+
+      this.input.addEventListener("input", function (e) {
+        var value = e.target.value;
+        console.log('v', value);
+
+        if (typeof value === "string" && value.length === 0) {
+          _this5.noInput.style.display = "block";
+          _this5.inputExist.style.display = "none";
+        } else {
+          fetch("".concat(_this5.url).concat(e.target.value)).then(function (res) {
+            return res.json();
+          }).then(function (res) {
+            // let d = res.data,
+            // r =""
+            // console.log('d',d);
+            // for(let i =0;i<d.length;i++){
+            //     switch
+            // }
+            "\n                <li class=\"result-item\">\n                    <i class=\"result-icon\"></i>\n                    <div class=\"title\">\n                        <span class=\"main-title\">\u5927\u962A\u7684\u5168\u90E8\u65C5\u6E38\u4EA7\u54C1</span>\n                        <span class=\"sub-title\">\u5927\u962A</span>\n                    </div>\n                    <em class=\"item-btn\"></em>\n                </li>\n                <li class=\"result-item\">\n                    <i class=\"result-icon\"></i>\n                    <p class=\"title\">\n                        <span class=\"main-title\">\u5317\u4EAC\u4E1C\u76F4\u95E8\u96C5\u8FB0\u60A6\u5C45\u9152\u5E97</span>\n                        <span class=\"sub-title\">  \u5317\u4EAC \u4E1C\u76F4\u95E8/\u5DE5\u4F53/\u96CD\u548C\u5BAB </span>\n                    </p>\n                    <p class=\"price\">\n                        <span class=\"detailed\">\u5B9E\u65F6\u8BA1\u4EF7</span>\n                        <span class=\"level\">\u9AD8\u6863\u578B</span>\n                    </p>\n                    <em class=\"item-btn\"></em>\n                </li>\n                        ";
+            _this5.noInput.style.display = "none";
+            _this5.inputExist.style.display = "block";
+          });
+        }
+      });
     }
   }]);
 
   return Search;
 }();
 
-new Search().init(); // https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
+new Search().init(); //  https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
 //# sourceMappingURL=all.js.map
