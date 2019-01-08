@@ -204,6 +204,8 @@ function () {
     this.inputExist = this.$("#search-page .input-exist");
     this.back = this.$("#search-page .back");
     this.clear = this.$("#search-page .clear");
+    this.compositionFlag = true;
+    this.lastValue = null;
   }
 
   _createClass(Search, [{
@@ -231,29 +233,91 @@ function () {
         }
       };
 
-      this.input.addEventListener("input", function (e) {
-        var value = e.target.value;
-        console.log('v', value);
+      this.input.addEventListener("keyup", function (e) {
+        // console.log('flag',this.compositionFlag);
+        var value = e.target.value.trim();
 
-        if (typeof value === "string" && value.length === 0) {
-          _this5.noInput.style.display = "block";
-          _this5.inputExist.style.display = "none";
-        } else {
-          fetch("".concat(_this5.url).concat(e.target.value)).then(function (res) {
-            return res.json();
-          }).then(function (res) {
-            // let d = res.data,
-            // r =""
-            // console.log('d',d);
-            // for(let i =0;i<d.length;i++){
-            //     switch
-            // }
-            "\n                <li class=\"result-item\">\n                    <i class=\"result-icon\"></i>\n                    <div class=\"title\">\n                        <span class=\"main-title\">\u5927\u962A\u7684\u5168\u90E8\u65C5\u6E38\u4EA7\u54C1</span>\n                        <span class=\"sub-title\">\u5927\u962A</span>\n                    </div>\n                    <em class=\"item-btn\"></em>\n                </li>\n                <li class=\"result-item\">\n                    <i class=\"result-icon\"></i>\n                    <p class=\"title\">\n                        <span class=\"main-title\">\u5317\u4EAC\u4E1C\u76F4\u95E8\u96C5\u8FB0\u60A6\u5C45\u9152\u5E97</span>\n                        <span class=\"sub-title\">  \u5317\u4EAC \u4E1C\u76F4\u95E8/\u5DE5\u4F53/\u96CD\u548C\u5BAB </span>\n                    </p>\n                    <p class=\"price\">\n                        <span class=\"detailed\">\u5B9E\u65F6\u8BA1\u4EF7</span>\n                        <span class=\"level\">\u9AD8\u6863\u578B</span>\n                    </p>\n                    <em class=\"item-btn\"></em>\n                </li>\n                        ";
-            _this5.noInput.style.display = "none";
-            _this5.inputExist.style.display = "block";
-          });
+        if (_this5.lastValue === value) {
+          return;
+        } // //响应复制
+        // if (e.ctrlKey && e.keyCode == 86) {
+        //     // console.log('up false',e.target.value);
+        //     this.fetchContent(value)
+        // }
+
+
+        if (_this5.compositionFlag) {
+          console.log('compos :', value); //防止再次响应复制
+
+          if (!e.ctrlKey && e.keyCode == 17) {
+            return;
+          } // if (e.ctrlKey && e.keyCode == 86) {
+          //     return
+          // }else{
+          // }
+
+
+          _this5.fetchContent(value);
         }
       });
+      this.input.addEventListener("compositionstart", function () {
+        // console.log('start');
+        _this5.compositionFlag = false;
+      });
+      this.input.addEventListener("compositionend", function () {
+        // console.log('end');
+        _this5.compositionFlag = true;
+      });
+      this.input.addEventListener("input", function (e) {
+        if (_this5.compositionFlag) {
+          var value = e.target.value.trim();
+          console.log('input', e.target.value);
+          _this5.lastValue = value;
+        }
+      });
+    }
+    /*
+                             `
+                 <li class="result-item">
+                     <i class="result-icon"></i>
+                     <div class="title">
+                         <span class="main-title">大阪的全部旅游产品</span>
+                         <span class="sub-title">大阪</span>
+                     </div>
+                     <em class="item-btn"></em>
+                 </li>
+                 <li class="result-item">
+                     <i class="result-icon"></i>
+                     <p class="title">
+                         <span class="main-title">北京东直门雅辰悦居酒店</span>
+                         <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
+                     </p>
+                     <p class="price">
+                         <span class="detailed">实时计价</span>
+                         <span class="level">高档型</span>
+                     </p>
+                     <em class="item-btn"></em>
+                 </li>
+                         `
+         */
+
+  }, {
+    key: "fetchContent",
+    value: function fetchContent(value) {
+      var _this6 = this;
+
+      if (typeof value === "string" && value.length === 0) {
+        this.noInput.style.display = "block";
+        this.inputExist.style.display = "none";
+      } else {
+        // console.log('fetch');
+        fetch("".concat(this.url).concat(value)).then(function (res) {
+          return res.json();
+        }).then(function (res) {
+          // console.log('res', res.data);
+          _this6.lastValue = value;
+        });
+      }
     }
   }]);
 
@@ -261,4 +325,30 @@ function () {
 }();
 
 new Search().init(); //  https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
+
+/*
+                        $('input').on({
+    keyup : function(e){        
+        var flag = e.target.isNeedPrevent;
+        if(flag)  return;     
+        response() ;
+        e.target.keyEvent = false ;
+        
+    },
+    keydown : function(e){
+        e.target.keyEvent = true ; 
+    },
+    input : function(e){
+        if(!e.target.keyEvent){
+            response()
+        }        
+    },
+    compositionstart : function(e){
+        e.target.isNeedPrevent = true ;
+    },
+    compositionend : function(e){
+        e.target.isNeedPrevent = false;
+        
+    }
+    */
 //# sourceMappingURL=all.js.map

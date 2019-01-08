@@ -5,42 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <style>
-    div{
-      box-sizing: border-box;
-      height: 220px;
-      padding: 0px 0 90px 0;
-border: 1px solid #000;
-display: flex;
-align-items: center;
-color: #ff0000;
-    }
-    span{
-      display: inline-block;
-      border: 1px solid #000;
-      width: 130px;
-      height: 130px;
-
-    }  
-
-  </style>
 </head>
 <body>
-  <div>
-    <span>456</span>
-  </div>
+  <input type="text">
   <script>
-    let div = document.querySelector("div")
-    let span = document.querySelector("span")
-    div.onclick = function(){
-      console.log("div");
+    let input = document.querySelector("input")
+    input.onkeyup=function(e){
+      console.log('e',e.target.value);
     }
-    span.onclick = function(e){
-      e.stopPropagation()
-      console.log('span');
-      
-    }
-
   </script>
 </body>
 </html>
