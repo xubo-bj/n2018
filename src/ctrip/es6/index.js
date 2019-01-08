@@ -143,7 +143,7 @@ class Search {
         this.inputExist = this.$("#search-page .input-exist")
         this.back = this.$("#search-page .back")
         this.clear = this.$("#search-page .clear")
-        this.compositionFlag =true 
+        this.compositionFlag =true
         this.lastValue = null
     }
     init() {
@@ -164,48 +164,27 @@ class Search {
             }
         }
         this.input.addEventListener("keyup", (e) => {
-            // console.log('flag',this.compositionFlag);
-            
             let value = e.target.value.trim()
             if (this.lastValue === value) {
                 return
             }
-
-            // //响应复制
-            // if (e.ctrlKey && e.keyCode == 86) {
-            //     // console.log('up false',e.target.value);
-            //     this.fetchContent(value)
-            // }
             if (this.compositionFlag) {
-                console.log('compos :',value);
-                //防止再次响应复制
-                if (!e.ctrlKey && e.keyCode == 17) {
+                //ctrl+v ，激活两次keyup,一次ctrlKey为true，keyCode为86,一次ctrlKey为false,keyCode为ctrl的１７
+                if (e.ctrlKey && e.keyCode == 86) {
                     return
                 }
-                // if (e.ctrlKey && e.keyCode == 86) {
-                //     return
-                // }else{
-
-                // }
                 this.fetchContent(value)
-
+            }
+            //汉字输入法输入一半时复制，firefox不支持，chrome支持
+            if((!this.compositionFlag) && (e.ctrlKey && e.keyCode == 86)){
+                this.fetchContent(value)
             }
         })
         this.input.addEventListener("compositionstart", () => {
-            // console.log('start');
             this.compositionFlag = false
         })
         this.input.addEventListener("compositionend", () => {
-            // console.log('end');
-            
             this.compositionFlag = true
-        })
-        this.input.addEventListener("input",(e)=>{
-            if(this.compositionFlag){
-                let value = e.target.value.trim()
-                console.log('input',e.target.value);
-                this.lastValue =value
-            }
         })
     }
 
@@ -240,12 +219,13 @@ class Search {
             this.inputExist.style.display = "none"
         } else {
             // console.log('fetch');
+            console.log('fetch',value);
+            
             
             fetch(`${this.url}${value}`)
                 .then(res => res.json())
                 .then(res => {
-                    // console.log('res', res.data);
-
+                    console.log('res', res.data);
                     this.lastValue = value
                 })
         }

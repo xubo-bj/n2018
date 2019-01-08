@@ -234,46 +234,31 @@ function () {
       };
 
       this.input.addEventListener("keyup", function (e) {
-        // console.log('flag',this.compositionFlag);
         var value = e.target.value.trim();
 
         if (_this5.lastValue === value) {
           return;
-        } // //响应复制
-        // if (e.ctrlKey && e.keyCode == 86) {
-        //     // console.log('up false',e.target.value);
-        //     this.fetchContent(value)
-        // }
-
+        }
 
         if (_this5.compositionFlag) {
-          console.log('compos :', value); //防止再次响应复制
-
-          if (!e.ctrlKey && e.keyCode == 17) {
+          //ctrl+v ，激活两次keyup,一次ctrlKey为true，keyCode为86,一次ctrlKey为false,keyCode为ctrl的１７
+          if (e.ctrlKey && e.keyCode == 86) {
             return;
-          } // if (e.ctrlKey && e.keyCode == 86) {
-          //     return
-          // }else{
-          // }
+          }
+
+          _this5.fetchContent(value);
+        } //汉字输入法输入一半时复制，firefox不支持，chrome支持
 
 
+        if (!_this5.compositionFlag && e.ctrlKey && e.keyCode == 86) {
           _this5.fetchContent(value);
         }
       });
       this.input.addEventListener("compositionstart", function () {
-        // console.log('start');
         _this5.compositionFlag = false;
       });
       this.input.addEventListener("compositionend", function () {
-        // console.log('end');
         _this5.compositionFlag = true;
-      });
-      this.input.addEventListener("input", function (e) {
-        if (_this5.compositionFlag) {
-          var value = e.target.value.trim();
-          console.log('input', e.target.value);
-          _this5.lastValue = value;
-        }
       });
     }
     /*
@@ -311,10 +296,11 @@ function () {
         this.inputExist.style.display = "none";
       } else {
         // console.log('fetch');
+        console.log('fetch', value);
         fetch("".concat(this.url).concat(value)).then(function (res) {
           return res.json();
         }).then(function (res) {
-          // console.log('res', res.data);
+          console.log('res', res.data);
           _this6.lastValue = value;
         });
       }
