@@ -7,12 +7,30 @@
   <title>Document</title>
 </head>
 <body>
+  <div>
   <input type="text">
+</div>
   <script>
     let input = document.querySelector("input")
-    input.onkeyup=function(e){
-      console.log('e',e.target.value);
-    }
+    console.log(input.parentElement === document.body);
+    
+        // let url = 'https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword='
+        let url = '/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword='
+       var obj  = fetch(url+"a")
+        .then(res=>res.json())
+        .then(res=>{
+          console.log('res',res);
+        }).catch((e)=>{
+          throw(e)
+        })
+        obj.then(()=>{
+          console.log('final');
+        }).catch(()=>{
+          console.log('catch');
+        })
+
+        
+        
   </script>
 </body>
 </html>

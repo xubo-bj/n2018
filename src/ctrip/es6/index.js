@@ -187,42 +187,34 @@ class Search {
         this.input.addEventListener("compositionend", () => {
             this.compositionFlag = true
         })
+
+        this.result.addEventListener("click", (e) => {
+            let elem = e.target
+            if (/item-btn/.test(elem.className)) {
+                let value  =elem.dataset.title
+                this.fetch(value)
+                .then(()=>{
+                    this.input.value = value
+                })
+                return
+            }
+            if (/item-btn/.text(elem.parentElement.className)) {
+                let value  =elem.parentElement.dataset.title
+                this.fetch(value)
+                .then(()=>{
+                    this.input.value = value
+                })
+                return
+            }
+            // while (elem !== e.currentTarget) {}
+            // window.location.href = e.target.dataset["href"]
+        })
     }
-
-    /*
-                             `
-                 <li class="result-item">
-                     <i class="result-icon"></i>
-                     <div class="title">
-                         <span class="main-title">大阪的全部旅游产品</span>
-                         <span class="sub-title">大阪</span>
-                     </div>
-                     <em class="item-btn"></em>
-                 </li>
-                 <li class="result-item">
-                     <i class="result-icon"></i>
-                     <p class="title">
-                         <span class="main-title">北京东直门雅辰悦居酒店</span>
-                         <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
-                     </p>
-                     <p class="price">
-                         <span class="detailed">实时计价</span>
-                         <span class="level">高档型</span>
-                     </p>
-                     <em class="item-btn"></em>
-                 </li>
-                         `
-         */
-
-    fetchContent(value) {
-        if (typeof (value) === "string" && value.length === 0) {
-            this.noInput.style.display = "block"
-            this.inputExist.style.display = "none"
-        } else {
+    fetch(value){
             console.log('fetch', value);
             let htmlStr = ""
 
-            fetch(`${this.url}${value}`)
+           return fetch(`${this.url}${value}`)
                 .then(res => res.json())
                 .then(res => {
 
@@ -242,9 +234,8 @@ class Search {
                          <span class="detailed">${d[i].price}</span>
                          <span class="level">${d[i].star}</span>
                      </p>
-                     <em class="item-btn"></em>
+                     <span class="item-btn" data-title=${d[i].word}></span>
                  </li>`
-
                         } else {
                             htmlStr +=
                                 `<li class="result-item" data-url=${d[i].url}>
@@ -253,47 +244,56 @@ class Search {
                              <span class="main-title">${d[i].word}</span>
                              <span class="sub-title">${d[i].districtname}</span>
                          </div>
-                         <em class="item-btn"></em>
+                     <span class="item-btn" data-title=${d[i].word}></span>
                      </li>`
-
                         }
                     }
                     this.result.innerHTML = htmlStr
                     this.noInput.style.display = "none"
                     this.inputExist.style.display = "block"
-
+                })
+                .then(r => {
+                    this.lastValue = value
+                }).catch(e => {
+                    console.log('e', e);
                 })
         }
-        this.lastValue = value
+
+    fetchContent(value) {
+        if (typeof (value) === "string" && value.length === 0) {
+            this.noInput.style.display = "block"
+            this.inputExist.style.display = "none"
+            this.lastValue = value
+        } else {
+            this.fetch(value)
+    }
     }
 }
 (new Search()).init()
 
 
 
-//  https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
 /*
-                        $('input').on({
-    keyup : function(e){        
-        var flag = e.target.isNeedPrevent;
-        if(flag)  return;     
-        response() ;
-        e.target.keyEvent = false ;
-        
-    },
-    keydown : function(e){
-        e.target.keyEvent = true ; 
-    },
-    input : function(e){
-        if(!e.target.keyEvent){
-            response()
-        }        
-    },
-    compositionstart : function(e){
-        e.target.isNeedPrevent = true ;
-    },
-    compositionend : function(e){
-        e.target.isNeedPrevent = false;
-        
-    }
-    */
+                         `
+             <li class="result-item">
+                 <i class="result-icon"></i>
+                 <div class="title">
+                     <span class="main-title">大阪的全部旅游产品</span>
+                     <span class="sub-title">大阪</span>
+                 </div>
+                 <em class="item-btn"></em>
+             </li>
+             <li class="result-item">
+                 <i class="result-icon"></i>
+                 <p class="title">
+                     <span class="main-title">北京东直门雅辰悦居酒店</span>
+                     <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
+                 </p>
+                 <p class="price">
+                     <span class="detailed">实时计价</span>
+                     <span class="level">高档型</span>
+                 </p>
+                 <em class="item-btn"></em>
+             </li>
+                     `
+     */

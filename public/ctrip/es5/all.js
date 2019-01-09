@@ -261,95 +261,111 @@ function () {
       this.input.addEventListener("compositionend", function () {
         _this5.compositionFlag = true;
       });
-    }
-    /*
-                             `
-                 <li class="result-item">
-                     <i class="result-icon"></i>
-                     <div class="title">
-                         <span class="main-title">大阪的全部旅游产品</span>
-                         <span class="sub-title">大阪</span>
-                     </div>
-                     <em class="item-btn"></em>
-                 </li>
-                 <li class="result-item">
-                     <i class="result-icon"></i>
-                     <p class="title">
-                         <span class="main-title">北京东直门雅辰悦居酒店</span>
-                         <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
-                     </p>
-                     <p class="price">
-                         <span class="detailed">实时计价</span>
-                         <span class="level">高档型</span>
-                     </p>
-                     <em class="item-btn"></em>
-                 </li>
-                         `
-         */
+      this.result.addEventListener("click", function (e) {
+        var elem = e.target;
 
+        if (/item-btn/.test(elem.className)) {
+          var value = elem.dataset.title;
+
+          _this5.fetch(value).then(function () {
+            _this5.input.value = value;
+          });
+
+          return;
+        }
+
+        if (/item-btn/.text(elem.parentElement.className)) {
+          var _value = elem.parentElement.dataset.title;
+
+          _this5.fetch(_value).then(function () {
+            _this5.input.value = _value;
+          });
+
+          return;
+        } // while (elem !== e.currentTarget) {}
+        // window.location.href = e.target.dataset["href"]
+
+      });
+    }
+  }, {
+    key: "fetch",
+    value: function (_fetch) {
+      function fetch(_x) {
+        return _fetch.apply(this, arguments);
+      }
+
+      fetch.toString = function () {
+        return _fetch.toString();
+      };
+
+      return fetch;
+    }(function (value) {
+      var _this6 = this;
+
+      console.log('fetch', value);
+      var htmlStr = "";
+      return fetch("".concat(this.url).concat(value)).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        var d = res.data;
+        console.log('d', d);
+
+        for (var i = 0; i < d.length; i++) {
+          if (d[i].price != null) {
+            htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                     <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                     <p class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                        <span class=\"sub-title\">").concat(d[i].districtname, "<em>").concat(d[i].zonename, "</em></span>\n                     </p>\n                     <p class=\"price\">\n                         <span class=\"detailed\">").concat(d[i].price, "</span>\n                         <span class=\"level\">").concat(d[i].star, "</span>\n                     </p>\n                     <span class=\"item-btn\" data-title=").concat(d[i].word, "></span>\n                 </li>");
+          } else {
+            htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                         <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                         <div class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                             <span class=\"sub-title\">").concat(d[i].districtname, "</span>\n                         </div>\n                     <span class=\"item-btn\" data-title=").concat(d[i].word, "></span>\n                     </li>");
+          }
+        }
+
+        _this6.result.innerHTML = htmlStr;
+        _this6.noInput.style.display = "none";
+        _this6.inputExist.style.display = "block";
+      }).then(function (r) {
+        _this6.lastValue = value;
+      }).catch(function (e) {
+        console.log('e', e);
+      });
+    })
   }, {
     key: "fetchContent",
     value: function fetchContent(value) {
-      var _this6 = this;
-
       if (typeof value === "string" && value.length === 0) {
         this.noInput.style.display = "block";
         this.inputExist.style.display = "none";
+        this.lastValue = value;
       } else {
-        console.log('fetch', value);
-        var htmlStr = "";
-        fetch("".concat(this.url).concat(value)).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          var d = res.data;
-          console.log('d', d);
-
-          for (var i = 0; i < d.length; i++) {
-            if (d[i].price != null) {
-              htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                     <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                     <p class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                        <span class=\"sub-title\">").concat(d[i].districtname, "<em>").concat(d[i].zonename, "</em></span>\n                     </p>\n                     <p class=\"price\">\n                         <span class=\"detailed\">").concat(d[i].price, "</span>\n                         <span class=\"level\">").concat(d[i].star, "</span>\n                     </p>\n                     <em class=\"item-btn\"></em>\n                 </li>");
-            } else {
-              htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                         <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                         <div class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                             <span class=\"sub-title\">").concat(d[i].districtname, "</span>\n                         </div>\n                         <em class=\"item-btn\"></em>\n                     </li>");
-            }
-          }
-
-          _this6.result.innerHTML = htmlStr;
-          _this6.noInput.style.display = "none";
-          _this6.inputExist.style.display = "block";
-        });
+        this.fetch(value);
       }
-
-      this.lastValue = value;
     }
   }]);
 
   return Search;
 }();
 
-new Search().init(); //  https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
-
+new Search().init();
 /*
-                        $('input').on({
-    keyup : function(e){        
-        var flag = e.target.isNeedPrevent;
-        if(flag)  return;     
-        response() ;
-        e.target.keyEvent = false ;
-        
-    },
-    keydown : function(e){
-        e.target.keyEvent = true ; 
-    },
-    input : function(e){
-        if(!e.target.keyEvent){
-            response()
-        }        
-    },
-    compositionstart : function(e){
-        e.target.isNeedPrevent = true ;
-    },
-    compositionend : function(e){
-        e.target.isNeedPrevent = false;
-        
-    }
-    */
+                         `
+             <li class="result-item">
+                 <i class="result-icon"></i>
+                 <div class="title">
+                     <span class="main-title">大阪的全部旅游产品</span>
+                     <span class="sub-title">大阪</span>
+                 </div>
+                 <em class="item-btn"></em>
+             </li>
+             <li class="result-item">
+                 <i class="result-icon"></i>
+                 <p class="title">
+                     <span class="main-title">北京东直门雅辰悦居酒店</span>
+                     <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
+                 </p>
+                 <p class="price">
+                     <span class="detailed">实时计价</span>
+                     <span class="level">高档型</span>
+                 </p>
+                 <em class="item-btn"></em>
+             </li>
+                     `
+     */
 //# sourceMappingURL=all.js.map
