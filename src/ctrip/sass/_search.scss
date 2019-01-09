@@ -238,10 +238,43 @@
         height: 20px;
         background: url(/ctrip/images/result.png) no-repeat;
         background-size: 20px 325px;
+        &.district{
+            background-position: 0 0;
+        }
+        &.huodong{
+            background-position: 0 -275px;
+        }
+        &.channeltravelsearch,
+        &.travelgroup,
+&.flighthotel,
+&.sighthotel,
+&.hhtravel
+        {
+                background-position: 0 -175px;
+        }
+        &.hotellist,
+        &.poihotel,
+        &.hotel
+        {
+            background-position: 0 -25px;
+        }
+        &.channelticketsearch,
+        &.ticket
+        {
+            background-position: 0 -125px;
+        }
+        &.sight {
+            background-position: 0 -50px;
+        }
     }
 
     .sub-title {
         color: #999;
+        em{
+            margin-left: 10px;
+            font-style: normal;
+            font-weight: normal;
+        }
     }
 
     .detailed {

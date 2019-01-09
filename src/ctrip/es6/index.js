@@ -143,7 +143,8 @@ class Search {
         this.inputExist = this.$("#search-page .input-exist")
         this.back = this.$("#search-page .back")
         this.clear = this.$("#search-page .clear")
-        this.compositionFlag =true
+        this.result = this.$("#search-page .search-result")
+        this.compositionFlag = true
         this.lastValue = null
     }
     init() {
@@ -176,7 +177,7 @@ class Search {
                 this.fetchContent(value)
             }
             //汉字输入法输入一半时复制，firefox不支持，chrome支持
-            if((!this.compositionFlag) && (e.ctrlKey && e.keyCode == 86)){
+            if ((!this.compositionFlag) && (e.ctrlKey && e.keyCode == 86)) {
                 this.fetchContent(value)
             }
         })
@@ -188,47 +189,82 @@ class Search {
         })
     }
 
-        /*
-                                 `
-                     <li class="result-item">
-                         <i class="result-icon"></i>
-                         <div class="title">
-                             <span class="main-title">大阪的全部旅游产品</span>
-                             <span class="sub-title">大阪</span>
-                         </div>
-                         <em class="item-btn"></em>
-                     </li>
-                     <li class="result-item">
-                         <i class="result-icon"></i>
-                         <p class="title">
-                             <span class="main-title">北京东直门雅辰悦居酒店</span>
-                             <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
-                         </p>
-                         <p class="price">
-                             <span class="detailed">实时计价</span>
-                             <span class="level">高档型</span>
-                         </p>
-                         <em class="item-btn"></em>
-                     </li>
+    /*
                              `
-             */
+                 <li class="result-item">
+                     <i class="result-icon"></i>
+                     <div class="title">
+                         <span class="main-title">大阪的全部旅游产品</span>
+                         <span class="sub-title">大阪</span>
+                     </div>
+                     <em class="item-btn"></em>
+                 </li>
+                 <li class="result-item">
+                     <i class="result-icon"></i>
+                     <p class="title">
+                         <span class="main-title">北京东直门雅辰悦居酒店</span>
+                         <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
+                     </p>
+                     <p class="price">
+                         <span class="detailed">实时计价</span>
+                         <span class="level">高档型</span>
+                     </p>
+                     <em class="item-btn"></em>
+                 </li>
+                         `
+         */
 
     fetchContent(value) {
         if (typeof (value) === "string" && value.length === 0) {
             this.noInput.style.display = "block"
             this.inputExist.style.display = "none"
         } else {
-            // console.log('fetch');
-            console.log('fetch',value);
-            
-            
+            console.log('fetch', value);
+            let htmlStr = ""
+
             fetch(`${this.url}${value}`)
                 .then(res => res.json())
                 .then(res => {
-                    console.log('res', res.data);
-                    this.lastValue = value
+
+                    let d = res.data
+                    console.log('d', d);
+
+                    for (let i = 0; i < d.length; i++) {
+                        if (d[i].price != null) {
+                            htmlStr +=
+                                `<li class="result-item" data-url=${d[i].url}>
+                     <i class="result-icon ${d[i].type}"></i>
+                     <p class="title">
+                             <span class="main-title">${d[i].word}</span>
+                        <span class="sub-title">${d[i].districtname}<em>${d[i].zonename}</em></span>
+                     </p>
+                     <p class="price">
+                         <span class="detailed">${d[i].price}</span>
+                         <span class="level">${d[i].star}</span>
+                     </p>
+                     <em class="item-btn"></em>
+                 </li>`
+
+                        } else {
+                            htmlStr +=
+                                `<li class="result-item" data-url=${d[i].url}>
+                         <i class="result-icon ${d[i].type}"></i>
+                         <div class="title">
+                             <span class="main-title">${d[i].word}</span>
+                             <span class="sub-title">${d[i].districtname}</span>
+                         </div>
+                         <em class="item-btn"></em>
+                     </li>`
+
+                        }
+                    }
+                    this.result.innerHTML = htmlStr
+                    this.noInput.style.display = "none"
+                    this.inputExist.style.display = "block"
+
                 })
         }
+        this.lastValue = value
     }
 }
 (new Search()).init()
@@ -236,28 +272,28 @@ class Search {
 
 
 //  https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=a
-        /*
-                                $('input').on({
-            keyup : function(e){        
-                var flag = e.target.isNeedPrevent;
-                if(flag)  return;     
-                response() ;
-                e.target.keyEvent = false ;
-                
-            },
-            keydown : function(e){
-                e.target.keyEvent = true ; 
-            },
-            input : function(e){
-                if(!e.target.keyEvent){
-                    response()
-                }        
-            },
-            compositionstart : function(e){
-                e.target.isNeedPrevent = true ;
-            },
-            compositionend : function(e){
-                e.target.isNeedPrevent = false;
-                
-            }
-            */
+/*
+                        $('input').on({
+    keyup : function(e){        
+        var flag = e.target.isNeedPrevent;
+        if(flag)  return;     
+        response() ;
+        e.target.keyEvent = false ;
+        
+    },
+    keydown : function(e){
+        e.target.keyEvent = true ; 
+    },
+    input : function(e){
+        if(!e.target.keyEvent){
+            response()
+        }        
+    },
+    compositionstart : function(e){
+        e.target.isNeedPrevent = true ;
+    },
+    compositionend : function(e){
+        e.target.isNeedPrevent = false;
+        
+    }
+    */

@@ -204,6 +204,7 @@ function () {
     this.inputExist = this.$("#search-page .input-exist");
     this.back = this.$("#search-page .back");
     this.clear = this.$("#search-page .clear");
+    this.result = this.$("#search-page .search-result");
     this.compositionFlag = true;
     this.lastValue = null;
   }
@@ -295,15 +296,29 @@ function () {
         this.noInput.style.display = "block";
         this.inputExist.style.display = "none";
       } else {
-        // console.log('fetch');
         console.log('fetch', value);
+        var htmlStr = "";
         fetch("".concat(this.url).concat(value)).then(function (res) {
           return res.json();
         }).then(function (res) {
-          console.log('res', res.data);
-          _this6.lastValue = value;
+          var d = res.data;
+          console.log('d', d);
+
+          for (var i = 0; i < d.length; i++) {
+            if (d[i].price != null) {
+              htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                     <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                     <p class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                        <span class=\"sub-title\">").concat(d[i].districtname, "<em>").concat(d[i].zonename, "</em></span>\n                     </p>\n                     <p class=\"price\">\n                         <span class=\"detailed\">").concat(d[i].price, "</span>\n                         <span class=\"level\">").concat(d[i].star, "</span>\n                     </p>\n                     <em class=\"item-btn\"></em>\n                 </li>");
+            } else {
+              htmlStr += "<li class=\"result-item\" data-url=".concat(d[i].url, ">\n                         <i class=\"result-icon ").concat(d[i].type, "\"></i>\n                         <div class=\"title\">\n                             <span class=\"main-title\">").concat(d[i].word, "</span>\n                             <span class=\"sub-title\">").concat(d[i].districtname, "</span>\n                         </div>\n                         <em class=\"item-btn\"></em>\n                     </li>");
+            }
+          }
+
+          _this6.result.innerHTML = htmlStr;
+          _this6.noInput.style.display = "none";
+          _this6.inputExist.style.display = "block";
         });
       }
+
+      this.lastValue = value;
     }
   }]);
 

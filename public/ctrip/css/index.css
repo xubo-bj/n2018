@@ -960,8 +960,24 @@ nav1
     height: 20px;
     background: url(/ctrip/images/result.png) no-repeat;
     background-size: 20px 325px; }
+    .input-exist .result-icon.district {
+      background-position: 0 0; }
+    .input-exist .result-icon.huodong {
+      background-position: 0 -275px; }
+    .input-exist .result-icon.channeltravelsearch, .input-exist .result-icon.travelgroup, .input-exist .result-icon.flighthotel, .input-exist .result-icon.sighthotel, .input-exist .result-icon.hhtravel {
+      background-position: 0 -175px; }
+    .input-exist .result-icon.hotellist, .input-exist .result-icon.poihotel, .input-exist .result-icon.hotel {
+      background-position: 0 -25px; }
+    .input-exist .result-icon.channelticketsearch, .input-exist .result-icon.ticket {
+      background-position: 0 -125px; }
+    .input-exist .result-icon.sight {
+      background-position: 0 -50px; }
   .input-exist .sub-title {
     color: #999; }
+    .input-exist .sub-title em {
+      margin-left: 10px;
+      font-style: normal;
+      font-weight: normal; }
   .input-exist .detailed {
     margin-right: 2px;
     color: #ff7d13;
