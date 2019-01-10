@@ -58,7 +58,7 @@ function es6ToEs5() {
     .pipe(babel({
       presets: ["@babel/preset-env"]
     }))
-    .pipe(concat("all.js"))
+    // .pipe(concat("all.js"))
     .pipe(sourcemaps.write("."))
     .pipe(dest(`${destPath}/es5`));
 }

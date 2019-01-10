@@ -368,4 +368,4 @@ new Search().init();
              </li>
                      `
      */
-//# sourceMappingURL=all.js.map
+//# sourceMappingURL=index.js.map

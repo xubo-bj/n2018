@@ -41,7 +41,7 @@
             background-image: url(/ctrip/images/country.png);
             background-size: 30px auto;
         }
-        @for $i from 1 through 14{
+        @for $i from 0 through 13{
            .country-icon-#{$i} {
                background-position: 0 -20px * $i;
            }
