@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <style>
+    div {
+      height: 440px;
+      /* line-height: 440px; */
+      padding: 0 20px;
+      font-size: 13px;
+      border: 1px solid #000;
+    }
+
+    span {
+      display: inline-block;
+      width: 30px;
+      height: 20px;
+      margin-right: 7px;
+      /* vertical-align: middle; */
+      border: 1px solid #000;
+    }
+    img{
+      width: 100px;
+      height: 100px;
+      border: 1px solid #000;
+      vertical-align: middle;
+    }
+  </style>
 </head>
+
 <body>
   <div>
-  <input type="text">
-</div>
-  <script>
-    let input = document.querySelector("input")
-    console.log(input.parentElement === document.body);
-    
-        // let url = 'https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword='
-        let url = '/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword='
-       var obj  = fetch(url+"a")
-        .then(res=>res.json())
-        .then(res=>{
-          console.log('res',res);
-        }).catch((e)=>{
-          throw(e)
-        })
-        obj.then(()=>{
-          console.log('final');
-        }).catch(()=>{
-          console.log('catch');
-        })
-
-        
-        
-  </script>
+    <img src="a.jpg" alt="">
+  </div>
 </body>
+
 </html>

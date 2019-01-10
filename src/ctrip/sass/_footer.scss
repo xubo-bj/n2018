@@ -52,11 +52,14 @@
         }
         &-a{
         color: #999;
+        margin-right: 6px;
         }
         &-icon {
+
             display: inline-block;
             width: 11px;
             height: 11px;
+            margin-left: 6px;
             margin-right: 3px;
             background: url(/ctrip/images/icon5.png) 0 -160px no-repeat;
             background-size: 30px auto;
@@ -75,7 +78,12 @@
             height: 5px;
             transform: rotate(45deg);
             vertical-align: 2px;
-            margin: 0 8px 0 3px;
+            margin: 0 12px 0 3px;
         }
+        &-a-2{
+        color: #999;
+        margin-left: 6px;
+        }
+
     }
 }

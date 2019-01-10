@@ -25,6 +25,10 @@ a{
 p{
     margin: 0;
 }
+ul{
+    list-style-type: none;
+}
+
 @import 'header';
 @import 'carousel';
 @import 'nav';
@@ -33,13 +37,13 @@ p{
 @import 'footer';
 
 
-#index-page{
-    // display: none;
-}
 #search-page{
     display: none;
     position: absolute;
     top: 0;
     width: 100%;
 }
+
 @import 'search';
+
+@import 'country';

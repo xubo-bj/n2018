@@ -328,6 +328,9 @@ a {
 p {
   margin: 0; }
 
+ul {
+  list-style-type: none; }
+
 /*
 header
 */
@@ -750,11 +753,13 @@ nav1
     #footer .info-row {
       text-align: center; }
     #footer .info-a {
-      color: #999; }
+      color: #999;
+      margin-right: 6px; }
     #footer .info-icon {
       display: inline-block;
       width: 11px;
       height: 11px;
+      margin-left: 6px;
       margin-right: 3px;
       background: url(/ctrip/images/icon5.png) 0 -160px no-repeat;
       background-size: 30px auto;
@@ -772,7 +777,10 @@ nav1
       height: 5px;
       transform: rotate(45deg);
       vertical-align: 2px;
-      margin: 0 8px 0 3px; }
+      margin: 0 12px 0 3px; }
+    #footer .info-a-2 {
+      color: #999;
+      margin-left: 6px; }
 
 #search-page {
   display: none;
@@ -1010,3 +1018,66 @@ nav1
       height: 2px;
       background-color: #CCC;
       transform: rotate(45deg); }
+
+/*
+** #choose-country
+*/
+#choose-country {
+  background-color: #fff; }
+  #choose-country .heading {
+    text-align: center;
+    color: #666;
+    padding: 15px 0; }
+    #choose-country .heading .icon-country {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      background: url(/ctrip/images/country.png) 0 -280px no-repeat;
+      background-size: 30px auto;
+      margin-right: 7px;
+      vertical-align: middle; }
+  #choose-country .country-ul {
+    margin: 0;
+    padding: 0; }
+    #choose-country .country-ul .country-li {
+      height: 44px;
+      line-height: 44px;
+      padding: 0 20px;
+      font-size: 13px;
+      color: #666666; }
+    #choose-country .country-ul .country-icon {
+      display: inline-block;
+      width: 30px;
+      height: 20px;
+      margin-right: 7px;
+      vertical-align: middle;
+      background-image: url(/ctrip/images/country.png);
+      background-size: 30px auto; }
+    #choose-country .country-ul .country-icon-1 {
+      background-position: 0 -20px; }
+    #choose-country .country-ul .country-icon-2 {
+      background-position: 0 -40px; }
+    #choose-country .country-ul .country-icon-3 {
+      background-position: 0 -60px; }
+    #choose-country .country-ul .country-icon-4 {
+      background-position: 0 -80px; }
+    #choose-country .country-ul .country-icon-5 {
+      background-position: 0 -100px; }
+    #choose-country .country-ul .country-icon-6 {
+      background-position: 0 -120px; }
+    #choose-country .country-ul .country-icon-7 {
+      background-position: 0 -140px; }
+    #choose-country .country-ul .country-icon-8 {
+      background-position: 0 -160px; }
+    #choose-country .country-ul .country-icon-9 {
+      background-position: 0 -180px; }
+    #choose-country .country-ul .country-icon-10 {
+      background-position: 0 -200px; }
+    #choose-country .country-ul .country-icon-11 {
+      background-position: 0 -220px; }
+    #choose-country .country-ul .country-icon-12 {
+      background-position: 0 -240px; }
+    #choose-country .country-ul .country-icon-13 {
+      background-position: 0 -260px; }
+    #choose-country .country-ul .country-icon-14 {
+      background-position: 0 -280px; }
