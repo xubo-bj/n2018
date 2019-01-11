@@ -30,14 +30,29 @@ var arrayLike = {
 var chooseCountry =
 /*#__PURE__*/
 function () {
-  function chooseCountry() {
+  function chooseCountry(countries) {
     _classCallCheck(this, chooseCountry);
+
+    this.countries = countries;
+    this.showBtn = this.$("#footer .pop-country");
+    this.popBox = this.$("#choose-country");
   }
 
   _createClass(chooseCountry, [{
     key: "init",
     value: function init() {
+      var _this = this;
+
       this.createList();
+
+      this.showBtn.onclick = function () {
+        _this.show();
+      };
+    }
+  }, {
+    key: "$",
+    value: function $(s) {
+      return document.querySelector(s);
     }
   }, {
     key: "createList",
@@ -46,19 +61,37 @@ function () {
         return "<li class=\"country-li\">\n                <i class=\"country-icon country-icon-".concat(index, "\"></i>\n                <span class=\"country-name\">").concat(element, "</span>\n            </li>");
       };
 
-      var countries = [].slice.call(arrayLike);
+      var countries = [].slice.call(this.countries);
       var htmlStr = "";
       countries.forEach(function (element, index) {
         htmlStr += template(element, index);
       });
       var ul = document.querySelector("#choose-country .country-ul");
-      console.log('ul', ul);
       ul.innerHTML = htmlStr;
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.translateＹ(0);
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.translateＹ("100%");
+    }
+  }, {
+    key: "translate\uFF39",
+    value: function translate(distance) {
+      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+        this.popBox.style.transform = "translate3d(0,".concat(distance, ",0)");
+      } else {
+        this.popBox.style.transform = "translateY(".concat(distance, ")");
+      }
     }
   }]);
 
   return chooseCountry;
 }();
 
-new chooseCountry().init();
+new chooseCountry(arrayLike).init();
 //# sourceMappingURL=country.js.map

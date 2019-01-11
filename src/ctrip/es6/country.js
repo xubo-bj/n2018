@@ -17,32 +17,52 @@ const arrayLike = {
     11: "English (Malaysia)",
     12: "ภาษาไทย",
     13: "Bahasa Indonesia",
-    length:14
+    length: 14
 }
 
-class chooseCountry{
-    constructor(){
-
+class chooseCountry {
+    constructor(countries) {
+        this.countries = countries
+        this.showBtn = this.$("#footer .pop-country")
+        this.popBox = this.$("#choose-country")
     }
-    init(){
+    init() {
         this.createList()
+        this.showBtn.onclick = () => {
+            this.show()
+        }
 
     }
-    createList(){
-        let template= (element,index)=>
+    $(s) {
+        return document.querySelector(s)
+    }
+    createList() {
+        let template = (element, index) =>
             `<li class="country-li">
                 <i class="country-icon country-icon-${index}"></i>
                 <span class="country-name">${element}</span>
             </li>`
-        const countries = [].slice.call(arrayLike)
-        let htmlStr= ""
-        countries.forEach((element,index) => {
-            htmlStr += template(element,index)
+        const countries = [].slice.call(this.countries)
+        let htmlStr = ""
+        countries.forEach((element, index) => {
+            htmlStr += template(element, index)
         });
         let ul = document.querySelector("#choose-country .country-ul")
-        console.log('ul',ul);
-        
         ul.innerHTML = htmlStr
     }
+    show() {
+        this.translateＹ(0)
+    }
+    hide() {
+        this.translateＹ("100%")
+
+    }
+    translateＹ(distance) {
+        if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+            this.popBox.style.transform = `translate3d(0,${distance},0)`
+        } else {
+            this.popBox.style.transform = `translateY(${distance})`
+        }
+    }
 }
-(new chooseCountry()).init()
+(new chooseCountry(arrayLike)).init()
