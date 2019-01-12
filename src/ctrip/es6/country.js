@@ -25,13 +25,21 @@ class chooseCountry {
         this.countries = countries
         this.showBtn = this.$("#footer .pop-country")
         this.popBox = this.$("#choose-country")
+        this.mask = this.$("#mask")
+        this.closeBtn = this.$("#choose-country .close-btn")
     }
     init() {
         this.createList()
+        this.addMaskTransition()
         this.showBtn.onclick = () => {
             this.show()
         }
-
+        this.closeBtn.onclick=()=>{
+            this.hide()
+        }
+        this.mask.onclick =()=>{
+            this.hide()
+        }
     }
     $(s) {
         return document.querySelector(s)
@@ -52,10 +60,12 @@ class chooseCountry {
     }
     show() {
         this.translateＹ(0)
+        this.mask.style.display = "block"
+        this.mask.style.opacity = "0.5"
     }
     hide() {
         this.translateＹ("100%")
-
+        this.mask.style.opacity = "0"
     }
     translateＹ(distance) {
         if (CSS && CSS.supports("transform-style", "preserve-3d")) {
@@ -63,6 +73,14 @@ class chooseCountry {
         } else {
             this.popBox.style.transform = `translateY(${distance})`
         }
+    }
+    addMaskTransition(){
+        this.mask.addEventListener("transitionend",()=>{
+            let opacity = getComputedStyle(this.mask).getPropertyValue("opacity")
+            if(opacity == 0){
+                this.mask.style.display = "none"
+            }
+        })
     }
 }
 (new chooseCountry(arrayLike)).init()

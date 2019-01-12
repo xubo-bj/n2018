@@ -456,7 +456,7 @@ nav1
     height: 100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
+    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
     #nav2 .section .c1 {
       grid-area: c1; }
     #nav2 .section .c2 {
@@ -612,7 +612,7 @@ nav1
           font-size: 15px; }
   #sales .right {
     display: grid;
-    grid-template-areas: "g1 g1" "g2 g3";
+    grid-template-areas: "g1 g1" "g2 g3";
     grid-gap: 2px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 88px auto; }
@@ -1029,6 +1029,7 @@ nav1
   transform: translateY(100%);
   overflow: hidden;
   position: fixed;
+  z-index: 100;
   bottom: 0;
   width: 100%;
   transition: transform .2s; }
@@ -1036,7 +1037,8 @@ nav1
     text-align: center;
     color: #666;
     height: 50px;
-    line-height: 50px; }
+    line-height: 50px;
+    position: relative; }
     #choose-country .heading .icon-country {
       display: inline-block;
       width: 11px;
@@ -1045,50 +1047,82 @@ nav1
       background-size: 30px auto;
       margin-right: 7px;
       vertical-align: middle; }
-  #choose-country .country-ul {
-    height: 380px;
-    overflow: scroll;
-    margin: 0;
-    padding: 0; }
-    #choose-country .country-ul .country-li {
-      height: 44px;
-      line-height: 44px;
-      padding: 0 20px;
-      font-size: 13px;
-      color: #666666; }
-    #choose-country .country-ul .country-icon {
-      display: inline-block;
-      width: 30px;
-      height: 20px;
-      margin-right: 7px;
-      vertical-align: middle;
-      background-image: url(/ctrip/images/country.png);
-      background-size: 30px auto; }
-    #choose-country .country-ul .country-icon-0 {
-      background-position: 0 0px; }
-    #choose-country .country-ul .country-icon-1 {
-      background-position: 0 -20px; }
-    #choose-country .country-ul .country-icon-2 {
-      background-position: 0 -40px; }
-    #choose-country .country-ul .country-icon-3 {
-      background-position: 0 -60px; }
-    #choose-country .country-ul .country-icon-4 {
-      background-position: 0 -80px; }
-    #choose-country .country-ul .country-icon-5 {
-      background-position: 0 -100px; }
-    #choose-country .country-ul .country-icon-6 {
-      background-position: 0 -120px; }
-    #choose-country .country-ul .country-icon-7 {
-      background-position: 0 -140px; }
-    #choose-country .country-ul .country-icon-8 {
-      background-position: 0 -160px; }
-    #choose-country .country-ul .country-icon-9 {
-      background-position: 0 -180px; }
-    #choose-country .country-ul .country-icon-10 {
-      background-position: 0 -200px; }
-    #choose-country .country-ul .country-icon-11 {
-      background-position: 0 -220px; }
-    #choose-country .country-ul .country-icon-12 {
-      background-position: 0 -240px; }
-    #choose-country .country-ul .country-icon-13 {
-      background-position: 0 -260px; }
+    #choose-country .heading .close-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 44px;
+      height: 50px; }
+      #choose-country .heading .close-btn::before, #choose-country .heading .close-btn::after {
+        content: '';
+        position: absolute;
+        height: 1px;
+        width: 40%;
+        top: 50%;
+        left: 30%;
+        margin-top: -1px;
+        background: #999; }
+      #choose-country .heading .close-btn::before {
+        transform: rotate(45deg); }
+      #choose-country .heading .close-btn::after {
+        transform: rotate(-45deg); }
+
+.country-ul {
+  height: 380px;
+  overflow: scroll;
+  margin: 0;
+  padding: 0; }
+  .country-ul .country-li {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    font-size: 13px;
+    color: #666666; }
+  .country-ul .country-icon {
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    margin-right: 7px;
+    vertical-align: middle;
+    background-image: url(/ctrip/images/country.png);
+    background-size: 30px auto; }
+  .country-ul .country-icon-0 {
+    background-position: 0 0px; }
+  .country-ul .country-icon-1 {
+    background-position: 0 -20px; }
+  .country-ul .country-icon-2 {
+    background-position: 0 -40px; }
+  .country-ul .country-icon-3 {
+    background-position: 0 -60px; }
+  .country-ul .country-icon-4 {
+    background-position: 0 -80px; }
+  .country-ul .country-icon-5 {
+    background-position: 0 -100px; }
+  .country-ul .country-icon-6 {
+    background-position: 0 -120px; }
+  .country-ul .country-icon-7 {
+    background-position: 0 -140px; }
+  .country-ul .country-icon-8 {
+    background-position: 0 -160px; }
+  .country-ul .country-icon-9 {
+    background-position: 0 -180px; }
+  .country-ul .country-icon-10 {
+    background-position: 0 -200px; }
+  .country-ul .country-icon-11 {
+    background-position: 0 -220px; }
+  .country-ul .country-icon-12 {
+    background-position: 0 -240px; }
+  .country-ul .country-icon-13 {
+    background-position: 0 -260px; }
+
+#mask {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background-color: black;
+  opacity: 0;
+  transition: opacity .2s; }

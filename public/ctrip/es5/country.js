@@ -36,6 +36,8 @@ function () {
     this.countries = countries;
     this.showBtn = this.$("#footer .pop-country");
     this.popBox = this.$("#choose-country");
+    this.mask = this.$("#mask");
+    this.closeBtn = this.$("#choose-country .close-btn");
   }
 
   _createClass(chooseCountry, [{
@@ -44,9 +46,18 @@ function () {
       var _this = this;
 
       this.createList();
+      this.addMaskTransition();
 
       this.showBtn.onclick = function () {
         _this.show();
+      };
+
+      this.closeBtn.onclick = function () {
+        _this.hide();
+      };
+
+      this.mask.onclick = function () {
+        _this.hide();
       };
     }
   }, {
@@ -73,11 +84,14 @@ function () {
     key: "show",
     value: function show() {
       this.translateＹ(0);
+      this.mask.style.display = "block";
+      this.mask.style.opacity = "0.5";
     }
   }, {
     key: "hide",
     value: function hide() {
       this.translateＹ("100%");
+      this.mask.style.opacity = "0";
     }
   }, {
     key: "translate\uFF39",
@@ -87,6 +101,19 @@ function () {
       } else {
         this.popBox.style.transform = "translateY(".concat(distance, ")");
       }
+    }
+  }, {
+    key: "addMaskTransition",
+    value: function addMaskTransition() {
+      var _this2 = this;
+
+      this.mask.addEventListener("transitionend", function () {
+        var opacity = getComputedStyle(_this2.mask).getPropertyValue("opacity");
+
+        if (opacity == 0) {
+          _this2.mask.style.display = "none";
+        }
+      });
     }
   }]);
 
