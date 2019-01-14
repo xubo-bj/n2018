@@ -127,6 +127,7 @@ class Carousel {
 
 (new Carousel()).init()
 
+
 /*
  ** fetch inform
  */
@@ -144,6 +145,8 @@ class Search {
         this.back = this.$("#search-page .back")
         this.clear = this.$("#search-page .clear")
         this.result = this.$("#search-page .search-result")
+        this.hotList = this.$("#search-page .hot-list")
+        this.visitBtn = this.$(".search-box .visit")
         this.compositionFlag = true
         this.lastValue = null
     }
@@ -166,6 +169,12 @@ class Search {
         }
         this.input.addEventListener("keyup", (e) => {
             let value = e.target.value.trim()
+            if (value.length === 0 && /\s/.test(e.target.value)) {
+                if (this.lastValue.length === 1 && this.lastValue.trim().length === 0) {
+                    return
+                }
+                this.fetchContent(" ")
+            }
             if (this.lastValue === value) {
                 return
             }
@@ -187,44 +196,64 @@ class Search {
         this.input.addEventListener("compositionend", () => {
             this.compositionFlag = true
         })
-
-        this.result.addEventListener("click", (e) => {
+        let clickOnLi = e => {
             let elem = e.target
-            if (/item-btn/.test(elem.className)) {
-                let value  =elem.dataset.title
+            if (/item-btn|li-btn/.test(elem.className)) {
+                let value = elem.dataset.title
                 this.fetch(value)
-                .then(()=>{
-                    this.input.value = value
-                })
+                    .then(() => {
+                        this.input.value = value
+                    })
                 return
             }
-            if (/item-btn/.text(elem.parentElement.className)) {
-                let value  =elem.parentElement.dataset.title
+            if (/item-btn|li-btn/.test(elem.parentElement.className)) {
+                let value = elem.parentElement.dataset.title
                 this.fetch(value)
-                .then(()=>{
-                    this.input.value = value
-                })
+                    .then(() => {
+                        this.input.value = value
+                    })
                 return
             }
-            // while (elem !== e.currentTarget) {}
-            // window.location.href = e.target.dataset["href"]
+            while (elem !== e.currentTarget) {
+                if (elem.tagName.toLowerCase() === "li") {
+                    location.href = elem.dataset.url
+                    return
+                }
+                elem = elem.parentElement
+            }
+        }
+
+        this.result.addEventListener("click", clickOnLi)
+        this.hotList.addEventListener("click", clickOnLi)
+
+        this.visitBtn.addEventListener("click",()=>{
+            let hotListDisplay = getComputedStyle(this.hotList).getPropertyValue("display")
+            let searchResultDisplay = getComputedStyle(this.result).getPropertyValue("display")
+            if(hotListDisplay === "block"){
+                location.href  = this.hotList.firstElementChild.dataset.url
+                return
+            }
+            if(searchResultDisplay === "block"){
+                location.href = this.result.firstElementChild.dataset.url
+            }
         })
+
     }
-    fetch(value){
-            console.log('fetch', value);
-            let htmlStr = ""
+    fetch(value) {
+        console.log('fetch', value);
+        let htmlStr = ""
 
-           return fetch(`${this.url}${value}`)
-                .then(res => res.json())
-                .then(res => {
+        return fetch(`${this.url}${value}`)
+            .then(res => res.json())
+            .then(res => {
 
-                    let d = res.data
-                    console.log('d', d);
+                let d = res.data
+                console.log('d', d);
 
-                    for (let i = 0; i < d.length; i++) {
-                        if (d[i].price != null) {
-                            htmlStr +=
-                                `<li class="result-item" data-url=${d[i].url}>
+                for (let i = 0; i < d.length; i++) {
+                    if (d[i].price != null) {
+                        htmlStr +=
+                            `<li class="result-item" data-url=${d[i].url}>
                      <i class="result-icon ${d[i].type}"></i>
                      <p class="title">
                              <span class="main-title">${d[i].word}</span>
@@ -236,9 +265,9 @@ class Search {
                      </p>
                      <span class="item-btn" data-title=${d[i].word}></span>
                  </li>`
-                        } else {
-                            htmlStr +=
-                                `<li class="result-item" data-url=${d[i].url}>
+                    } else {
+                        htmlStr +=
+                            `<li class="result-item" data-url=${d[i].url}>
                          <i class="result-icon ${d[i].type}"></i>
                          <div class="title">
                              <span class="main-title">${d[i].word}</span>
@@ -246,18 +275,18 @@ class Search {
                          </div>
                      <span class="item-btn" data-title=${d[i].word}></span>
                      </li>`
-                        }
                     }
-                    this.result.innerHTML = htmlStr
-                    this.noInput.style.display = "none"
-                    this.inputExist.style.display = "block"
-                })
-                .then(r => {
-                    this.lastValue = value
-                }).catch(e => {
-                    console.log('e', e);
-                })
-        }
+                }
+                this.result.innerHTML = htmlStr
+                this.noInput.style.display = "none"
+                this.inputExist.style.display = "block"
+            })
+            .then(r => {
+                this.lastValue = value
+            }).catch(e => {
+                console.log('e', e);
+            })
+    }
 
     fetchContent(value) {
         if (typeof (value) === "string" && value.length === 0) {
@@ -266,34 +295,7 @@ class Search {
             this.lastValue = value
         } else {
             this.fetch(value)
-    }
+        }
     }
 }
 (new Search()).init()
-
-
-
-/*
-                         `
-             <li class="result-item">
-                 <i class="result-icon"></i>
-                 <div class="title">
-                     <span class="main-title">大阪的全部旅游产品</span>
-                     <span class="sub-title">大阪</span>
-                 </div>
-                 <em class="item-btn"></em>
-             </li>
-             <li class="result-item">
-                 <i class="result-icon"></i>
-                 <p class="title">
-                     <span class="main-title">北京东直门雅辰悦居酒店</span>
-                     <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
-                 </p>
-                 <p class="price">
-                     <span class="detailed">实时计价</span>
-                     <span class="level">高档型</span>
-                 </p>
-                 <em class="item-btn"></em>
-             </li>
-                     `
-     */

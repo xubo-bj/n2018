@@ -153,8 +153,9 @@ function () {
 
         default:
           {
-            var location = -1 * this.current * this.picWidth + direction;
-            translate("".concat(location, "px"));
+            var _location = -1 * this.current * this.picWidth + direction;
+
+            translate("".concat(_location, "px"));
           }
       }
     }
@@ -205,6 +206,8 @@ function () {
     this.back = this.$("#search-page .back");
     this.clear = this.$("#search-page .clear");
     this.result = this.$("#search-page .search-result");
+    this.hotList = this.$("#search-page .hot-list");
+    this.visitBtn = this.$(".search-box .visit");
     this.compositionFlag = true;
     this.lastValue = null;
   }
@@ -237,6 +240,14 @@ function () {
       this.input.addEventListener("keyup", function (e) {
         var value = e.target.value.trim();
 
+        if (value.length === 0 && /\s/.test(e.target.value)) {
+          if (_this5.lastValue.length === 1 && _this5.lastValue.trim().length === 0) {
+            return;
+          }
+
+          _this5.fetchContent(" ");
+        }
+
         if (_this5.lastValue === value) {
           return;
         }
@@ -261,10 +272,11 @@ function () {
       this.input.addEventListener("compositionend", function () {
         _this5.compositionFlag = true;
       });
-      this.result.addEventListener("click", function (e) {
+
+      var clickOnLi = function clickOnLi(e) {
         var elem = e.target;
 
-        if (/item-btn/.test(elem.className)) {
+        if (/item-btn|li-btn/.test(elem.className)) {
           var value = elem.dataset.title;
 
           _this5.fetch(value).then(function () {
@@ -274,7 +286,7 @@ function () {
           return;
         }
 
-        if (/item-btn/.text(elem.parentElement.className)) {
+        if (/item-btn|li-btn/.test(elem.parentElement.className)) {
           var _value = elem.parentElement.dataset.title;
 
           _this5.fetch(_value).then(function () {
@@ -282,9 +294,32 @@ function () {
           });
 
           return;
-        } // while (elem !== e.currentTarget) {}
-        // window.location.href = e.target.dataset["href"]
+        }
 
+        while (elem !== e.currentTarget) {
+          if (elem.tagName.toLowerCase() === "li") {
+            location.href = elem.dataset.url;
+            return;
+          }
+
+          elem = elem.parentElement;
+        }
+      };
+
+      this.result.addEventListener("click", clickOnLi);
+      this.hotList.addEventListener("click", clickOnLi);
+      this.visitBtn.addEventListener("click", function () {
+        var hotListDisplay = getComputedStyle(_this5.hotList).getPropertyValue("display");
+        var searchResultDisplay = getComputedStyle(_this5.result).getPropertyValue("display");
+
+        if (hotListDisplay === "block") {
+          location.href = _this5.hotList.firstElementChild.dataset.url;
+          return;
+        }
+
+        if (searchResultDisplay === "block") {
+          location.href = _this5.result.firstElementChild.dataset.url;
+        }
       });
     }
   }, {
@@ -344,28 +379,4 @@ function () {
 }();
 
 new Search().init();
-/*
-                         `
-             <li class="result-item">
-                 <i class="result-icon"></i>
-                 <div class="title">
-                     <span class="main-title">大阪的全部旅游产品</span>
-                     <span class="sub-title">大阪</span>
-                 </div>
-                 <em class="item-btn"></em>
-             </li>
-             <li class="result-item">
-                 <i class="result-icon"></i>
-                 <p class="title">
-                     <span class="main-title">北京东直门雅辰悦居酒店</span>
-                     <span class="sub-title">  北京 东直门/工体/雍和宫 </span>
-                 </p>
-                 <p class="price">
-                     <span class="detailed">实时计价</span>
-                     <span class="level">高档型</span>
-                 </p>
-                 <em class="item-btn"></em>
-             </li>
-                     `
-     */
 //# sourceMappingURL=index.js.map
