@@ -3,10 +3,13 @@
 */
 #carousel {
     overflow: hidden;
+    //阻止浏览器默认的滚动和手势
+    touch-action: none;
     .inner {
         width: 800%;
         display: flex;
-        transition:transform .2s linear;
+        transition:transform .2s;
+        transition-timing-function: linear;
         transform: translateX(-10%);
         @supports (transform-style: preserve-3d) {
             transform: translate3d(-12.5%, 0, 0);

@@ -64,6 +64,7 @@
 .country-ul {
     height: 380px;
     overflow: scroll;
+    touch-action: none;
     margin: 0;
     padding: 0;
 

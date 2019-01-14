@@ -50,6 +50,9 @@ class Carousel {
             this.start = e.changedTouches[0].screenX
             this.picWidth = this.outer.offsetWidth
             this.removeTransition()
+           this.inner.style.transitionDuration = "0s"
+           this.inner.offsetHeight
+            
         })
         this.inner.addEventListener("touchmove", (e) => {
             if (this.canBeMoved) {
@@ -69,6 +72,8 @@ class Carousel {
 
             this.addTransition()
             this.translate("current")
+           this.inner.style.transitionDuration = "0.2s"
+           this.inner.offsetHeight
             this.cycle()
 
         })
@@ -167,6 +172,12 @@ class Search {
                 this.inputExist.style.display = "none"
             }
         }
+        this.input.addEventListener("compositionstart", () => {
+            this.compositionFlag = false
+        })
+        this.input.addEventListener("compositionend", () => {
+            this.compositionFlag = true
+        })
         this.input.addEventListener("keyup", (e) => {
             let value = e.target.value.trim()
             if (value.length === 0 && /\s/.test(e.target.value)) {
@@ -189,12 +200,6 @@ class Search {
             if ((!this.compositionFlag) && (e.ctrlKey && e.keyCode == 86)) {
                 this.fetchContent(value)
             }
-        })
-        this.input.addEventListener("compositionstart", () => {
-            this.compositionFlag = false
-        })
-        this.input.addEventListener("compositionend", () => {
-            this.compositionFlag = true
         })
         let clickOnLi = e => {
             let elem = e.target
@@ -227,8 +232,9 @@ class Search {
         this.hotList.addEventListener("click", clickOnLi)
 
         this.visitBtn.addEventListener("click",()=>{
-            let hotListDisplay = getComputedStyle(this.hotList).getPropertyValue("display")
-            let searchResultDisplay = getComputedStyle(this.result).getPropertyValue("display")
+            let hotListDisplay = getComputedStyle(this.noInput).getPropertyValue("display")
+            let searchResultDisplay = getComputedStyle(this.inputExist).getPropertyValue("display")
+
             if(hotListDisplay === "block"){
                 location.href  = this.hotList.firstElementChild.dataset.url
                 return
@@ -237,7 +243,6 @@ class Search {
                 location.href = this.result.firstElementChild.dataset.url
             }
         })
-
     }
     fetch(value) {
         console.log('fetch', value);

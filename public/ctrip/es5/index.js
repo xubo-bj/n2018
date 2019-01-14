@@ -84,6 +84,9 @@ function () {
         _this2.picWidth = _this2.outer.offsetWidth;
 
         _this2.removeTransition();
+
+        _this2.inner.style.transitionDuration = "0s";
+        _this2.inner.offsetHeight;
       });
       this.inner.addEventListener("touchmove", function (e) {
         if (_this2.canBeMoved) {
@@ -106,6 +109,9 @@ function () {
         _this2.addTransition();
 
         _this2.translate("current");
+
+        _this2.inner.style.transitionDuration = "0.2s";
+        _this2.inner.offsetHeight;
 
         _this2.cycle();
       });
@@ -237,6 +243,12 @@ function () {
         }
       };
 
+      this.input.addEventListener("compositionstart", function () {
+        _this5.compositionFlag = false;
+      });
+      this.input.addEventListener("compositionend", function () {
+        _this5.compositionFlag = true;
+      });
       this.input.addEventListener("keyup", function (e) {
         var value = e.target.value.trim();
 
@@ -265,12 +277,6 @@ function () {
         if (!_this5.compositionFlag && e.ctrlKey && e.keyCode == 86) {
           _this5.fetchContent(value);
         }
-      });
-      this.input.addEventListener("compositionstart", function () {
-        _this5.compositionFlag = false;
-      });
-      this.input.addEventListener("compositionend", function () {
-        _this5.compositionFlag = true;
       });
 
       var clickOnLi = function clickOnLi(e) {
@@ -309,8 +315,8 @@ function () {
       this.result.addEventListener("click", clickOnLi);
       this.hotList.addEventListener("click", clickOnLi);
       this.visitBtn.addEventListener("click", function () {
-        var hotListDisplay = getComputedStyle(_this5.hotList).getPropertyValue("display");
-        var searchResultDisplay = getComputedStyle(_this5.result).getPropertyValue("display");
+        var hotListDisplay = getComputedStyle(_this5.noInput).getPropertyValue("display");
+        var searchResultDisplay = getComputedStyle(_this5.inputExist).getPropertyValue("display");
 
         if (hotListDisplay === "block") {
           location.href = _this5.hotList.firstElementChild.dataset.url;

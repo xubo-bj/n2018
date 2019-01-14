@@ -5,46 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <style>
+        .d1{
+            width: 300px;
+            height: 200px;
+            border: 1px solid #000;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
-    <input type="text">
+    <div class="d1">
+        <h1>1</h1>
+        <h1>2</h1>
+        <h1>3</h1>
+        <h1>4</h1>
+        <h1>5</h1>
+        <h1>6</h1>
+        <h1>7</h1>
+    </div>
     <script>
-        $('input').on({
-    keyup : function(e){        
-        console.log('up');
-        // console.log(e.target.value);
+        var d1 = document.querySelector(".d1")
+        console.log(d1.scrollHeight);
+        d1.scrollTop  ="50px"
+        console.log(d1.scrollTop);
         
         
-        // var flag = e.target.isNeedPrevent;
-        // if(flag)  return;     
-        // response(e.target.value) 
-    },
-    keydown:function(){
-        console.log('keydown');
-    },
-    input:function(){
-        console.log('input');
-        
-    },
-    compositionstart : function(e){
-        // console.log('start');
-        
-        e.target.isNeedPrevent = true ;
-    },
-    compositionend : function(e){
-        // console.log('end');
-        
-        e.target.isNeedPrevent = false;  
-        
-    }
-})
-function response(p){
-        // $('div').append('<p>事 件触发</p>')
-        console.log(p);
-        
-
-} 
-        </script>
+    </script>
 </body>
 </html>
