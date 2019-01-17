@@ -38,6 +38,13 @@ function () {
     this.popBox = this.$("#choose-country");
     this.mask = this.$("#mask");
     this.closeBtn = this.$("#choose-country .close-btn");
+    this.ul = this.$("#choose-country .country-ul");
+    this.ulHeight = null;
+    this.ulContainer = this.$("#choose-country .country-container");
+    this.ulContainerHeight = null;
+    this.canBeScrolled = false;
+    this.startPosY = null;
+    this.transformY = 0;
   }
 
   _createClass(chooseCountry, [{
@@ -59,6 +66,71 @@ function () {
       this.mask.onclick = function () {
         _this.hide();
       };
+
+      this.ulContainer.addEventListener("touchstart", function (e) {
+        _this.startPosY = e.changedTouches[0].screenY;
+        _this.ulHeight = _this.ul.offsetHeight;
+        _this.ulContainerHeight = _this.ulContainer.offsetHeight;
+        _this.canBeScrolled = true;
+      });
+      document.body.addEventListener("touchend", function (e) {
+        if (_this.canBeScrolled) {
+          var d = e.changedTouches[0].screenY - _this.startPosY;
+
+          if (d + _this.transformY >= 0) {
+            _this.translateY(_this.ul, 0);
+
+            _this.transformY = 0;
+          } else if (-1 * (d + _this.transformY) >= _this.ulHeight) {
+            var t = _this.ulContainerHeight - _this.ulHeight;
+
+            _this.translateY(_this.ul, t + "px");
+
+            _this.transform = t;
+          } else {
+            _this.translateY(_this.ul, d + _this.transformY + "px");
+
+            _this.transformY += d;
+          }
+
+          _this.canBeScrolled = false;
+        }
+      });
+    }
+  }, {
+    key: "moveEventFunc",
+    value: function moveEventFunc(e) {
+      console.log('scroll', this.canBeScrolled);
+
+      if (this.canBeScrolled) {
+        console.log('body move');
+        var d = e.changedTouches[0].screenY - this.startPosY;
+        this.translateY(this.ul, d + this.transformY + "px");
+      }
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.translateY(this.popBox, 0);
+      this.mask.style.display = "block";
+      this.mask.style.opacity = "0.5";
+      document.body.addEventListener("touchmove", this.moveEventFunc.bind(this));
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.translateY(this.popBox, "100%");
+      this.mask.style.opacity = "0";
+      document.body.removeEventListener("touchmove", this.moveEventFunc.bind(this));
+    }
+  }, {
+    key: "translateY",
+    value: function translateY(obj, distance) {
+      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+        obj.style.transform = "translate3d(0,".concat(distance, ",0)");
+      } else {
+        obj.style.transform = "translateY(".concat(distance, ")");
+      }
     }
   }, {
     key: "$",
@@ -79,28 +151,6 @@ function () {
       });
       var ul = document.querySelector("#choose-country .country-ul");
       ul.innerHTML = htmlStr;
-    }
-  }, {
-    key: "show",
-    value: function show() {
-      this.translateＹ(0);
-      this.mask.style.display = "block";
-      this.mask.style.opacity = "0.5";
-    }
-  }, {
-    key: "hide",
-    value: function hide() {
-      this.translateＹ("100%");
-      this.mask.style.opacity = "0";
-    }
-  }, {
-    key: "translate\uFF39",
-    value: function translate(distance) {
-      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-        this.popBox.style.transform = "translate3d(0,".concat(distance, ",0)");
-      } else {
-        this.popBox.style.transform = "translateY(".concat(distance, ")");
-      }
     }
   }, {
     key: "addMaskTransition",

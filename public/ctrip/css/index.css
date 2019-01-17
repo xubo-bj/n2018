@@ -1069,10 +1069,12 @@ nav1
       #choose-country .heading .close-btn::after {
         transform: rotate(-45deg); }
 
-.country-ul {
+.country-container {
   height: 380px;
-  overflow: scroll;
-  touch-action: none;
+  overflow: hidden;
+  touch-action: none; }
+
+.country-ul {
   margin: 0;
   padding: 0; }
   .country-ul .country-li {

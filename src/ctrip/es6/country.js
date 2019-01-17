@@ -28,8 +28,12 @@ class chooseCountry {
         this.mask = this.$("#mask")
         this.closeBtn = this.$("#choose-country .close-btn")
         this.ul = this.$("#choose-country .country-ul")
+        this.ulHeight= null
+        this.ulContainer = this.$("#choose-country .country-container")
+        this.ulContainerHeight = null
         this.canBeScrolled= false
         this.startPosY = null
+        this.transformY = 0
     }
     init() {
         this.createList()
@@ -43,39 +47,55 @@ class chooseCountry {
         this.mask.onclick =()=>{
             this.hide()
         }
-        this.ul.addEventListener("touchstart",e=>{
+        this.ulContainer.addEventListener("touchstart",e=>{
             this.startPosY = e.changedTouches[0].screenY
+            this.ulHeight = this.ul.offsetHeight
+            this.ulContainerHeight = this.ulContainer.offsetHeight
             this.canBeScrolled = true
         })
         document.body.addEventListener("touchend",e=>{
             if(this.canBeScrolled){
-                
+                let d = e.changedTouches[0].screenY - this.startPosY
+                if(d + this.transformY >= 0){
+                    this.translateY(this.ul,0)
+                    this.transformY = 0
+                } else if (-1 * (d + this.transformY) >= this.ulHeight) {
+                    let t = this.ulContainerHeight -this.ulHeight
+                    this.translateY(this.ul,t+"px")
+                    this.transform = t
+                }else{
+                    this.translateY(this.ul,d + this.transformY + "px")
+                    this.transformY += d
+                }
+                this.canBeScrolled = false
             }
         })
     }
     moveEventFunc(e){
-            console.log('body move');
+        console.log('scroll',this.canBeScrolled);
+        
             if(this.canBeScrolled){
+            console.log('body move');
                 let d  = e.changedTouches[0].screenY - this.startPosY
-                this.translateＹ(d)
+                this.translateY(this.ul,d + this.transformY +"px")
             }
     }
     show() {
-        this.translateＹ(0)
+        this.translateY(this.popBox,0)
         this.mask.style.display = "block"
         this.mask.style.opacity = "0.5"
-        document.body.addEventListener("touchmove",this.moveEventFunc)
+        document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
     }
     hide() {
-        this.translateＹ("100%")
+        this.translateY(this.popBox,"100%")
         this.mask.style.opacity = "0"
-        document.body.removeEventListener("touchmove",this.moveEventFunc)
+        document.body.removeEventListener("touchmove",this.moveEventFunc.bind(this))
     }
-    translateＹ(distance){
+    translateY(obj,distance){
             if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-                this.ul.style.transform = `translate3d(${distance},0,0)`
+                obj.style.transform = `translate3d(0,${distance},0)`
             } else {
-                this.ul.style.transform = `translateX(${distance})`
+                obj.style.transform = `translateY(${distance})`
             }
     }
     $(s) {
@@ -94,13 +114,6 @@ class chooseCountry {
         });
         let ul = document.querySelector("#choose-country .country-ul")
         ul.innerHTML = htmlStr
-    }
-    translateＹ(distance) {
-        if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-            this.popBox.style.transform = `translate3d(0,${distance},0)`
-        } else {
-            this.popBox.style.transform = `translateY(${distance})`
-        }
     }
     addMaskTransition(){
         this.mask.addEventListener("transitionend",()=>{

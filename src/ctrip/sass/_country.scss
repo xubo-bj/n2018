@@ -61,10 +61,12 @@
     }
 }
 
-.country-ul {
+.country-container{
     height: 380px;
-    overflow: scroll;
+    overflow: hidden;
     touch-action: none;
+}
+.country-ul {
     margin: 0;
     padding: 0;
 
