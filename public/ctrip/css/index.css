@@ -458,7 +458,7 @@ nav1
     height: 100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
+    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
     #nav2 .section .c1 {
       grid-area: c1; }
     #nav2 .section .c2 {
@@ -614,7 +614,7 @@ nav1
           font-size: 15px; }
   #sales .right {
     display: grid;
-    grid-template-areas: "g1 g1" "g2 g3";
+    grid-template-areas: "g1 g1" "g2 g3";
     grid-gap: 2px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 88px auto; }
@@ -1025,11 +1025,13 @@ nav1
 /*
 ** #choose-country
 */
+#mask {
+  touch-action: none; }
+
 #choose-country {
   background-color: #fff;
   height: 430px;
   transform: translateY(100%);
-  overflow: hidden;
   position: fixed;
   z-index: 100;
   bottom: 0;
@@ -1072,7 +1074,8 @@ nav1
 .country-container {
   height: 380px;
   overflow: hidden;
-  touch-action: none; }
+  touch-action: none;
+  overscroll-behavior: none; }
 
 .country-ul {
   margin: 0;

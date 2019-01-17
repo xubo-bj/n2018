@@ -36,6 +36,7 @@ class chooseCountry {
         this.transformY = 0
     }
     init() {
+
         this.createList()
         this.addMaskTransition()
         this.showBtn.onclick = () => {
@@ -49,6 +50,7 @@ class chooseCountry {
         }
         this.ulContainer.addEventListener("touchstart",e=>{
             this.startPosY = e.changedTouches[0].screenY
+            this.ul.style.transitionDuration = "0s"
             this.ulHeight = this.ul.offsetHeight
             this.ulContainerHeight = this.ulContainer.offsetHeight
             this.canBeScrolled = true
@@ -57,9 +59,13 @@ class chooseCountry {
             if(this.canBeScrolled){
                 let d = e.changedTouches[0].screenY - this.startPosY
                 if(d + this.transformY >= 0){
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
                     this.translateY(this.ul,0)
                     this.transformY = 0
-                } else if (-1 * (d + this.transformY) >= this.ulHeight) {
+                } else if (-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight) {
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
                     let t = this.ulContainerHeight -this.ulHeight
                     this.translateY(this.ul,t+"px")
                     this.transform = t
@@ -70,14 +76,21 @@ class chooseCountry {
                 this.canBeScrolled = false
             }
         })
+
+        this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
+        this.mask.addEventListener("wheel",e=>{e.preventDefault()})
     }
     moveEventFunc(e){
-        console.log('scroll',this.canBeScrolled);
-        
             if(this.canBeScrolled){
-            console.log('body move');
                 let d  = e.changedTouches[0].screenY - this.startPosY
+                if (d + this.transformY >= 0){
+                    this.translateY(this.ul, (d + this.transformY) / 3 + "px")
+                }else if(-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight){
+                    let t  = this.ulContainerHeight - this.ulHeight
+                    this.translateY(this.ul, t + (d + this.transformY - t) /3  + "px")
+                }else{
                 this.translateY(this.ul,d + this.transformY +"px")
+                }
             }
     }
     show() {

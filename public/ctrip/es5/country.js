@@ -69,6 +69,7 @@ function () {
 
       this.ulContainer.addEventListener("touchstart", function (e) {
         _this.startPosY = e.changedTouches[0].screenY;
+        _this.ul.style.transitionDuration = "0s";
         _this.ulHeight = _this.ul.offsetHeight;
         _this.ulContainerHeight = _this.ulContainer.offsetHeight;
         _this.canBeScrolled = true;
@@ -78,10 +79,15 @@ function () {
           var d = e.changedTouches[0].screenY - _this.startPosY;
 
           if (d + _this.transformY >= 0) {
+            _this.ul.style.transitionDuration = "0.2s";
+            _this.ul.offsetHeight;
+
             _this.translateY(_this.ul, 0);
 
             _this.transformY = 0;
-          } else if (-1 * (d + _this.transformY) >= _this.ulHeight) {
+          } else if (-1 * (d + _this.transformY) >= _this.ulHeight - _this.ulContainerHeight) {
+            _this.ul.style.transitionDuration = "0.2s";
+            _this.ul.offsetHeight;
             var t = _this.ulContainerHeight - _this.ulHeight;
 
             _this.translateY(_this.ul, t + "px");
@@ -96,16 +102,27 @@ function () {
           _this.canBeScrolled = false;
         }
       });
+      this.popBox.addEventListener("wheel", function (e) {
+        e.preventDefault();
+      });
+      this.mask.addEventListener("wheel", function (e) {
+        e.preventDefault();
+      });
     }
   }, {
     key: "moveEventFunc",
     value: function moveEventFunc(e) {
-      console.log('scroll', this.canBeScrolled);
-
       if (this.canBeScrolled) {
-        console.log('body move');
         var d = e.changedTouches[0].screenY - this.startPosY;
-        this.translateY(this.ul, d + this.transformY + "px");
+
+        if (d + this.transformY >= 0) {
+          this.translateY(this.ul, (d + this.transformY) / 3 + "px");
+        } else if (-1 * (d + this.transformY) >= this.ulHeight - this.ulContainerHeight) {
+          var t = this.ulContainerHeight - this.ulHeight;
+          this.translateY(this.ul, t + (d + this.transformY - t) / 3 + "px");
+        } else {
+          this.translateY(this.ul, d + this.transformY + "px");
+        }
       }
     }
   }, {
