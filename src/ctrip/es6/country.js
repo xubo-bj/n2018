@@ -27,6 +27,9 @@ class chooseCountry {
         this.popBox = this.$("#choose-country")
         this.mask = this.$("#mask")
         this.closeBtn = this.$("#choose-country .close-btn")
+        this.ul = this.$("#choose-country .country-ul")
+        this.canBeScrolled= false
+        this.startPosY = null
     }
     init() {
         this.createList()
@@ -40,6 +43,40 @@ class chooseCountry {
         this.mask.onclick =()=>{
             this.hide()
         }
+        this.ul.addEventListener("touchstart",e=>{
+            this.startPosY = e.changedTouches[0].screenY
+            this.canBeScrolled = true
+        })
+        document.body.addEventListener("touchend",e=>{
+            if(this.canBeScrolled){
+                
+            }
+        })
+    }
+    moveEventFunc(e){
+            console.log('body move');
+            if(this.canBeScrolled){
+                let d  = e.changedTouches[0].screenY - this.startPosY
+                this.translateＹ(d)
+            }
+    }
+    show() {
+        this.translateＹ(0)
+        this.mask.style.display = "block"
+        this.mask.style.opacity = "0.5"
+        document.body.addEventListener("touchmove",this.moveEventFunc)
+    }
+    hide() {
+        this.translateＹ("100%")
+        this.mask.style.opacity = "0"
+        document.body.removeEventListener("touchmove",this.moveEventFunc)
+    }
+    translateＹ(distance){
+            if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+                this.ul.style.transform = `translate3d(${distance},0,0)`
+            } else {
+                this.ul.style.transform = `translateX(${distance})`
+            }
     }
     $(s) {
         return document.querySelector(s)
@@ -57,15 +94,6 @@ class chooseCountry {
         });
         let ul = document.querySelector("#choose-country .country-ul")
         ul.innerHTML = htmlStr
-    }
-    show() {
-        this.translateＹ(0)
-        this.mask.style.display = "block"
-        this.mask.style.opacity = "0.5"
-    }
-    hide() {
-        this.translateＹ("100%")
-        this.mask.style.opacity = "0"
     }
     translateＹ(distance) {
         if (CSS && CSS.supports("transform-style", "preserve-3d")) {
