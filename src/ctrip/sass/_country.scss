@@ -27,7 +27,7 @@
             display: inline-block;
             width: 11px;
             height: 11px;
-            background: url(/ctrip/images/country.png) 0 -280px no-repeat;
+            background: url(/ctrip/images/country.png) no-repeat;
             background-size: 30px auto;
             margin-right: 7px;
             vertical-align: middle;
@@ -91,7 +91,7 @@
         background-size: 30px auto;
     }
 
-    @for $i from 0 through 13 {
+    @for $i from 1 through 20{
         .country-icon-#{$i} {
             background-position: 0 -20px * $i;
         }

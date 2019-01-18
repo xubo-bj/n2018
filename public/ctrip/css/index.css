@@ -458,7 +458,7 @@ nav1
     height: 100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
+    grid-template-areas: "c1 c2 c3" "c1 c4 c5"; }
     #nav2 .section .c1 {
       grid-area: c1; }
     #nav2 .section .c2 {
@@ -614,7 +614,7 @@ nav1
           font-size: 15px; }
   #sales .right {
     display: grid;
-    grid-template-areas: "g1 g1" "g2 g3";
+    grid-template-areas: "g1 g1" "g2 g3";
     grid-gap: 2px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 88px auto; }
@@ -764,7 +764,7 @@ nav1
       height: 11px;
       margin-left: 6px;
       margin-right: 3px;
-      background: url(/ctrip/images/country.png) 0 -280px no-repeat;
+      background: url(/ctrip/images/country.png) no-repeat;
       background-size: 30px auto;
       margin-right: 7px;
       vertical-align: middle; }
@@ -1047,7 +1047,7 @@ nav1
       display: inline-block;
       width: 11px;
       height: 11px;
-      background: url(/ctrip/images/country.png) 0 -280px no-repeat;
+      background: url(/ctrip/images/country.png) no-repeat;
       background-size: 30px auto;
       margin-right: 7px;
       vertical-align: middle; }
@@ -1094,8 +1094,6 @@ nav1
     vertical-align: middle;
     background-image: url(/ctrip/images/country.png);
     background-size: 30px auto; }
-  .country-ul .country-icon-0 {
-    background-position: 0 0px; }
   .country-ul .country-icon-1 {
     background-position: 0 -20px; }
   .country-ul .country-icon-2 {
@@ -1122,6 +1120,20 @@ nav1
     background-position: 0 -240px; }
   .country-ul .country-icon-13 {
     background-position: 0 -260px; }
+  .country-ul .country-icon-14 {
+    background-position: 0 -280px; }
+  .country-ul .country-icon-15 {
+    background-position: 0 -300px; }
+  .country-ul .country-icon-16 {
+    background-position: 0 -320px; }
+  .country-ul .country-icon-17 {
+    background-position: 0 -340px; }
+  .country-ul .country-icon-18 {
+    background-position: 0 -360px; }
+  .country-ul .country-icon-19 {
+    background-position: 0 -380px; }
+  .country-ul .country-icon-20 {
+    background-position: 0 -400px; }
 
 #mask {
   display: none;

@@ -24,7 +24,13 @@ var arrayLike = {
   11: "English (Malaysia)",
   12: "ภาษาไทย",
   13: "Bahasa Indonesia",
-  length: 14
+  14: "Tiếng Viê",
+  15: "Nederlands",
+  16: "Polski",
+  17: "Ελληνικά",
+  18: "Türkçe",
+  19: "Português (Brasil)",
+  length: 20
 };
 
 var chooseCountry =
@@ -45,6 +51,7 @@ function () {
     this.canBeScrolled = false;
     this.startPosY = null;
     this.transformY = 0;
+    this.beginTime = null;
   }
 
   _createClass(chooseCountry, [{
@@ -68,6 +75,7 @@ function () {
       };
 
       this.ulContainer.addEventListener("touchstart", function (e) {
+        _this.beginTime = Date.now();
         _this.startPosY = e.changedTouches[0].screenY;
         _this.ul.style.transitionDuration = "0s";
         _this.ulHeight = _this.ul.offsetHeight;
@@ -94,6 +102,12 @@ function () {
 
             _this.transform = t;
           } else {
+            var touchDuration = Date.now() - _this.beginTime;
+
+            console.log('tD', touchDuration);
+            var velocity = d / touchDuration;
+            console.log('v', velocity);
+
             _this.translateY(_this.ul, d + _this.transformY + "px");
 
             _this.transformY += d;
@@ -113,6 +127,7 @@ function () {
     key: "moveEventFunc",
     value: function moveEventFunc(e) {
       if (this.canBeScrolled) {
+        console.log('inner');
         var d = e.changedTouches[0].screenY - this.startPosY;
 
         if (d + this.transformY >= 0) {
@@ -158,7 +173,7 @@ function () {
     key: "createList",
     value: function createList() {
       var template = function template(element, index) {
-        return "<li class=\"country-li\">\n                <i class=\"country-icon country-icon-".concat(index, "\"></i>\n                <span class=\"country-name\">").concat(element, "</span>\n            </li>");
+        return "<li class=\"country-li\">\n                <i class=\"country-icon country-icon-".concat(parseInt(index) + 1, "\"></i>\n                <span class=\"country-name\">").concat(element, "</span>\n            </li>");
       };
 
       var countries = [].slice.call(this.countries);

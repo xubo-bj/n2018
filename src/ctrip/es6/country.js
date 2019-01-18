@@ -17,7 +17,13 @@ const arrayLike = {
     11: "English (Malaysia)",
     12: "ภาษาไทย",
     13: "Bahasa Indonesia",
-    length: 14
+    14:"Tiếng Viê",
+    15:"Nederlands",
+    16:"Polski",
+    17:"Ελληνικά",
+    18:"Türkçe",
+    19:"Português (Brasil)",
+    length: 20
 }
 
 class chooseCountry {
@@ -34,6 +40,7 @@ class chooseCountry {
         this.canBeScrolled= false
         this.startPosY = null
         this.transformY = 0
+        this.beginTime = null
     }
     init() {
 
@@ -49,6 +56,7 @@ class chooseCountry {
             this.hide()
         }
         this.ulContainer.addEventListener("touchstart",e=>{
+            this.beginTime = Date.now()
             this.startPosY = e.changedTouches[0].screenY
             this.ul.style.transitionDuration = "0s"
             this.ulHeight = this.ul.offsetHeight
@@ -58,6 +66,7 @@ class chooseCountry {
         document.body.addEventListener("touchend",e=>{
             if(this.canBeScrolled){
                 let d = e.changedTouches[0].screenY - this.startPosY
+
                 if(d + this.transformY >= 0){
                     this.ul.style.transitionDuration = "0.2s"
                     this.ul.offsetHeight
@@ -70,6 +79,12 @@ class chooseCountry {
                     this.translateY(this.ul,t+"px")
                     this.transform = t
                 }else{
+
+let touchDuration = Date.now() - this.beginTime
+console.log('tD',touchDuration);
+let velocity = d/touchDuration
+console.log('v',velocity);
+
                     this.translateY(this.ul,d + this.transformY + "px")
                     this.transformY += d
                 }
@@ -82,6 +97,7 @@ class chooseCountry {
     }
     moveEventFunc(e){
             if(this.canBeScrolled){
+                console.log('inner');
                 let d  = e.changedTouches[0].screenY - this.startPosY
                 if (d + this.transformY >= 0){
                     this.translateY(this.ul, (d + this.transformY) / 3 + "px")
@@ -117,7 +133,7 @@ class chooseCountry {
     createList() {
         let template = (element, index) =>
             `<li class="country-li">
-                <i class="country-icon country-icon-${index}"></i>
+                <i class="country-icon country-icon-${parseInt(index)+1}"></i>
                 <span class="country-name">${element}</span>
             </li>`
         const countries = [].slice.call(this.countries)
