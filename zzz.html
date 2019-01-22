@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            touch-action: none;
+        }
+
+        div {
+            touch-action: none;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        let div = document.querySelector("div")
+        let htmlStr = ""
+        for (let i = 0; i < 20; i++) {
+            htmlStr += `<h1>${i}</h1>`
+        }
+        div.innerHTML = htmlStr
+        let sp = null
+        let st = null
+        let x = null
+        let timer = null
+        let flag = false
+        let sp2 = null
+        let v = null
+        let num = 0
+        let arr5 = new Array(5)
+        let start = null
+
+        function calc(sp2) {
+            return function (t) {
+                    num++
+                    let t2 = t - st <= 0 ? 10 : t - st
+                    let d2 = sp2 - sp
+                    v = d2 / t2
+                    sp = sp2
+                    st = t
+                    arr5.push(v)
+                    arr5.shift()
+                flag = false
+            }
+        }
+        div.addEventListener("touchstart", e => {
+            sp = e.changedTouches[0].screenY
+            start = sp
+            st = performance.now()
+        })
+        div.addEventListener("touchmove", e => {
+            if (flag) {
+                return
+            }
+            flag = true
+            sp2 = e.changedTouches[0].screenY
+            requestAnimationFrame(calc(sp2))
+            div.style.transform = `translateY(${sp2-start}px)`
+
+        })
+        div.addEventListener("touchend", e => {
+            let arr = []
+            for(let i =1;i<4;i++){
+                if(arr5[i] !== undefined){
+                    arr.push(arr5[i])
+                }
+            }
+            if(arr.length === 3){
+                let average = (arr[0]+arr[1]+arr[2])/3
+                average *= 1000
+                console.log('average',average);
+
+            }else{
+                console.log('<3');
+            }
+
+        })
+    </script>
+</body>
+
+</html>
