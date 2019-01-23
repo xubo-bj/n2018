@@ -24,7 +24,7 @@
     <script>
         let div = document.querySelector("div")
         let htmlStr = ""
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 1200; i++) {
             htmlStr += `<h1>${i}</h1>`
         }
         div.innerHTML = htmlStr
@@ -36,19 +36,21 @@
         let sp2 = null
         let v = null
         let num = 0
-        let arr5 = new Array(5)
+        let arr4 = new Array(5)
         let start = null
+        let translateY = null
 
         function calc(sp2) {
             return function (t) {
-                    num++
-                    let t2 = t - st <= 0 ? 10 : t - st
-                    let d2 = sp2 - sp
-                    v = d2 / t2
-                    sp = sp2
-                    st = t
-                    arr5.push(v)
-                    arr5.shift()
+                num++
+                let t2 = t - st <= 0 ? 10 : t - st
+                let d2 = sp2 - sp
+                v = d2 / t2
+                sp = sp2
+                st = t
+                arr4.push(v)
+                arr4.shift()
+                div.style.transform = `translateY(${sp2-start + translateY}px)`
                 flag = false
             }
         }
@@ -64,22 +66,52 @@
             flag = true
             sp2 = e.changedTouches[0].screenY
             requestAnimationFrame(calc(sp2))
-            div.style.transform = `translateY(${sp2-start}px)`
 
         })
         div.addEventListener("touchend", e => {
             let arr = []
-            for(let i =1;i<4;i++){
-                if(arr5[i] !== undefined){
-                    arr.push(arr5[i])
+            for (let i = 1; i < 3; i++) {
+                if (arr4[i] !== undefined) {
+                    arr.push(arr4[i])
                 }
             }
-            if(arr.length === 3){
-                let average = (arr[0]+arr[1]+arr[2])/3
-                average *= 1000
-                console.log('average',average);
+            if (arr.length === 2) {
+                let average = (arr[0] + arr[1]) / 2
+                V0 = average * 1000
+                console.log('V0', V0);
+                let a = 9,
+                    duration = Math.abs(V0 / a),
+                    d = (V0 / 2) * duration
 
-            }else{
+                translateY += sp2 - start
+                console.log('dur',duration);
+                console.log('dis',d);
+                
+                
+
+                let startTime = null,
+                d2 = null
+
+                let f1 = t => {
+                    let elapsed = (t - startTime) / duration
+                    if(elapsed >1){
+                    console.log('ok');
+
+                        translateY += d2
+                        return
+                    }
+                    
+                    d2= V0 * elapsed - a * elapsed * elapsed / 2
+                    div.style.transform = `translateY(${d2+ translateY}px)`
+                         timer = requestAnimationFrame(f1)
+                }
+
+                requestAnimationFrame(function (beginTime) {
+                    startTime = beginTime
+                    timer = requestAnimationFrame(f1)
+                })
+
+            } else {
                 console.log('<3');
             }
 
