@@ -33,33 +33,44 @@ var arrayLike = {
   length: 20
 };
 
-var chooseCountry =
+(function createCountryLists(arrayLike) {
+  var template = function template(element, index) {
+    return "<li class=\"country-li\">\n                <i class=\"country-icon country-icon-".concat(parseInt(index) + 1, "\"></i>\n                <span class=\"country-name\">").concat(element, "</span>\n            </li>");
+  };
+
+  var countries = [].slice.call(arrayLike);
+  var htmlStr = "";
+  countries.forEach(function (element, index) {
+    htmlStr += template(element, index);
+  });
+  var ul = document.querySelector("#choose-country .country-ul");
+  ul.innerHTML = htmlStr;
+})(arrayLike);
+
+new (
 /*#__PURE__*/
 function () {
-  function chooseCountry(countries) {
-    _classCallCheck(this, chooseCountry);
+  function ShowOrHideCountryLists() {
+    _classCallCheck(this, ShowOrHideCountryLists);
 
-    this.countries = countries;
     this.showBtn = this.$("#footer .pop-country");
     this.popBox = this.$("#choose-country");
     this.mask = this.$("#mask");
     this.closeBtn = this.$("#choose-country .close-btn");
     this.ul = this.$("#choose-country .country-ul");
-    this.ulHeight = null;
-    this.ulContainer = this.$("#choose-country .country-container");
-    this.ulContainerHeight = null;
-    this.canBeScrolled = false;
-    this.startPosY = null;
-    this.transformY = 0;
-    this.beginTime = null;
+    this.init();
   }
 
-  _createClass(chooseCountry, [{
+  _createClass(ShowOrHideCountryLists, [{
+    key: "$",
+    value: function $(s) {
+      return document.querySelector(s);
+    }
+  }, {
     key: "init",
     value: function init() {
       var _this = this;
 
-      this.createList();
       this.addMaskTransition();
 
       this.showBtn.onclick = function () {
@@ -73,116 +84,19 @@ function () {
       this.mask.onclick = function () {
         _this.hide();
       };
-
-      this.ulContainer.addEventListener("touchstart", function (e) {
-        _this.beginTime = Date.now();
-        _this.startPosY = e.changedTouches[0].screenY;
-        _this.ul.style.transitionDuration = "0s";
-        _this.ulHeight = _this.ul.offsetHeight;
-        _this.ulContainerHeight = _this.ulContainer.offsetHeight;
-        _this.canBeScrolled = true;
-      });
-      document.body.addEventListener("touchend", function (e) {
-        if (_this.canBeScrolled) {
-          var d = e.changedTouches[0].screenY - _this.startPosY;
-
-          if (d + _this.transformY >= 0) {
-            _this.ul.style.transitionDuration = "0.2s";
-            _this.ul.offsetHeight;
-
-            _this.translateY(_this.ul, 0);
-
-            _this.transformY = 0;
-          } else if (-1 * (d + _this.transformY) >= _this.ulHeight - _this.ulContainerHeight) {
-            _this.ul.style.transitionDuration = "0.2s";
-            _this.ul.offsetHeight;
-            var t = _this.ulContainerHeight - _this.ulHeight;
-
-            _this.translateY(_this.ul, t + "px");
-
-            _this.transform = t;
-          } else {
-            var touchDuration = Date.now() - _this.beginTime;
-
-            console.log('tD', touchDuration);
-            var velocity = d / touchDuration;
-            console.log('v', velocity);
-
-            _this.translateY(_this.ul, d + _this.transformY + "px");
-
-            _this.transformY += d;
-          }
-
-          _this.canBeScrolled = false;
-        }
-      });
-      this.popBox.addEventListener("wheel", function (e) {
-        e.preventDefault();
-      });
-      this.mask.addEventListener("wheel", function (e) {
-        e.preventDefault();
-      });
-    }
-  }, {
-    key: "moveEventFunc",
-    value: function moveEventFunc(e) {
-      if (this.canBeScrolled) {
-        console.log('inner');
-        var d = e.changedTouches[0].screenY - this.startPosY;
-
-        if (d + this.transformY >= 0) {
-          this.translateY(this.ul, (d + this.transformY) / 3 + "px");
-        } else if (-1 * (d + this.transformY) >= this.ulHeight - this.ulContainerHeight) {
-          var t = this.ulContainerHeight - this.ulHeight;
-          this.translateY(this.ul, t + (d + this.transformY - t) / 3 + "px");
-        } else {
-          this.translateY(this.ul, d + this.transformY + "px");
-        }
-      }
     }
   }, {
     key: "show",
     value: function show() {
       this.translateY(this.popBox, 0);
       this.mask.style.display = "block";
-      this.mask.style.opacity = "0.5";
-      document.body.addEventListener("touchmove", this.moveEventFunc.bind(this));
+      this.mask.style.opacity = "0.5"; // document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
     }
   }, {
     key: "hide",
     value: function hide() {
       this.translateY(this.popBox, "100%");
-      this.mask.style.opacity = "0";
-      document.body.removeEventListener("touchmove", this.moveEventFunc.bind(this));
-    }
-  }, {
-    key: "translateY",
-    value: function translateY(obj, distance) {
-      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-        obj.style.transform = "translate3d(0,".concat(distance, ",0)");
-      } else {
-        obj.style.transform = "translateY(".concat(distance, ")");
-      }
-    }
-  }, {
-    key: "$",
-    value: function $(s) {
-      return document.querySelector(s);
-    }
-  }, {
-    key: "createList",
-    value: function createList() {
-      var template = function template(element, index) {
-        return "<li class=\"country-li\">\n                <i class=\"country-icon country-icon-".concat(parseInt(index) + 1, "\"></i>\n                <span class=\"country-name\">").concat(element, "</span>\n            </li>");
-      };
-
-      var countries = [].slice.call(this.countries);
-      var htmlStr = "";
-      countries.forEach(function (element, index) {
-        htmlStr += template(element, index);
-      });
-      var ul = document.querySelector("#choose-country .country-ul");
-      ul.innerHTML = htmlStr;
+      this.mask.style.opacity = "0"; // document.body.removeEventListener("touchmove",this.moveEventFunc.bind(this))
     }
   }, {
     key: "addMaskTransition",
@@ -197,10 +111,310 @@ function () {
         }
       });
     }
+  }, {
+    key: "translateY",
+    value: function translateY(obj, distance) {
+      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+        obj.style.transform = "translate3d(0,".concat(distance, ",0)");
+      } else {
+        obj.style.transform = "translateY(".concat(distance, ")");
+      }
+    }
   }]);
 
-  return chooseCountry;
+  return ShowOrHideCountryLists;
+}())();
+
+var addScroll =
+/*#__PURE__*/
+function () {
+  function addScroll(el, options) {
+    _classCallCheck(this, addScroll);
+
+    this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
+    this.scroller = this.wrapper.children[0]; // cache style for better performance
+
+    this.scrollerStyle = this.scroller.style; // this.enableScroll = false
+
+    this.options = {
+      bounce: true,
+      bounceTime: 600,
+      bounceEasing: "cubic-bezier(0.1, 0.57, 0.1, 1)"
+    };
+    this.startY = 0;
+    this.y = 0;
+
+    if (options !== undefined) {
+      for (var i in options) {
+        this.options[i] = options[i];
+      }
+    }
+
+    this.translateY = this.useGpuOrNot();
+    this.refresh();
+    this.init();
+  }
+
+  _createClass(addScroll, [{
+    key: "resize",
+    value: function resize() {}
+  }, {
+    key: "refresh",
+    value: function refresh() {
+      // Force reflow
+      this.wrapper.getBoundingClientRect();
+      this.wrapperHeight = this.wrapper.clientHeight;
+      this.scrollerHeight = this.scroller.getBoundingClientRect().height;
+      this.maxScrollY = this.wrapperHeight - this.scrollerHeight;
+    }
+  }, {
+    key: "init",
+    value: function init() {
+      this.scroller.addEventListener("touchstart", this.start.bind(this));
+      this.scroller.addEventListener("touchmove", this.move.bind(this));
+      this.scroller.addEventListener("touchend", this.end.bind(this)); //绑定 resize事件
+    }
+  }, {
+    key: "start",
+    value: function start(e) {
+      // this.enableScroll = true
+      this.startY = this.y;
+      this.pointY = e.touches[0].clientY;
+      this.startTime = this.getTime();
+    }
+  }, {
+    key: "move",
+    value: function move(e) {
+      var deltaY = e.touches[0].clientY - this.pointY,
+          newY = this.y + deltaY,
+          timestamp = this.getTime();
+      this.pointY = e.touches[0].clientY;
+
+      if (newY > 0 || newY < this.maxScrollY) {
+        newY = this.options.bounce ? this.y + deltaY / 3 : newY > 0 ? 0 : this.maxScrollY;
+      }
+
+      this.translateY(newY);
+      this.y = newY;
+
+      if (timestamp - this.startTime > 300) {
+        this.startTime = timestamp;
+        this.startY = newY;
+      }
+    }
+  }, {
+    key: "end",
+    value: function end(e) {
+      var deltaY = e.changedTouches[0].clientY - this.pointY,
+          newY = this.y + deltaY,
+          duration = this.getTime() - this.startTime;
+      this.translateY(newY);
+      this.y = newY;
+
+      if (this.beyondBoundary(this.options.bounceTime)) {
+        return;
+      }
+    }
+  }, {
+    key: "beyondBoundary",
+    value: function beyondBoundary(time) {
+      var y = this.y;
+      time = time || 0;
+
+      if (this.y > 0) {
+        y = 0;
+      } else if (this.y < this.maxScrollY) {
+        y = this.maxScrollY;
+      }
+
+      if (y == this.y) {
+        return false;
+      } // ???
+
+
+      this.isInTransition = time > 0;
+      this.scrollerStyle.transitionTimingFunction = this.options.bounceEasing;
+      this.scrollerStyle.transitionDuration = time + "ms";
+      this.translateY(y);
+      this.y = y;
+      return true;
+    }
+  }, {
+    key: "useGpuOrNot",
+    value: function useGpuOrNot() {
+      var _this3 = this;
+
+      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+        console.log("func");
+        return function (distance) {
+          _this3.scroller.style.transform = "translate3d(0,".concat(distance, "px,0)");
+        };
+      } else {
+        return function (distance) {
+          _this3.scroller.style.transform = "translateY(".concat(distance, "px)");
+        };
+      }
+    }
+  }, {
+    key: "getTime",
+    value: function getTime() {
+      return Date.now ? Date.now() : new Date().getTime();
+    }
+  }, {
+    key: "momentum",
+    value: function momentum(current, start, time, lowerMargin, wrapperSize, deceleration) {
+      var distance = current - start,
+          speed = Math.abs(distance) / time,
+          destination,
+          duration;
+      deceleration = deceleration === undefined ? 0.0006 : deceleration;
+      destination = current + speed * speed / (2 * deceleration) * (distance < 0 ? -1 : 1);
+      duration = speed / deceleration;
+
+      if (destination < lowerMargin) {
+        destination = wrapperSize ? lowerMargin - wrapperSize / 2.5 * (speed / 8) : lowerMargin;
+        distance = Math.abs(destination - current);
+        duration = distance / speed;
+      } else if (destination > 0) {
+        destination = wrapperSize ? wrapperSize / 2.5 * (speed / 8) : 0;
+        distance = Math.abs(current) + destination;
+        duration = distance / speed;
+      }
+
+      return {
+        destination: Math.round(destination),
+        duration: duration
+      };
+    }
+  }]);
+
+  return addScroll;
 }();
 
-new chooseCountry(arrayLike).init();
+new addScroll(".country-container");
+/*
+class chooseCountry {
+    constructor(countries) {
+        this.countries = countries
+        this.showBtn = this.$("#footer .pop-country")
+        this.popBox = this.$("#choose-country")
+        this.mask = this.$("#mask")
+        this.closeBtn = this.$("#choose-country .close-btn")
+        this.ul = this.$("#choose-country .country-ul")
+        this.ulHeight= null
+        this.ulContainer = this.$("#choose-country .country-container")
+        this.ulContainerHeight = null
+        this.canBeScrolled= false
+        this.startPosY = null
+        this.transformY = 0
+        this.beginTime = null
+    }
+    init() {
+         this.createList()
+        this.addMaskTransition()
+        this.showBtn.onclick = () => {
+            this.show()
+        }
+        this.closeBtn.onclick=()=>{
+            this.hide()
+        }
+        this.mask.onclick =()=>{
+            this.hide()
+        }
+        this.ulContainer.addEventListener("touchstart",e=>{
+            this.beginTime = Date.now()
+            this.startPosY = e.changedTouches[0].screenY
+            this.ul.style.transitionDuration = "0s"
+            this.ulHeight = this.ul.offsetHeight
+            this.ulContainerHeight = this.ulContainer.offsetHeight
+            this.canBeScrolled = true
+        })
+        document.body.addEventListener("touchend",e=>{
+            if(this.canBeScrolled){
+                let d = e.changedTouches[0].screenY - this.startPosY
+                 if(d + this.transformY >= 0){
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
+                    this.translateY(this.ul,0)
+                    this.transformY = 0
+                } else if (-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight) {
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
+                    let t = this.ulContainerHeight -this.ulHeight
+                    this.translateY(this.ul,t+"px")
+                    this.transform = t
+                }else{
+ let touchDuration = Date.now() - this.beginTime
+console.log('tD',touchDuration);
+let velocity = d/touchDuration
+console.log('v',velocity);
+                     this.translateY(this.ul,d + this.transformY + "px")
+                    this.transformY += d
+                }
+                this.canBeScrolled = false
+            }
+        })
+         this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
+        this.mask.addEventListener("wheel",e=>{e.preventDefault()})
+    }
+    moveEventFunc(e){
+            if(this.canBeScrolled){
+                console.log('inner');
+                let d  = e.changedTouches[0].screenY - this.startPosY
+                if (d + this.transformY >= 0){
+                    this.translateY(this.ul, (d + this.transformY) / 3 + "px")
+                }else if(-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight){
+                    let t  = this.ulContainerHeight - this.ulHeight
+                    this.translateY(this.ul, t + (d + this.transformY - t) /3  + "px")
+                }else{
+                this.translateY(this.ul,d + this.transformY +"px")
+                }
+            }
+    }
+    show() {
+        this.translateY(this.popBox,0)
+        this.mask.style.display = "block"
+        this.mask.style.opacity = "0.5"
+        document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
+    }
+    hide() {
+        this.translateY(this.popBox,"100%")
+        this.mask.style.opacity = "0"
+        document.body.removeEventListener("touchmove",this.moveEventFunc.bind(this))
+    }
+    translateY(obj,distance){
+            if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+                obj.style.transform = `translate3d(0,${distance},0)`
+            } else {
+                obj.style.transform = `translateY(${distance})`
+            }
+    }
+    $(s) {
+        return document.querySelector(s)
+    }
+    createList() {
+        let template = (element, index) =>
+            `<li class="country-li">
+                <i class="country-icon country-icon-${parseInt(index)+1}"></i>
+                <span class="country-name">${element}</span>
+            </li>`
+        const countries = [].slice.call(this.countries)
+        let htmlStr = ""
+        countries.forEach((element, index) => {
+            htmlStr += template(element, index)
+        });
+        let ul = document.querySelector("#choose-country .country-ul")
+        ul.innerHTML = htmlStr
+    }
+    addMaskTransition(){
+        this.mask.addEventListener("transitionend",()=>{
+            let opacity = getComputedStyle(this.mask).getPropertyValue("opacity")
+            if(opacity == 0){
+                this.mask.style.display = "none"
+            }
+        })
+    }
+}
+(new chooseCountry(arrayLike)).init()
+*/
 //# sourceMappingURL=country.js.map
