@@ -139,7 +139,9 @@ function () {
     this.options = {
       bounce: true,
       bounceTime: 600,
-      bounceEasing: "cubic-bezier(0.1, 0.57, 0.1, 1)"
+      bounceEasing: "cubic-bezier(0.1, 0.57, 0.1, 1)",
+      quadraticEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      momentum: true
     };
     this.startY = 0;
     this.y = 0;
@@ -172,7 +174,14 @@ function () {
     value: function init() {
       this.scroller.addEventListener("touchstart", this.start.bind(this));
       this.scroller.addEventListener("touchmove", this.move.bind(this));
-      this.scroller.addEventListener("touchend", this.end.bind(this)); //绑定 resize事件
+      this.scroller.addEventListener("touchend", this.end.bind(this));
+      this.scroller.addEventListener("transitionend", function (e) {
+        this.scrollerStyle.transitionDuration = "0s";
+
+        if (!this.beyondBoundary(this.options.bounceTime)) {
+          this.isInTransition = false;
+        }
+      }.bind(this)); //绑定 resize事件
     }
   }, {
     key: "start",
@@ -181,6 +190,15 @@ function () {
       this.startY = this.y;
       this.pointY = e.touches[0].clientY;
       this.startTime = this.getTime();
+
+      if (this.isInTransition) {
+        this.scrollerStyle.transitionDuration = "0s";
+        this.isInTransition = false;
+        var newY = getComputedStyle(this.scroller).getPropertyValue("transform").split(')')[0].split(', ')[5];
+        newY = parseInt(newY);
+        this.translateY(newY);
+        this.y = newY;
+      }
     }
   }, {
     key: "move",
@@ -194,6 +212,7 @@ function () {
         newY = this.options.bounce ? this.y + deltaY / 3 : newY > 0 ? 0 : this.maxScrollY;
       }
 
+      newY = Math.round(newY);
       this.translateY(newY);
       this.y = newY;
 
@@ -208,10 +227,31 @@ function () {
       var deltaY = e.changedTouches[0].clientY - this.pointY,
           newY = this.y + deltaY,
           duration = this.getTime() - this.startTime;
-      this.translateY(newY);
-      this.y = newY;
 
       if (this.beyondBoundary(this.options.bounceTime)) {
+        return;
+      }
+
+      this.translateY(newY);
+      this.y = newY;
+      var time = 0;
+
+      if (this.options.momentum) {
+        var momentumY = this.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration);
+        newY = momentumY.destination;
+        time = momentumY.duration;
+        this.isInTransition = true;
+      }
+
+      if (newY != this.y) {
+        // change easing function when scroller goes out of the boundaries
+        if (newY > 0 || newY < this.maxScrollY) {
+          this.scrollerStyle.transitionTimingFunction = this.options.quadratic;
+        }
+
+        this.scrollerStyle.transitionDuration = time + "ms";
+        this.translateY(newY);
+        this.y = newY;
         return;
       }
     }
@@ -310,7 +350,8 @@ class chooseCountry {
         this.beginTime = null
     }
     init() {
-         this.createList()
+
+        this.createList()
         this.addMaskTransition()
         this.showBtn.onclick = () => {
             this.show()
@@ -332,7 +373,8 @@ class chooseCountry {
         document.body.addEventListener("touchend",e=>{
             if(this.canBeScrolled){
                 let d = e.changedTouches[0].screenY - this.startPosY
-                 if(d + this.transformY >= 0){
+
+                if(d + this.transformY >= 0){
                     this.ul.style.transitionDuration = "0.2s"
                     this.ul.offsetHeight
                     this.translateY(this.ul,0)
@@ -344,17 +386,20 @@ class chooseCountry {
                     this.translateY(this.ul,t+"px")
                     this.transform = t
                 }else{
- let touchDuration = Date.now() - this.beginTime
+
+let touchDuration = Date.now() - this.beginTime
 console.log('tD',touchDuration);
 let velocity = d/touchDuration
 console.log('v',velocity);
-                     this.translateY(this.ul,d + this.transformY + "px")
+
+                    this.translateY(this.ul,d + this.transformY + "px")
                     this.transformY += d
                 }
                 this.canBeScrolled = false
             }
         })
-         this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
+
+        this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
         this.mask.addEventListener("wheel",e=>{e.preventDefault()})
     }
     moveEventFunc(e){

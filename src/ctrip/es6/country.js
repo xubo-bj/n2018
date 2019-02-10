@@ -70,10 +70,10 @@ new class ShowOrHideCountryLists {
         }
     }
     show() {
-            this.translateY(this.popBox, 0)
-            this.mask.style.display = "block"
-            this.mask.style.opacity = "0.5"
-            // document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
+        this.translateY(this.popBox, 0)
+        this.mask.style.display = "block"
+        this.mask.style.opacity = "0.5"
+        // document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
     }
     hide() {
         this.translateY(this.popBox, "100%")
@@ -103,14 +103,16 @@ class addScroll {
     constructor(el, options) {
         this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
         this.scroller = this.wrapper.children[0];
-// cache style for better performance
-        this.scrollerStyle = this.scroller.style; 
+        // cache style for better performance
+        this.scrollerStyle = this.scroller.style;
 
         // this.enableScroll = false
-        this.options ={
-            bounce:true,
-            bounceTime:600,
-            bounceEasing:"cubic-bezier(0.1, 0.57, 0.1, 1)",
+        this.options = {
+            bounce: true,
+            bounceTime: 600,
+            bounceEasing: "cubic-bezier(0.1, 0.57, 0.1, 1)",
+            quadraticEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            momentum: true
         }
         this.startY = 0
         this.y = 0
@@ -123,29 +125,43 @@ class addScroll {
         this.refresh()
         this.init()
     }
-    resize(){}
-    refresh(){
+    resize() {}
+    refresh() {
         // Force reflow
         this.wrapper.getBoundingClientRect()
 
-		this.wrapperHeight	= this.wrapper.clientHeight;
-		this.scrollerHeight	= this.scroller.getBoundingClientRect().height
-		this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
+        this.wrapperHeight = this.wrapper.clientHeight;
+        this.scrollerHeight = this.scroller.getBoundingClientRect().height
+        this.maxScrollY = this.wrapperHeight - this.scrollerHeight;
 
     }
     init() {
         this.scroller.addEventListener("touchstart", this.start.bind(this))
         this.scroller.addEventListener("touchmove", this.move.bind(this))
         this.scroller.addEventListener("touchend", this.end.bind(this))
+        this.scroller.addEventListener("transitionend", function (e) {
+            this.scrollerStyle.transitionDuration = "0s"
+            if (!this.beyondBoundary(this.options.bounceTime)) {
+                this.isInTransition = false
+            }
+        }.bind(this))
 
         //绑定 resize事件
-        
+
     }
     start(e) {
         // this.enableScroll = true
         this.startY = this.y;
         this.pointY = e.touches[0].clientY;
         this.startTime = this.getTime()
+        if (this.isInTransition) {
+            this.scrollerStyle.transitionDuration = "0s"
+            this.isInTransition = false
+            let newY = getComputedStyle(this.scroller).getPropertyValue("transform").split(')')[0].split(', ')[5]
+            newY = parseInt(newY)
+            this.translateY(newY)
+            this.y = newY
+        }
     }
     move(e) {
         let deltaY = e.touches[0].clientY - this.pointY,
@@ -155,8 +171,10 @@ class addScroll {
         if (newY > 0 || newY < this.maxScrollY) {
             newY = this.options.bounce ? this.y + deltaY / 3 : newY > 0 ? 0 : this.maxScrollY;
         }
+        newY = Math.round(newY)
         this.translateY(newY)
         this.y = newY
+
         if (timestamp - this.startTime > 300) {
             this.startTime = timestamp;
             this.startY = newY
@@ -166,39 +184,58 @@ class addScroll {
         let deltaY = e.changedTouches[0].clientY - this.pointY,
             newY = this.y + deltaY,
             duration = this.getTime() - this.startTime
-        this.translateY(newY)
-        this.y = newY
-        if(this.beyondBoundary(this.options.bounceTime)){
+        if (this.beyondBoundary(this.options.bounceTime)) {
             return
         }
+        this.translateY(newY)
+        this.y = newY
+
+        let time = 0
+        if (this.options.momentum) {
+            let momentumY = this.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration)
+            newY = momentumY.destination
+            time = momentumY.duration
+            this.isInTransition = true;
+        }
+        if (newY != this.y) {
+            // change easing function when scroller goes out of the boundaries
+            if (newY > 0 || newY < this.maxScrollY) {
+                this.scrollerStyle.transitionTimingFunction = this.options.quadratic
+            }
+            this.scrollerStyle.transitionDuration = time + "ms"
+            this.translateY(newY)
+            this.y = newY
+            return;
+        }
+
     }
-    	beyondBoundary(time) {
-			let y = this.y;
+    beyondBoundary(time) {
+        let y = this.y;
 
-		time = time || 0;
+        time = time || 0;
 
 
-		if ( this.y > 0 ) {
-			y = 0;
-		} else if ( this.y < this.maxScrollY ) {
-			y = this.maxScrollY;
-		}
+        if (this.y > 0) {
+            y = 0;
+        } else if (this.y < this.maxScrollY) {
+            y = this.maxScrollY;
+        }
 
-		if ( y == this.y ) {
-			return false;
-		}
+        if (y == this.y) {
+            return false;
+        }
 
         // ???
-            this.isInTransition = time > 0;
+        this.isInTransition = time > 0;
 
-            this.scrollerStyle.transitionTimingFunction = this.options.bounceEasing
-            this.scrollerStyle.transitionDuration = time +"ms"
- 
+        this.scrollerStyle.transitionTimingFunction = this.options.bounceEasing
+        this.scrollerStyle.transitionDuration = time + "ms"
+
         this.translateY(y)
         this.y = y
 
-		return true;
-	}
+        return true;
+    }
     useGpuOrNot() {
         if (CSS && CSS.supports("transform-style", "preserve-3d")) {
             console.log("func")
@@ -241,137 +278,137 @@ class addScroll {
         };
     };
 
+}
+
+new addScroll(".country-container")
+
+/*
+class chooseCountry {
+    constructor(countries) {
+        this.countries = countries
+        this.showBtn = this.$("#footer .pop-country")
+        this.popBox = this.$("#choose-country")
+        this.mask = this.$("#mask")
+        this.closeBtn = this.$("#choose-country .close-btn")
+        this.ul = this.$("#choose-country .country-ul")
+        this.ulHeight= null
+        this.ulContainer = this.$("#choose-country .country-container")
+        this.ulContainerHeight = null
+        this.canBeScrolled= false
+        this.startPosY = null
+        this.transformY = 0
+        this.beginTime = null
     }
+    init() {
 
-    new addScroll(".country-container")
-
-    /*
-    class chooseCountry {
-        constructor(countries) {
-            this.countries = countries
-            this.showBtn = this.$("#footer .pop-country")
-            this.popBox = this.$("#choose-country")
-            this.mask = this.$("#mask")
-            this.closeBtn = this.$("#choose-country .close-btn")
-            this.ul = this.$("#choose-country .country-ul")
-            this.ulHeight= null
-            this.ulContainer = this.$("#choose-country .country-container")
-            this.ulContainerHeight = null
-            this.canBeScrolled= false
-            this.startPosY = null
-            this.transformY = 0
-            this.beginTime = null
+        this.createList()
+        this.addMaskTransition()
+        this.showBtn.onclick = () => {
+            this.show()
         }
-        init() {
+        this.closeBtn.onclick=()=>{
+            this.hide()
+        }
+        this.mask.onclick =()=>{
+            this.hide()
+        }
+        this.ulContainer.addEventListener("touchstart",e=>{
+            this.beginTime = Date.now()
+            this.startPosY = e.changedTouches[0].screenY
+            this.ul.style.transitionDuration = "0s"
+            this.ulHeight = this.ul.offsetHeight
+            this.ulContainerHeight = this.ulContainer.offsetHeight
+            this.canBeScrolled = true
+        })
+        document.body.addEventListener("touchend",e=>{
+            if(this.canBeScrolled){
+                let d = e.changedTouches[0].screenY - this.startPosY
 
-            this.createList()
-            this.addMaskTransition()
-            this.showBtn.onclick = () => {
-                this.show()
+                if(d + this.transformY >= 0){
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
+                    this.translateY(this.ul,0)
+                    this.transformY = 0
+                } else if (-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight) {
+                    this.ul.style.transitionDuration = "0.2s"
+                    this.ul.offsetHeight
+                    let t = this.ulContainerHeight -this.ulHeight
+                    this.translateY(this.ul,t+"px")
+                    this.transform = t
+                }else{
+
+let touchDuration = Date.now() - this.beginTime
+console.log('tD',touchDuration);
+let velocity = d/touchDuration
+console.log('v',velocity);
+
+                    this.translateY(this.ul,d + this.transformY + "px")
+                    this.transformY += d
+                }
+                this.canBeScrolled = false
             }
-            this.closeBtn.onclick=()=>{
-                this.hide()
-            }
-            this.mask.onclick =()=>{
-                this.hide()
-            }
-            this.ulContainer.addEventListener("touchstart",e=>{
-                this.beginTime = Date.now()
-                this.startPosY = e.changedTouches[0].screenY
-                this.ul.style.transitionDuration = "0s"
-                this.ulHeight = this.ul.offsetHeight
-                this.ulContainerHeight = this.ulContainer.offsetHeight
-                this.canBeScrolled = true
-            })
-            document.body.addEventListener("touchend",e=>{
-                if(this.canBeScrolled){
-                    let d = e.changedTouches[0].screenY - this.startPosY
+        })
 
-                    if(d + this.transformY >= 0){
-                        this.ul.style.transitionDuration = "0.2s"
-                        this.ul.offsetHeight
-                        this.translateY(this.ul,0)
-                        this.transformY = 0
-                    } else if (-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight) {
-                        this.ul.style.transitionDuration = "0.2s"
-                        this.ul.offsetHeight
-                        let t = this.ulContainerHeight -this.ulHeight
-                        this.translateY(this.ul,t+"px")
-                        this.transform = t
-                    }else{
-
-    let touchDuration = Date.now() - this.beginTime
-    console.log('tD',touchDuration);
-    let velocity = d/touchDuration
-    console.log('v',velocity);
-
-                        this.translateY(this.ul,d + this.transformY + "px")
-                        this.transformY += d
-                    }
-                    this.canBeScrolled = false
-                }
-            })
-
-            this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
-            this.mask.addEventListener("wheel",e=>{e.preventDefault()})
-        }
-        moveEventFunc(e){
-                if(this.canBeScrolled){
-                    console.log('inner');
-                    let d  = e.changedTouches[0].screenY - this.startPosY
-                    if (d + this.transformY >= 0){
-                        this.translateY(this.ul, (d + this.transformY) / 3 + "px")
-                    }else if(-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight){
-                        let t  = this.ulContainerHeight - this.ulHeight
-                        this.translateY(this.ul, t + (d + this.transformY - t) /3  + "px")
-                    }else{
-                    this.translateY(this.ul,d + this.transformY +"px")
-                    }
-                }
-        }
-        show() {
-            this.translateY(this.popBox,0)
-            this.mask.style.display = "block"
-            this.mask.style.opacity = "0.5"
-            document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
-        }
-        hide() {
-            this.translateY(this.popBox,"100%")
-            this.mask.style.opacity = "0"
-            document.body.removeEventListener("touchmove",this.moveEventFunc.bind(this))
-        }
-        translateY(obj,distance){
-                if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-                    obj.style.transform = `translate3d(0,${distance},0)`
-                } else {
-                    obj.style.transform = `translateY(${distance})`
-                }
-        }
-        $(s) {
-            return document.querySelector(s)
-        }
-        createList() {
-            let template = (element, index) =>
-                `<li class="country-li">
-                    <i class="country-icon country-icon-${parseInt(index)+1}"></i>
-                    <span class="country-name">${element}</span>
-                </li>`
-            const countries = [].slice.call(this.countries)
-            let htmlStr = ""
-            countries.forEach((element, index) => {
-                htmlStr += template(element, index)
-            });
-            let ul = document.querySelector("#choose-country .country-ul")
-            ul.innerHTML = htmlStr
-        }
-        addMaskTransition(){
-            this.mask.addEventListener("transitionend",()=>{
-                let opacity = getComputedStyle(this.mask).getPropertyValue("opacity")
-                if(opacity == 0){
-                    this.mask.style.display = "none"
-                }
-            })
-        }
+        this.popBox.addEventListener("wheel",e=>{e.preventDefault()})
+        this.mask.addEventListener("wheel",e=>{e.preventDefault()})
     }
-    (new chooseCountry(arrayLike)).init()
-    */
+    moveEventFunc(e){
+            if(this.canBeScrolled){
+                console.log('inner');
+                let d  = e.changedTouches[0].screenY - this.startPosY
+                if (d + this.transformY >= 0){
+                    this.translateY(this.ul, (d + this.transformY) / 3 + "px")
+                }else if(-1 * (d + this.transformY) >= this.ulHeight-this.ulContainerHeight){
+                    let t  = this.ulContainerHeight - this.ulHeight
+                    this.translateY(this.ul, t + (d + this.transformY - t) /3  + "px")
+                }else{
+                this.translateY(this.ul,d + this.transformY +"px")
+                }
+            }
+    }
+    show() {
+        this.translateY(this.popBox,0)
+        this.mask.style.display = "block"
+        this.mask.style.opacity = "0.5"
+        document.body.addEventListener("touchmove",this.moveEventFunc.bind(this))
+    }
+    hide() {
+        this.translateY(this.popBox,"100%")
+        this.mask.style.opacity = "0"
+        document.body.removeEventListener("touchmove",this.moveEventFunc.bind(this))
+    }
+    translateY(obj,distance){
+            if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+                obj.style.transform = `translate3d(0,${distance},0)`
+            } else {
+                obj.style.transform = `translateY(${distance})`
+            }
+    }
+    $(s) {
+        return document.querySelector(s)
+    }
+    createList() {
+        let template = (element, index) =>
+            `<li class="country-li">
+                <i class="country-icon country-icon-${parseInt(index)+1}"></i>
+                <span class="country-name">${element}</span>
+            </li>`
+        const countries = [].slice.call(this.countries)
+        let htmlStr = ""
+        countries.forEach((element, index) => {
+            htmlStr += template(element, index)
+        });
+        let ul = document.querySelector("#choose-country .country-ul")
+        ul.innerHTML = htmlStr
+    }
+    addMaskTransition(){
+        this.mask.addEventListener("transitionend",()=>{
+            let opacity = getComputedStyle(this.mask).getPropertyValue("opacity")
+            if(opacity == 0){
+                this.mask.style.display = "none"
+            }
+        })
+    }
+}
+(new chooseCountry(arrayLike)).init()
+*/
