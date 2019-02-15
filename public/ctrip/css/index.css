@@ -843,7 +843,8 @@ nav1
   .search-box .input {
     flex-grow: 1;
     border: none;
-    outline: none; }
+    outline: none;
+    padding-top: 4px; }
   .search-box .clear {
     flex-basis: 30px;
     position: relative; }
