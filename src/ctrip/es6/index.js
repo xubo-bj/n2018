@@ -62,10 +62,10 @@ class Carousel {
         })
         this.inner.addEventListener("touchend", (e) => {
             let distance = e.changedTouches[0].screenX - this.start
-            if (distance > 100) {
+            if (distance > 70) {
                 this.current--
                 this.next = this.current + 1
-            } else if (distance < -100) {
+            } else if (distance < -70) {
                 this.current++
                 this.next = this.current + 1
             } else {}
