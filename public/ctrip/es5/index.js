@@ -98,10 +98,10 @@ function () {
       this.inner.addEventListener("touchend", function (e) {
         var distance = e.changedTouches[0].screenX - _this2.start;
 
-        if (distance > 100) {
+        if (distance > 70) {
           _this2.current--;
           _this2.next = _this2.current + 1;
-        } else if (distance < -100) {
+        } else if (distance < -70) {
           _this2.current++;
           _this2.next = _this2.current + 1;
         } else {}

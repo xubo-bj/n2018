@@ -6,7 +6,8 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www.js",
     "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ctrip": "npm start & gulp ctrip"
   },
   "dependencies": {
     "debug": "^2.6.3",
@@ -19,12 +20,17 @@
     "koa-onerror": "^1.2.1",
     "koa-router": "^7.1.1",
     "koa-static": "^3.0.0",
-    "koa-views": "^5.2.1"
+    "koa-views": "^5.2.1",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
     "browser-sync": "^2.26.3",
+    "css-loader": "^2.1.0",
     "delete": "^1.1.0",
     "eslint": "^5.10.0",
     "gulp": "^4.0.0",
@@ -32,9 +38,11 @@
     "gulp-concat": "^2.6.1",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
+    "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "nodemon": "^1.8.1",
-    "webpack": "^4.27.1",
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.29.5",
     "webpack-cli": "^3.1.2"
   }
 }
