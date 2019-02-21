@@ -1,6 +1,7 @@
 import React from "react"
-import Header from "./Header"
-import Content from "./Content"
+import "../../sass/App.scss"
+import Header from "./Header.jsx"
+import Content from "./Content.jsx"
 class App extends React.Component {
     render() {
         return (

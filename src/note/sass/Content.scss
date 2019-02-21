@@ -1,0 +1,30 @@
+.content{
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    &-left{
+        position: relative;
+        width: 200px;
+        border-right: 1px solid #000;
+    }
+    &-center{
+        position: relative;
+        width: 200px;
+        border-right: 1px solid #000;
+    }
+    &-right{
+        flex-grow: 1;
+        background-color: #f0f;
+    }
+}
+.drag-line{
+    background-color: #000;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 7px;
+}

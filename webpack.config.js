@@ -2,6 +2,7 @@ const path = require("path")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
     mode:"development",
+    devtool:"source-map",
     entry: {
         main: path.resolve(__dirname, 'src/note/es6/main.js')
     },
