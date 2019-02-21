@@ -37,9 +37,9 @@ module.exports = {
                         },
                     }, {
                         loader: "sass-loader",
-                        options: {
-                            includePaths: [path.join(__dirname, "src/note/sass")]
-                        }
+                        // options: {
+                        //     includePaths: [path.join(__dirname, "src/note/sass")]
+                        // }
                     }
                 ]
             }
