@@ -33,12 +33,13 @@ body {
     background-color: #f0f; }
 
 ._37MEdKjXTq5WUNyPnCCWxO {
-  background-color: #000;
   position: absolute;
   top: 0;
-  right: 0;
+  right: -4px;
   bottom: 0;
   width: 7px; }
+  ._37MEdKjXTq5WUNyPnCCWxO:hover {
+    cursor: col-resize; }
 
 
 /*# sourceMappingURL=main.css.map*/

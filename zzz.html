@@ -1,122 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        body {
-            margin: 0;
-            touch-action: none;
-        }
-
-        div {
-            touch-action: none;
-            border: 1px solid #000;
-        }
-    </style>
 </head>
-
 <body>
-    <div></div>
-    <script>
-        let div = document.querySelector("div")
-        let htmlStr = ""
-        for (let i = 0; i < 1200; i++) {
-            htmlStr += `<h1>${i}</h1>`
-        }
-        div.innerHTML = htmlStr
-        let sp = null
-        let st = null
-        let x = null
-        let timer = null
-        let flag = false
-        let sp2 = null
-        let v = null
-        let num = 0
-        let arr4 = new Array(5)
-        let start = null
-        let translateY = null
-
-        function calc(sp2) {
-            return function (t) {
-                num++
-                let t2 = t - st <= 0 ? 10 : t - st
-                let d2 = sp2 - sp
-                v = d2 / t2
-                sp = sp2
-                st = t
-                arr4.push(v)
-                arr4.shift()
-                div.style.transform = `translateY(${sp2-start + translateY}px)`
-                flag = false
-            }
-        }
-        div.addEventListener("touchstart", e => {
-            sp = e.changedTouches[0].screenY
-            start = sp
-            st = performance.now()
-        })
-        div.addEventListener("touchmove", e => {
-            if (flag) {
-                return
-            }
-            flag = true
-            sp2 = e.changedTouches[0].screenY
-            requestAnimationFrame(calc(sp2))
-
-        })
-        div.addEventListener("touchend", e => {
-            let arr = []
-            for (let i = 1; i < 3; i++) {
-                if (arr4[i] !== undefined) {
-                    arr.push(arr4[i])
-                }
-            }
-            if (arr.length === 2) {
-                let average = (arr[0] + arr[1]) / 2
-                V0 = average * 1000
-                console.log('V0', V0);
-                let a = 9,
-                    duration = Math.abs(V0 / a),
-                    d = (V0 / 2) * duration
-
-                translateY += sp2 - start
-                console.log('dur',duration);
-                console.log('dis',d);
+    <h1>123</h1>
+        <script>
+            let h1 = document.querySelector("h1")
+            h1.addEventListener("mouseup",function(){
+                console.log('up');
                 
-                
+            })
 
-                let startTime = null,
-                d2 = null
-
-                let f1 = t => {
-                    let elapsed = (t - startTime) / duration
-                    if(elapsed >1){
-                    console.log('ok');
-
-                        translateY += d2
-                        return
-                    }
-                    
-                    d2= V0 * elapsed - a * elapsed * elapsed / 2
-                    div.style.transform = `translateY(${d2+ translateY}px)`
-                         timer = requestAnimationFrame(f1)
-                }
-
-                requestAnimationFrame(function (beginTime) {
-                    startTime = beginTime
-                    timer = requestAnimationFrame(f1)
-                })
-
-            } else {
-                console.log('<3');
-            }
-
-        })
-    </script>
+            </script>
 </body>
-
 </html>

@@ -21,10 +21,12 @@
     }
 }
 .drag-line{
-    background-color: #000;
     position: absolute;
     top: 0;
-    right: 0;
+    right: -4px;
     bottom: 0;
     width: 7px;
+    &:hover{
+        cursor: col-resize;
+    }
 }

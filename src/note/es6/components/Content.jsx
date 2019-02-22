@@ -1,9 +1,34 @@
 import React from "react"
 import styles from "../../sass/Content.scss"
+import { log } from "util";
 class Content extends React.Component {
     componentDidMount() {
-        let rx = document.querySelectorAll('[data-role="dragLine"]')
-        console.log('rx',rx);
+        let dragLines = document.querySelectorAll('[data-role="dragLine"]')
+        for (let i = 0; i < dragLines.length; i++) {
+            let startClientX = null,
+                parent = dragLines[i].parentElement,
+                width = null,
+                flag = false
+
+            let dragMove = e => {
+                if (flag) {
+                    let diff = e.clientX - startClientX
+                    parent.style.width = parseInt(width) + diff + "px"
+                }
+            }
+            dragLines[i].addEventListener("mousedown", e => {
+                flag = true
+                width = getComputedStyle(parent).getPropertyValue("width")
+                startClientX = e.clientX
+                document.body.addEventListener("mousemove", dragMove)
+            })
+            document.body.addEventListener("mouseup", e => {
+                if (flag) {
+                    flag = false
+                    document.body.removeEventListener("mousemove", dragMove)
+                }
+            })
+        }
 
     }
     render() {
