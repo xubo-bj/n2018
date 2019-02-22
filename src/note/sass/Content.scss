@@ -9,6 +9,7 @@
         position: relative;
         width: 200px;
         border-right: 1px solid #000;
+        background-color: #f5f5f5;
     }
     &-center{
         position: relative;
@@ -16,8 +17,8 @@
         border-right: 1px solid #000;
     }
     &-right{
+        position: relative;
         flex-grow: 1;
-        background-color: #f0f;
     }
 }
 .drag-line{

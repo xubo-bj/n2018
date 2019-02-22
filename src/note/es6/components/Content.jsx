@@ -1,6 +1,9 @@
 import React from "react"
 import styles from "../../sass/Content.scss"
-import { log } from "util";
+import LeftColumn from "./LeftColumn.jsx"
+import CenterColumn from "./CenterColumn.jsx"
+import RightColumn from "./RightColumn.jsx"
+
 class Content extends React.Component {
     componentDidMount() {
         let dragLines = document.querySelectorAll('[data-role="dragLine"]')
@@ -35,16 +38,20 @@ class Content extends React.Component {
         return (
             <div className={styles.content}>
                 <div className={styles["content-left"]}>
+                    <LeftColumn />
                     <div className={styles["drag-line"]}
                         data-role="dragLine"
                     ></div>
                 </div>
                 <div className={styles["content-center"]}>
+                    <CenterColumn />
                     <div className={styles["drag-line"]}
                         data-role="dragLine"
                     ></div>
                 </div>
-                <div className={styles["content-right"]}></div>
+                <div className={styles["content-right"]}>
+                    <RightColumn />
+                </div>
             </div>
         )
     }
