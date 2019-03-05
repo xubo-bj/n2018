@@ -1,15 +1,16 @@
 import React from "react"
-import "../../sass/App.scss"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
-class App extends React.Component {
-    render() {
-        return (
-            <div>
-                <Header />
-                <Content />
-            </div>
-        )
-    }
-}
-export default App 
+import { connect } from "react-redux"
+import { toggle_left_menu_one } from "../actions"
+import styles from "../../sass/App.scss"
+const App = ({hideLeftMenuOne}) => (
+    <div onClick={hideLeftMenuOne} className={styles.container}>
+        <Header />
+        <Content />
+    </div>
+)
+const mapDispatchToProps = dispatch => ({
+    hideLeftMenuOne: () => dispatch(toggle_left_menu_one("none"))
+})
+export default connect(null, mapDispatchToProps)(App)
