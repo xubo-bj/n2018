@@ -1,0 +1,21 @@
+.my-dir {
+    height: 40px;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    &:hover{
+            background: rgba(118, 176, 243, 0.3);
+    }
+    &-icon {
+        display: inline-block;
+        background: url(/note/images/sprite.svg) no-repeat;
+        background-position: 88.6685552407932% 36.03603603603604%;
+        width: 24px;
+        height: 24px;
+    }
+    &-name{
+        margin-left: 10px;
+    color: #393939;
+    font-size: 12px;
+    }
+}

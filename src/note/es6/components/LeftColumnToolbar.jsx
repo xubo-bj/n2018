@@ -21,7 +21,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     displayLeftMenuOne: e => {
         e.stopPropagation()
-        dispatch(toggle_left_menu_one("block"))}
+        dispatch(toggle_left_menu_one("block"))
+    },
+
 })
 export default connect(
     mapStateToProps,

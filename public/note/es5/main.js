@@ -27503,13 +27503,20 @@ module.exports = function(originalModule) {
 /*!***************************************!*\
   !*** ./src/note/es6/actions/index.js ***!
   \***************************************/
-/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one */
+/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, CREATE_NEW_FOLDER_CONFIRM, CREATE_NEW_FOLDER_SUCCESS, CREATE_NEW_FOLDER_FAILURE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TOGGLE_LEFT_MENU_ONE", function() { return TOGGLE_LEFT_MENU_ONE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggle_left_menu_one", function() { return toggle_left_menu_one; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_PROMPT", function() { return CREATE_NEW_FOLDER_PROMPT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_CONFIRM", function() { return CREATE_NEW_FOLDER_CONFIRM; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_SUCCESS", function() { return CREATE_NEW_FOLDER_SUCCESS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_FAILURE", function() { return CREATE_NEW_FOLDER_FAILURE; });
+/**
+ * pop menu in the toolbar of left-column
+ */
 var TOGGLE_LEFT_MENU_ONE = "TOGGLE_LEFT_MENU_ONE";
 var toggle_left_menu_one = function toggle_left_menu_one(display) {
   return {
@@ -27517,6 +27524,10 @@ var toggle_left_menu_one = function toggle_left_menu_one(display) {
     display: display
   };
 };
+var CREATE_NEW_FOLDER_PROMPT = "CREATE_NEW_FOLDER_PROMPT";
+var CREATE_NEW_FOLDER_CONFIRM = "CREATE_NEW_FOLDER_CONFIRM";
+var CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS";
+var CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE";
 
 /***/ }),
 
@@ -27815,8 +27826,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _LeftColumnToolbar_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LeftColumnToolbar.jsx */ "./src/note/es6/components/LeftColumnToolbar.jsx");
-/* harmony import */ var _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../sass/LeftColumn.scss */ "./src/note/sass/LeftColumn.scss");
-/* harmony import */ var _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _LeftColumnWorkspace_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./LeftColumnWorkspace.jsx */ "./src/note/es6/components/LeftColumnWorkspace.jsx");
+/* harmony import */ var _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../sass/LeftColumn.scss */ "./src/note/sass/LeftColumn.scss");
+/* harmony import */ var _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27839,6 +27851,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var LeftColumn =
 /*#__PURE__*/
 function (_React$Component) {
@@ -27854,10 +27867,10 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_2___default.a.toolbar
+        className: _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_3___default.a.toolbar
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_LeftColumnToolbar_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_2___default.a.workspace
-      }));
+        className: _sass_LeftColumn_scss__WEBPACK_IMPORTED_MODULE_3___default.a.workspace
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_LeftColumnWorkspace_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
     }
   }]);
 
@@ -27930,6 +27943,48 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["connect"])(mapStateToProps, mapDispatchToProps)(LeftColumnToolbar));
+
+/***/ }),
+
+/***/ "./src/note/es6/components/LeftColumnWorkspace.jsx":
+/*!*********************************************************!*\
+  !*** ./src/note/es6/components/LeftColumnWorkspace.jsx ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../sass/LeftColumnWorkspace.scss */ "./src/note/sass/LeftColumnWorkspace.scss");
+/* harmony import */ var _sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+
+var DirTree = function DirTree(props) {};
+
+var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: _sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2___default.a["my-dir"]
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: _sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2___default.a["my-dir-icon"]
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: _sass_LeftColumnWorkspace_scss__WEBPACK_IMPORTED_MODULE_2___default.a["my-dir-name"]
+  }, "\u6211\u7684\u6587\u4EF6\u5939")));
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {};
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, mapDispatchToProps)(LeftColumnWorkspace));
 
 /***/ }),
 
@@ -28136,6 +28191,18 @@ module.exports = {"toolbar":"A4Je2tkl7zhuIeuFJfZpK","workspace":"Vhl1_OvXjFTY2Vp
 
 // extracted by mini-css-extract-plugin
 module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWevRbcKJyA6wf","text":"_32m5BF_L3AoyqmRVUJlUc-","icon":"eEJ-kpbryf-q1RBCqBltM","arrow":"Z0nBev1fke2XQrq-lcmf","pop-menu":"_3Vrx5ssuq2GqY1zAM6n6-E","menu-option":"_3H0HMsSxDtYpt0-fvR7J8B"};
+
+/***/ }),
+
+/***/ "./src/note/sass/LeftColumnWorkspace.scss":
+/*!************************************************!*\
+  !*** ./src/note/sass/LeftColumnWorkspace.scss ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY"};
 
 /***/ }),
 
