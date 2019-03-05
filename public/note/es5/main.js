@@ -27503,7 +27503,7 @@ module.exports = function(originalModule) {
 /*!***************************************!*\
   !*** ./src/note/es6/actions/index.js ***!
   \***************************************/
-/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, CREATE_NEW_FOLDER_CONFIRM, CREATE_NEW_FOLDER_SUCCESS, CREATE_NEW_FOLDER_FAILURE */
+/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, create_new_folder_prompt, CREATE_NEW_FOLDER_CONFIRM, CREATE_NEW_FOLDER_SUCCESS, CREATE_NEW_FOLDER_FAILURE, SELECT_DIR, select_dir */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27511,9 +27511,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TOGGLE_LEFT_MENU_ONE", function() { return TOGGLE_LEFT_MENU_ONE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggle_left_menu_one", function() { return toggle_left_menu_one; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_PROMPT", function() { return CREATE_NEW_FOLDER_PROMPT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_new_folder_prompt", function() { return create_new_folder_prompt; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_CONFIRM", function() { return CREATE_NEW_FOLDER_CONFIRM; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_SUCCESS", function() { return CREATE_NEW_FOLDER_SUCCESS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_FAILURE", function() { return CREATE_NEW_FOLDER_FAILURE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SELECT_DIR", function() { return SELECT_DIR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_dir", function() { return select_dir; });
 /**
  * pop menu in the toolbar of left-column
  */
@@ -27525,9 +27528,22 @@ var toggle_left_menu_one = function toggle_left_menu_one(display) {
   };
 };
 var CREATE_NEW_FOLDER_PROMPT = "CREATE_NEW_FOLDER_PROMPT";
+var create_new_folder_prompt = function create_new_folder_prompt(currentDir) {
+  return {
+    type: CREATE_NEW_FOLDER_PROMPT,
+    currentDir: currentDir
+  };
+};
 var CREATE_NEW_FOLDER_CONFIRM = "CREATE_NEW_FOLDER_CONFIRM";
 var CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS";
 var CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE";
+var SELECT_DIR = "SELECT_DIR";
+var select_dir = function select_dir(dir) {
+  return {
+    type: SELECT_DIR,
+    dir: dir
+  };
+};
 
 /***/ }),
 
@@ -27542,12 +27558,12 @@ var CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Header_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Header.jsx */ "./src/note/es6/components/Header.jsx");
-/* harmony import */ var _Content_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Content.jsx */ "./src/note/es6/components/Content.jsx");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
-/* harmony import */ var _sass_App_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../sass/App.scss */ "./src/note/sass/App.scss");
-/* harmony import */ var _sass_App_scss__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_sass_App_scss__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _Header_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Header.jsx */ "./src/note/es6/components/Header.jsx");
+/* harmony import */ var _Content_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Content.jsx */ "./src/note/es6/components/Content.jsx");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
+/* harmony import */ var _sass_App_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../sass/App.scss */ "./src/note/sass/App.scss");
+/* harmony import */ var _sass_App_scss__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_sass_App_scss__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
@@ -27559,19 +27575,19 @@ var App = function App(_ref) {
   var hideLeftMenuOne = _ref.hideLeftMenuOne;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     onClick: hideLeftMenuOne,
-    className: _sass_App_scss__WEBPACK_IMPORTED_MODULE_5___default.a.container
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Header_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Content_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+    className: _sass_App_scss__WEBPACK_IMPORTED_MODULE_4___default.a.container
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Header_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Content_jsx__WEBPACK_IMPORTED_MODULE_6__["default"], null));
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     hideLeftMenuOne: function hideLeftMenuOne() {
-      return dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_4__["toggle_left_menu_one"])("none"));
+      return dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["toggle_left_menu_one"])("none"));
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(null, mapDispatchToProps)(App));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["connect"])(null, mapDispatchToProps)(App));
 
 /***/ }),
 
@@ -27896,19 +27912,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 
 
 
 
-var LeftColumnToolbar = function LeftColumnToolbar(_ref) {
-  var leftMenuOneDisplay = _ref.leftMenuOneDisplay,
-      displayLeftMenuOne = _ref.displayLeftMenuOne;
+
+var LeftColumnToolbar = function LeftColumnToolbar(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a.container
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a["pop-btn"],
-    onClick: displayLeftMenuOne
+    onClick: props.displayLeftMenuOne
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a.icon
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
@@ -27918,12 +27940,13 @@ var LeftColumnToolbar = function LeftColumnToolbar(_ref) {
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
     className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a["pop-menu"],
     style: {
-      display: leftMenuOneDisplay
+      display: props.leftMenuOneDisplay
     }
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
     className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a["menu-option"]
   }, "\u65B0\u5EFA\u6587\u4EF6"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-    className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a["menu-option"]
+    className: _sass_LeftColumnToolbar_scss__WEBPACK_IMPORTED_MODULE_1___default.a["menu-option"],
+    onClick: props.createNewFolderPrompt
   }, "\u65B0\u5EFA\u6587\u4EF6\u5939")));
 };
 
@@ -27938,6 +27961,14 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     displayLeftMenuOne: function displayLeftMenuOne(e) {
       e.stopPropagation();
       dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["toggle_left_menu_one"])("block"));
+    },
+    createNewFolderPrompt: function createNewFolderPrompt(e) {
+      e.stopPropagation();
+      dispatch(function (dispatch, getState) {
+        var currentDir = _toConsumableArray(getState().currentDir);
+
+        dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_prompt"])(currentDir));
+      });
     }
   };
 };
@@ -28098,9 +28129,8 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
-
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
@@ -28108,7 +28138,7 @@ var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case _actions__WEBPACK_IMPORTED_MODULE_1__["TOGGLE_LEFT_MENU_ONE"]:
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["TOGGLE_LEFT_MENU_ONE"]:
       return action.display;
 
     default:
@@ -28116,8 +28146,43 @@ var leftMenuOneDisplay = function leftMenuOneDisplay() {
   }
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
-  leftMenuOneDisplay: leftMenuOneDisplay
+
+
+var tree = function tree() {
+  var treeObj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["CREATE_NEW_FOLDER_PROMPT"]:
+      {
+        return treeObj;
+      }
+
+    default:
+      return treeObj;
+  }
+};
+
+
+
+var currentDir = function currentDir() {
+  var dir = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_DIR"]:
+      return action.dir;
+
+    default:
+      return dir;
+  }
+};
+
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_1__["combineReducers"])({
+  leftMenuOneDisplay: leftMenuOneDisplay,
+  tree: tree,
+  currentDir: currentDir
 }));
 
 /***/ }),
