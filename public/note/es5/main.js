@@ -93,7 +93,7 @@
 /*! exports provided: appPort, note, default */
 /***/ (function(module) {
 
-module.exports = {"appPort":"18080","note":{"shinelonId":"5c7f1be57ec3a84bbc893e74"}};
+module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":["userdirs","userfiles"],"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
 
 /***/ }),
 
@@ -27666,7 +27666,13 @@ function (_React$Component) {
         className: _sass_CenterColumn_scss__WEBPACK_IMPORTED_MODULE_1___default.a.header
       }, "1"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: _sass_CenterColumn_scss__WEBPACK_IMPORTED_MODULE_1___default.a.content
-      }, "2"));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        contentEditable: true,
+        style: {
+          border: "1px solid #000",
+          height: "30px"
+        }
+      })));
     }
   }]);
 
@@ -28373,6 +28379,9 @@ var tree = function tree() {
       {
         fetch("note/create-folder/", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             name: action.name,
             dirId: action.currentDirId

@@ -82,10 +82,16 @@ const tree = (treeArray = [defaultV], action) => {
             {
                 fetch("note/create-folder/", {
                     method: "POST",
-                    body:JSON.stringify({ name: action.name, dirId: action.currentDirId })
-                }).then(res=>res.json())
-                .then(json=>{
-                    console.log('res_json',json);
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: action.name,
+                        dirId: action.currentDirId
+                    })
+                }).then(res => res.json())
+                .then(json => {
+                    console.log('res_json', json);
                 })
                 return treeArray
             }

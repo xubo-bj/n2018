@@ -1,6 +1,10 @@
 {
-    "appPort":"18080",
-    "note":{
-        "shinelonId":"5c7f1be57ec3a84bbc893e74"
+    "appPort": "18080",
+    "note": {
+        "mongodb": {
+            "db": "note",
+            "collections": ["userdirs", "userfiles"],
+            "shinelonId": "5c7f1be57ec3a84bbc893e74"
+        }
     }
 }
