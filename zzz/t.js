@@ -1,2 +1,2 @@
-let thunk = require("redux-thunk")
-console.log('thunk',thunk);
+var o = {a:1}
+console.log('o',o.b);

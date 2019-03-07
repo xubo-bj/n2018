@@ -1,6 +1,13 @@
+const shinelonId = require("../../../../config").note.shinelonId
 import {
-    TOGGLE_LEFT_MENU_ONE
+    TOGGLE_LEFT_MENU_ONE,
+    SELECT_DIR,
+    CREATE_NEW_FOLDER_PROMPT,
+    CREATE_NEW_FOLDER_SUBMIT
 } from "../actions"
+
+
+
 const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
         case TOGGLE_LEFT_MENU_ONE:
@@ -11,31 +18,84 @@ const leftMenuOneDisplay = (display = "none", action) => {
 }
 
 
-import {
-    CREATE_NEW_FOLDER_PROMPT
-} from "../actions"
-const tree = (treeObj = {}, action) => {
+const currentDirId = (dirId = shinelonId, action) => {
     switch (action.type) {
-        case CREATE_NEW_FOLDER_PROMPT:
-            {
-                return treeObj
-            }
+        case SELECT_DIR:
+            return action.dirId
         default:
-            return treeObj
+            return dirId
     }
 }
 
-import {
-    SELECT_DIR
-} from "../actions"
-const currentDir = (dir = [], action) => {
+
+let defaultV = {
+    _id: shinelonId,
+    dirs: [],
+    docs: [],
+    folded: false
+}
+let test = {
+        _id: shinelonId,
+        dirs: [{
+                _id: 1,
+                name: "编程指南"
+            },
+            {
+                _id: 2,
+                name: "编程指南新编"
+            }
+        ],
+        docs: [],
+        folded: false
+    },
+    t1 = {
+        _id: 1,
+        name: "编程指南",
+        folded: false,
+        dirs: [{
+                _id: 3,
+                name: "编程指南3"
+            },
+            {
+                _id: 4,
+                name: "编程指南新编4"
+            }
+        ]
+
+    }
+
+
+const tree = (treeArray = [defaultV], action) => {
     switch (action.type) {
-        case SELECT_DIR:
-            return action.dir
+        case CREATE_NEW_FOLDER_PROMPT:
+            {
+                let _id = action.currentDirId
+                let targetDir = treeArray.find(dir => dir._id === _id)
+                let newTree = [...treeArray]
+                targetDir.dirs.push({
+                    editable: true,
+                    name: "新建文件夹"
+                })
+                return newTree
+            }
+        case CREATE_NEW_FOLDER_SUBMIT:
+            {
+                fetch("note/create-folder/", {
+                    method: "POST",
+                    body:JSON.stringify({ name: action.name, dirId: action.currentDirId })
+                }).then(res=>res.json())
+                .then(json=>{
+                    console.log('res_json',json);
+                })
+                return treeArray
+            }
         default:
-            return dir
+            return treeArray
     }
 }
+
+
+
 
 import {
     combineReducers
@@ -43,5 +103,5 @@ import {
 export default combineReducers({
     leftMenuOneDisplay,
     tree,
-    currentDir
+    currentDirId
 })

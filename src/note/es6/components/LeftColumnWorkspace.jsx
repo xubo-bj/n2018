@@ -1,9 +1,73 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
-const DirTree = (props) => {
+import { create_new_folder_submit } from "../actions"
+const shinelonId = require("../../../../config").note.shinelonId
 
+class DirTree extends React.Component {
+    constructor(props) {
+        super(props)
+        this.keydown = this.keydown.bind(this)
+    }
+    componentDidUpdate() {
+        let s = window.getSelection();
+        if (s.rangeCount > 0) s.removeAllRanges();
+        let range = document.createRange();
+        range.selectNodeContents(this.editableElem);
+        s.addRange(range);
+    }
+    keydown(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault()
+            let { _id, tree,createNewFolderSumbit } = this.props
+            let targetDir = tree.find(doc => doc._id === _id),
+                name = (targetDir.dirs.find(dir => dir._id == null)).name
+            createNewFolderSumbit(name)
+        }
+    }
+    render() {
+        let { _id, tree } = this.props
+        let targetDir = tree.find(doc => doc._id === _id)
+        if (targetDir == null) {
+            return null
+        }
+        if (targetDir.folded) {
+            return null
+        } else if (targetDir.dirs.length === 0) {
+            return null
+        } else {
+            return (
+                <ul className={styles.list}>
+                    {targetDir.dirs.map(dir => {
+                        if (dir._id) {
+                            return (
+                                <li key={dir._id} className={styles.item}>
+                                    <i className={styles.dirIcon} />
+                                    <span className={styles.dirName}>{dir.name}</span>
+                                    <DirTree tree={tree} _id={dir._id}
+                                     createNewFolderSumbit={this.props.createNewFolderSumbit}/>
+                                </li>
+                            )
+                        } else {
+                            return (
+                                <li key={"editable"} className={styles.item}>
+                                    <i className={styles.dirIcon} />
+                                    <span className={styles.dirName}
+                                        onKeyDown={this.keydown}
+                                        ref={elem => this.editableElem = elem}
+                                        contentEditable={dir.editable}
+                                    >{dir.name}</span>
+                                </li>
+                            )
+                        }
+                    }
+                    )}
+                </ul>
+            )
+        }
+    }
 }
+
 const LeftColumnWorkspace = (props) => {
     return (
         <Fragment>
@@ -11,15 +75,24 @@ const LeftColumnWorkspace = (props) => {
                 <i className={styles["my-dir-icon"]} />
                 <span className={styles["my-dir-name"]}>我的文件夹</span>
             </div>
-            {/* <DirTree /> */}
+            <DirTree tree={props.tree} _id={shinelonId}
+                createNewFolderSumbit={props.createNewFolderSumbit} />
         </Fragment>
     )
-
 }
 
-const mapStateToProps = state => ({
-})
+const mapStateToProps = state => {
+    return {
+        tree: state.tree
+    }
+}
 const mapDispatchToProps = dispatch => ({
+    createNewFolderSumbit: (name) => {
+        dispatch((dispatch, getState) => {
+            let currentDirId = getState().currentDirId
+            dispatch(create_new_folder_submit(currentDirId, name))
+        })
+    }
 })
 export default connect(
     mapStateToProps,

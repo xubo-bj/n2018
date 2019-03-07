@@ -23,15 +23,13 @@ const mapDispatchToProps = dispatch => ({
         e.stopPropagation()
         dispatch(toggle_left_menu_one("block"))
     },
-    createNewFolderPrompt:e=>{
-        e.stopPropagation()
+    createNewFolderPrompt:()=>{
         dispatch((dispatch,getState)=>{
-            let currentDir = [...getState().currentDir]
-            dispatch(create_new_folder_prompt(currentDir))
+            let currentDirId = getState().currentDirId
+            dispatch(create_new_folder_prompt(currentDirId))
         })
 
     }
-
 })
 export default connect(
     mapStateToProps,

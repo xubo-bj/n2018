@@ -9,19 +9,30 @@ export const toggle_left_menu_one = display => {
     }
 }
 
+
+/**
+ * create new folder
+ */
 export const CREATE_NEW_FOLDER_PROMPT = "CREATE_NEW_FOLDER_PROMPT"
-export const create_new_folder_prompt = (currentDir) => ({
+export const create_new_folder_prompt = (currentDirId) => ({
     type: CREATE_NEW_FOLDER_PROMPT,
-    currentDir
+    currentDirId
 })
-export const CREATE_NEW_FOLDER_CONFIRM = "CREATE_NEW_FOLDER_CONFIRM"
+export const CREATE_NEW_FOLDER_SUBMIT = "CREATE_NEW_FOLDER_SUBMIT"
+export const create_new_folder_submit= (currentDirId,name) => ({
+    type: CREATE_NEW_FOLDER_SUBMIT,
+    currentDirId,
+    name
+})
+
+
 export const CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS"
 export const CREATE_NEW_FOLDER_FAILURE= "CREATE_NEW_FOLDER_FAILURE"
 
 
 
 export const SELECT_DIR = "SELECT_DIR"
-export const select_dir = (dir)=>({
+export const select_dir = (dirId)=>({
     type:SELECT_DIR,
-    dir
+    dirId
 })
