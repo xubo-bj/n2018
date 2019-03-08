@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import { create_new_folder_submit } from "../actions"
-const shinelonId = require("../../../../config").note.shinelonId
+const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
     constructor(props) {
@@ -10,16 +10,18 @@ class DirTree extends React.Component {
         this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
-        let s = window.getSelection();
-        if (s.rangeCount > 0) s.removeAllRanges();
-        let range = document.createRange();
-        range.selectNodeContents(this.editableElem);
-        s.addRange(range);
+        if (this.editableElem != null) {
+            let s = window.getSelection();
+            if (s.rangeCount > 0) s.removeAllRanges();
+            let range = document.createRange();
+            range.selectNodeContents(this.editableElem);
+            s.addRange(range);
+        }
     }
     keydown(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            let { _id, tree,createNewFolderSumbit } = this.props
+            let { _id, tree, createNewFolderSumbit } = this.props
             let targetDir = tree.find(doc => doc._id === _id),
                 name = (targetDir.dirs.find(dir => dir._id == null)).name
             createNewFolderSumbit(name)
@@ -31,6 +33,7 @@ class DirTree extends React.Component {
         if (targetDir == null) {
             return null
         }
+        
         if (targetDir.folded) {
             return null
         } else if (targetDir.dirs.length === 0) {
@@ -45,7 +48,7 @@ class DirTree extends React.Component {
                                     <i className={styles.dirIcon} />
                                     <span className={styles.dirName}>{dir.name}</span>
                                     <DirTree tree={tree} _id={dir._id}
-                                     createNewFolderSumbit={this.props.createNewFolderSumbit}/>
+                                        createNewFolderSumbit={this.props.createNewFolderSumbit} />
                                 </li>
                             )
                         } else {

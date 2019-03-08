@@ -3,7 +3,10 @@
     "note": {
         "mongodb": {
             "db": "note",
-            "collections": ["userdirs", "userfiles"],
+            "collections": {
+                "userdirs": "userdirs",
+                "userdocs": "userdocs"
+            },
             "shinelonId": "5c7f1be57ec3a84bbc893e74"
         }
     }

@@ -7,7 +7,6 @@ class CenterColumn extends React.Component {
             <Fragment>
                 <div className={styles.header}>1</div>
                 <div className={styles.content}>
-                <div contentEditable={true} style={{border:"1px solid #000",height:"30px"}}></div>
                 </div>
             </Fragment>
         )

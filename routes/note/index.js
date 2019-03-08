@@ -16,29 +16,64 @@ router.get('/', async (ctx, next) => {
 })
 router.post('/create-folder', async (ctx, next) => {
 
-    // Connection URL
+    let result = await client.connect()
+    let userdirs = result.db(dbName).collection("userdirs")
 
-    // Use connect method to connect to the Server
-let result  =     await client.connect()
-let userdirs = result.db(dbName).collection("userdirs")
-console.log('_id',typeof ctx.request.body);
-console.log('_id',ctx.request.body.dirId);
+    let {
+        dirId,
+        name
+    } = ctx.request.body
+    let d = new Date()
+    let r = await userdirs.insertOne({
+        name,
+        ctime: d,
+        mtime: d,
+        dirs: [],
+        files: []
+    })
+    if (r.insertedCount === 1) {
+        let r2 = await userdirs.updateOne({
+            _id: dirId
+        }, {
+            dirs: {
+                $push: {
+                    _id: r.insertedId,
+                    name
+                }
+            }
+        })
+        if (r2.modifiedCount === 1) {
+            ctx.body = {
+                parentId: dirId,
+                newId: r.insertedId,
+                name,
+                success: "ok"
+            }
+        } else {
+            ctx.body = {
+                success: "no"
+            }
+        }
+    } else {
+        ctx.body = {
+            success: "no"
+        }
+    }
+})
 
-let r = await userdirs.findOne({_id:ctx.request.body.dirId})
-console.log("r'",r);
-
-
-ctx.body = ctx.request.body
-
-    // client.connect(function (err) {
-    //     assert.equal(null, err);
-    //     console.log("Connected successfully to server");
-
-    //     const db = client.db(dbName);
-
-    //     client.close();
-    // });
-
+let i = 0
+router.get('/test', async (ctx, next) => {
+    let r = await client.connect()
+    let test = r.db(dbName).collection("test")
+    let x = await test.updateOne({
+        dir: "name_0"
+    }, {
+        $set: {
+            a: 1
+        }
+    })
+    console.log("x", x.modifiedCount)
+    ctx.body = x
 })
 
 module.exports = router

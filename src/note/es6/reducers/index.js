@@ -1,4 +1,4 @@
-const shinelonId = require("../../../../config").note.shinelonId
+const shinelonId = require("../../../../config").note.mongodb.shinelonId
 import {
     TOGGLE_LEFT_MENU_ONE,
     SELECT_DIR,
@@ -69,13 +69,14 @@ const tree = (treeArray = [defaultV], action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
             {
+                
                 let _id = action.currentDirId
                 let targetDir = treeArray.find(dir => dir._id === _id)
-                let newTree = [...treeArray]
                 targetDir.dirs.push({
                     editable: true,
                     name: "新建文件夹"
                 })
+                let newTree = [...treeArray]
                 return newTree
             }
         case CREATE_NEW_FOLDER_SUBMIT:

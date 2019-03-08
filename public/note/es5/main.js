@@ -93,7 +93,7 @@
 /*! exports provided: appPort, note, default */
 /***/ (function(module) {
 
-module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":["userdirs","userfiles"],"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
+module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":{"userdirs":"userdirs","userdocs":"userdocs"},"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
 
 /***/ }),
 
@@ -27666,13 +27666,7 @@ function (_React$Component) {
         className: _sass_CenterColumn_scss__WEBPACK_IMPORTED_MODULE_1___default.a.header
       }, "1"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: _sass_CenterColumn_scss__WEBPACK_IMPORTED_MODULE_1___default.a.content
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        contentEditable: true,
-        style: {
-          border: "1px solid #000",
-          height: "30px"
-        }
-      })));
+      }));
     }
   }]);
 
@@ -28034,7 +28028,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.shinelonId;
+var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.mongodb.shinelonId;
 
 var DirTree =
 /*#__PURE__*/
@@ -28054,11 +28048,13 @@ function (_React$Component) {
   _createClass(DirTree, [{
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      var s = window.getSelection();
-      if (s.rangeCount > 0) s.removeAllRanges();
-      var range = document.createRange();
-      range.selectNodeContents(this.editableElem);
-      s.addRange(range);
+      if (this.editableElem != null) {
+        var s = window.getSelection();
+        if (s.rangeCount > 0) s.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(this.editableElem);
+        s.addRange(range);
+      }
     }
   }, {
     key: "keydown",
@@ -28293,7 +28289,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.shinelonId;
+var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.mongodb.shinelonId;
 
 
 
@@ -28365,13 +28361,13 @@ var tree = function tree() {
         var targetDir = treeArray.find(function (dir) {
           return dir._id === _id;
         });
-
-        var newTree = _toConsumableArray(treeArray);
-
         targetDir.dirs.push({
           editable: true,
           name: "新建文件夹"
         });
+
+        var newTree = _toConsumableArray(treeArray);
+
         return newTree;
       }
 
