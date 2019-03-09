@@ -2,9 +2,13 @@ const path = require('path')
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require("mongodb").ObjectID
 const assert = require('assert');
-const dbName = 'note';
 const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
+const dbName = 'note';
+const userdirs = 'userdirs'
+const client = new MongoClient(url, {
+    useNewUrlParser: true
+});
+// const client = new MongoClient(url)
 
 const ejsPath = 'note/'
 
@@ -17,31 +21,36 @@ router.get('/', async (ctx, next) => {
 router.post('/create-folder', async (ctx, next) => {
 
     let result = await client.connect()
-    let userdirs = result.db(dbName).collection("userdirs")
+    let u = result.db(dbName).collection(userdirs)
 
     let {
         dirId,
         name
     } = ctx.request.body
     let d = new Date()
-    let r = await userdirs.insertOne({
+    let r = await u.insertOne({
         name,
         ctime: d,
         mtime: d,
         dirs: [],
         files: []
     })
+
     if (r.insertedCount === 1) {
-        let r2 = await userdirs.updateOne({
-            _id: dirId
+        let r2 = await u.updateOne({
+            _id: new ObjectID(dirId)
         }, {
-            dirs: {
-                $push: {
+            $push: {
+                dirs: {
                     _id: r.insertedId,
-                    name
+                    name,
+                    ctime: d,
+                    mtime: d
                 }
             }
         })
+
+
         if (r2.modifiedCount === 1) {
             ctx.body = {
                 parentId: dirId,
@@ -50,6 +59,9 @@ router.post('/create-folder', async (ctx, next) => {
                 success: "ok"
             }
         } else {
+            await u.deleteOne({
+                _id: r.insertedId
+            })
             ctx.body = {
                 success: "no"
             }
@@ -64,16 +76,14 @@ router.post('/create-folder', async (ctx, next) => {
 let i = 0
 router.get('/test', async (ctx, next) => {
     let r = await client.connect()
-    let test = r.db(dbName).collection("test")
-    let x = await test.updateOne({
-        dir: "name_0"
-    }, {
-        $set: {
-            a: 1
-        }
-    })
-    console.log("x", x.modifiedCount)
-    ctx.body = x
+    let test = r.db(dbName).collection("userdirs")
+    console.log("test", test);
+
+    let x = await test.find({})
+    console.log("x", x);
+
+
+    ctx.body = "success"
 })
 
 module.exports = router

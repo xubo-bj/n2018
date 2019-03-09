@@ -93,7 +93,7 @@
 /*! exports provided: appPort, note, default */
 /***/ (function(module) {
 
-module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":{"userdirs":"userdirs","userdocs":"userdocs"},"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
+module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":{"userdirs":"userdirs","userdocs":"userfiles"},"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
 
 /***/ }),
 
