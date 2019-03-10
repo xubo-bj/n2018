@@ -49,14 +49,13 @@ router.post('/create-folder', async (ctx, next) => {
                 }
             }
         })
-
-
         if (r2.modifiedCount === 1) {
             ctx.body = {
+                success: "ok",
                 parentId: dirId,
                 newId: r.insertedId,
                 name,
-                success: "ok"
+                time:d
             }
         } else {
             await u.deleteOne({

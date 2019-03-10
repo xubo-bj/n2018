@@ -1,4 +1,7 @@
-let assert = require("assert")
-let a =1
-let r = assert.equal(a,2)
-// console.log('r',r);
+
+let d = new Date()
+console.log('d',d);
+console.log('d',d.toDateString());
+
+let s = new Date(d)
+console.log('m',s.getHours());

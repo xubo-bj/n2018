@@ -19,14 +19,19 @@ export const create_new_folder_prompt = (currentDirId) => ({
     currentDirId
 })
 export const CREATE_NEW_FOLDER_SUBMIT = "CREATE_NEW_FOLDER_SUBMIT"
-export const create_new_folder_submit= (currentDirId,name) => ({
+export const create_new_folder_submit= () => ({
     type: CREATE_NEW_FOLDER_SUBMIT,
-    currentDirId,
-    name
 })
 
 
 export const CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS"
+export const create_new_folder_success= (parentId,newId,name,time) => ({
+    type:CREATE_NEW_FOLDER_SUCCESS,
+    parentId,
+    newId,
+    name,
+    time
+})
 export const CREATE_NEW_FOLDER_FAILURE= "CREATE_NEW_FOLDER_FAILURE"
 
 

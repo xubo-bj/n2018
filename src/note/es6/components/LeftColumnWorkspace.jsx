@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
-import { create_new_folder_submit } from "../actions"
+import { create_new_folder_submit ,create_new_folder_success} from "../actions"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -91,9 +91,23 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => ({
     createNewFolderSumbit: (name) => {
+        dispatch(create_new_folder_submit())
         dispatch((dispatch, getState) => {
             let currentDirId = getState().currentDirId
-            dispatch(create_new_folder_submit(currentDirId, name))
+                fetch("note/create-folder/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        dirId: currentDirId
+                    })
+                }).then(res => res.json())
+                .then(res=> {
+                    console.log('res',res);
+                    dispatch(create_new_folder_success(res.parentId,res.newId,res.name,res.time))
+                })
         })
     }
 })

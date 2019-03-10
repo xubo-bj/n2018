@@ -27514,7 +27514,7 @@ module.exports = function(originalModule) {
 /*!***************************************!*\
   !*** ./src/note/es6/actions/index.js ***!
   \***************************************/
-/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, create_new_folder_prompt, CREATE_NEW_FOLDER_SUBMIT, create_new_folder_submit, CREATE_NEW_FOLDER_SUCCESS, CREATE_NEW_FOLDER_FAILURE, SELECT_DIR, select_dir */
+/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, create_new_folder_prompt, CREATE_NEW_FOLDER_SUBMIT, create_new_folder_submit, CREATE_NEW_FOLDER_SUCCESS, create_new_folder_success, CREATE_NEW_FOLDER_FAILURE, SELECT_DIR, select_dir */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27526,6 +27526,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_SUBMIT", function() { return CREATE_NEW_FOLDER_SUBMIT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_new_folder_submit", function() { return create_new_folder_submit; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_SUCCESS", function() { return CREATE_NEW_FOLDER_SUCCESS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_new_folder_success", function() { return create_new_folder_success; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_FAILURE", function() { return CREATE_NEW_FOLDER_FAILURE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SELECT_DIR", function() { return SELECT_DIR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_dir", function() { return select_dir; });
@@ -27551,14 +27552,21 @@ var create_new_folder_prompt = function create_new_folder_prompt(currentDirId) {
   };
 };
 var CREATE_NEW_FOLDER_SUBMIT = "CREATE_NEW_FOLDER_SUBMIT";
-var create_new_folder_submit = function create_new_folder_submit(currentDirId, name) {
+var create_new_folder_submit = function create_new_folder_submit() {
   return {
-    type: CREATE_NEW_FOLDER_SUBMIT,
-    currentDirId: currentDirId,
-    name: name
+    type: CREATE_NEW_FOLDER_SUBMIT
   };
 };
 var CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS";
+var create_new_folder_success = function create_new_folder_success(parentId, newId, name, time) {
+  return {
+    type: CREATE_NEW_FOLDER_SUCCESS,
+    parentId: parentId,
+    newId: newId,
+    name: name,
+    time: time
+  };
+};
 var CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE";
 var SELECT_DIR = "SELECT_DIR";
 var select_dir = function select_dir(dirId) {
@@ -28157,9 +28165,24 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     createNewFolderSumbit: function createNewFolderSumbit(name) {
+      dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_submit"])());
       dispatch(function (dispatch, getState) {
         var currentDirId = getState().currentDirId;
-        dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_submit"])(currentDirId, name));
+        fetch("note/create-folder/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name,
+            dirId: currentDirId
+          })
+        }).then(function (res) {
+          return res.json();
+        }).then(function (res) {
+          console.log('res', res);
+          dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_success"])(res.parentId, res.newId, res.name, res.time));
+        });
       });
     }
   };
@@ -28371,23 +28394,11 @@ var tree = function tree() {
         return newTree;
       }
 
-    case _actions__WEBPACK_IMPORTED_MODULE_0__["CREATE_NEW_FOLDER_SUBMIT"]:
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["CREATE_NEW_FOLDER_SUCCESS"]:
       {
-        fetch("note/create-folder/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name: action.name,
-            dirId: action.currentDirId
-          })
-        }).then(function (res) {
-          return res.json();
-        }).then(function (json) {
-          console.log('res_json', json);
+        var parentDir = treeArray.find(function (dir) {
+          return dir._id == action.parentId;
         });
-        return treeArray;
       }
 
     default:

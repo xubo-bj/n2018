@@ -3,7 +3,8 @@ import {
     TOGGLE_LEFT_MENU_ONE,
     SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT,
-    CREATE_NEW_FOLDER_SUBMIT
+    CREATE_NEW_FOLDER_SUBMIT,
+    CREATE_NEW_FOLDER_SUCCESS
 } from "../actions"
 
 
@@ -69,7 +70,6 @@ const tree = (treeArray = [defaultV], action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
             {
-                
                 let _id = action.currentDirId
                 let targetDir = treeArray.find(dir => dir._id === _id)
                 targetDir.dirs.push({
@@ -79,22 +79,11 @@ const tree = (treeArray = [defaultV], action) => {
                 let newTree = [...treeArray]
                 return newTree
             }
-        case CREATE_NEW_FOLDER_SUBMIT:
+        case CREATE_NEW_FOLDER_SUCCESS:
             {
-                fetch("note/create-folder/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        name: action.name,
-                        dirId: action.currentDirId
-                    })
-                }).then(res => res.json())
-                .then(json => {
-                    console.log('res_json', json);
-                })
-                return treeArray
+                let parentDir = treeArray.find(dir=>dir._id == action.parentId)
+                
+
             }
         default:
             return treeArray
