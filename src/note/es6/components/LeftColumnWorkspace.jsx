@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
-import { create_new_folder_submit ,create_new_folder_success} from "../actions"
+import { create_new_folder_submit ,create_new_folder_success,create_new_folder_failure} from "../actions"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -107,6 +107,9 @@ const mapDispatchToProps = dispatch => ({
                 .then(res=> {
                     console.log('res',res);
                     dispatch(create_new_folder_success(res.parentId,res.newId,res.name,res.time))
+                }).catch(err=>{
+                    console.log('err',err);
+                    dispatch(create_new_folder_failure())
                 })
         })
     }

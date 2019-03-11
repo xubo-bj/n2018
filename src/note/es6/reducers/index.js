@@ -7,8 +7,6 @@ import {
     CREATE_NEW_FOLDER_SUCCESS
 } from "../actions"
 
-
-
 const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
         case TOGGLE_LEFT_MENU_ONE:
@@ -35,37 +33,6 @@ let defaultV = {
     docs: [],
     folded: false
 }
-let test = {
-        _id: shinelonId,
-        dirs: [{
-                _id: 1,
-                name: "编程指南"
-            },
-            {
-                _id: 2,
-                name: "编程指南新编"
-            }
-        ],
-        docs: [],
-        folded: false
-    },
-    t1 = {
-        _id: 1,
-        name: "编程指南",
-        folded: false,
-        dirs: [{
-                _id: 3,
-                name: "编程指南3"
-            },
-            {
-                _id: 4,
-                name: "编程指南新编4"
-            }
-        ]
-
-    }
-
-
 const tree = (treeArray = [defaultV], action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
@@ -81,12 +48,45 @@ const tree = (treeArray = [defaultV], action) => {
             }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
-                let parentDir = treeArray.find(dir=>dir._id == action.parentId)
-                
-
+                let {
+                    parentId,
+                    newId,
+                    name,
+                    time
+                } = action
+                treeArray.push({
+                    _id: newId,
+                    name: name,
+                    ctime: time,
+                    mtime: time,
+                    folded: true,
+                    dirs: [],
+                    files: []
+                })
+                let parentDir = treeArray.find(dir => dir._id == parentId)
+                let dirs = parentDir.dirs.filter(dir => dir.editable == null)
+                dirs.push({
+                    _id: newId,
+                    name: name,
+                    ctime: time,
+                    mtime: time,
+                })
+                parentDir.dirs = dirs
+                return treeArray
             }
         default:
             return treeArray
+    }
+}
+
+const showMask = (flag = false, action) => {
+    switch (action.type) {
+        case CREATE_NEW_FOLDER_PROMPT:
+            {
+                return true
+            }
+        default:
+            return flag
     }
 }
 
@@ -99,5 +99,6 @@ import {
 export default combineReducers({
     leftMenuOneDisplay,
     tree,
-    currentDirId
+    currentDirId,
+    showMask
 })

@@ -20,7 +20,7 @@ export const create_new_folder_prompt = (currentDirId) => ({
 })
 export const CREATE_NEW_FOLDER_SUBMIT = "CREATE_NEW_FOLDER_SUBMIT"
 export const create_new_folder_submit= () => ({
-    type: CREATE_NEW_FOLDER_SUBMIT,
+    type: CREATE_NEW_FOLDER_SUBMIT
 })
 
 
@@ -33,6 +33,9 @@ export const create_new_folder_success= (parentId,newId,name,time) => ({
     time
 })
 export const CREATE_NEW_FOLDER_FAILURE= "CREATE_NEW_FOLDER_FAILURE"
+export const create_new_folder_failure = ()=>({
+    type:CREATE_NEW_FOLDER_FAILURE
+})
 
 
 

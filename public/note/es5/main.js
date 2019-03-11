@@ -27514,7 +27514,7 @@ module.exports = function(originalModule) {
 /*!***************************************!*\
   !*** ./src/note/es6/actions/index.js ***!
   \***************************************/
-/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, create_new_folder_prompt, CREATE_NEW_FOLDER_SUBMIT, create_new_folder_submit, CREATE_NEW_FOLDER_SUCCESS, create_new_folder_success, CREATE_NEW_FOLDER_FAILURE, SELECT_DIR, select_dir */
+/*! exports provided: TOGGLE_LEFT_MENU_ONE, toggle_left_menu_one, CREATE_NEW_FOLDER_PROMPT, create_new_folder_prompt, CREATE_NEW_FOLDER_SUBMIT, create_new_folder_submit, CREATE_NEW_FOLDER_SUCCESS, create_new_folder_success, CREATE_NEW_FOLDER_FAILURE, create_new_folder_failure, SELECT_DIR, select_dir */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27528,6 +27528,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_SUCCESS", function() { return CREATE_NEW_FOLDER_SUCCESS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_new_folder_success", function() { return create_new_folder_success; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_NEW_FOLDER_FAILURE", function() { return CREATE_NEW_FOLDER_FAILURE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_new_folder_failure", function() { return create_new_folder_failure; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SELECT_DIR", function() { return SELECT_DIR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_dir", function() { return select_dir; });
 /**
@@ -27568,6 +27569,11 @@ var create_new_folder_success = function create_new_folder_success(parentId, new
   };
 };
 var CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE";
+var create_new_folder_failure = function create_new_folder_failure() {
+  return {
+    type: CREATE_NEW_FOLDER_FAILURE
+  };
+};
 var SELECT_DIR = "SELECT_DIR";
 var select_dir = function select_dir(dirId) {
   return {
@@ -28182,6 +28188,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         }).then(function (res) {
           console.log('res', res);
           dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_success"])(res.parentId, res.newId, res.name, res.time));
+        }).catch(function (err) {
+          console.log('err', err);
+          dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["create_new_folder_failure"])());
         });
       });
     }
@@ -28348,30 +28357,6 @@ var defaultV = {
   docs: [],
   folded: false
 };
-var test = {
-  _id: shinelonId,
-  dirs: [{
-    _id: 1,
-    name: "编程指南"
-  }, {
-    _id: 2,
-    name: "编程指南新编"
-  }],
-  docs: [],
-  folded: false
-},
-    t1 = {
-  _id: 1,
-  name: "编程指南",
-  folded: false,
-  dirs: [{
-    _id: 3,
-    name: "编程指南3"
-  }, {
-    _id: 4,
-    name: "编程指南新编4"
-  }]
-};
 
 var tree = function tree() {
   var treeArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [defaultV];
@@ -28396,9 +28381,33 @@ var tree = function tree() {
 
     case _actions__WEBPACK_IMPORTED_MODULE_0__["CREATE_NEW_FOLDER_SUCCESS"]:
       {
-        var parentDir = treeArray.find(function (dir) {
-          return dir._id == action.parentId;
+        var parentId = action.parentId,
+            newId = action.newId,
+            name = action.name,
+            time = action.time;
+        treeArray.push({
+          _id: newId,
+          name: name,
+          ctime: time,
+          mtime: time,
+          folded: true,
+          dirs: [],
+          files: []
         });
+        var parentDir = treeArray.find(function (dir) {
+          return dir._id == parentId;
+        });
+        var dirs = parentDir.dirs.filter(function (dir) {
+          return dir.editable == null;
+        });
+        dirs.push({
+          _id: newId,
+          name: name,
+          ctime: time,
+          mtime: time
+        });
+        parentDir.dirs = dirs;
+        return treeArray;
       }
 
     default:
@@ -28406,11 +28415,27 @@ var tree = function tree() {
   }
 };
 
+var showMask = function showMask() {
+  var flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["CREATE_NEW_FOLDER_PROMPT"]:
+      {
+        return true;
+      }
+
+    default:
+      return flag;
+  }
+};
+
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_1__["combineReducers"])({
   leftMenuOneDisplay: leftMenuOneDisplay,
   tree: tree,
-  currentDirId: currentDirId
+  currentDirId: currentDirId,
+  showMask: showMask
 }));
 
 /***/ }),
