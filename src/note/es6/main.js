@@ -6,6 +6,8 @@ import reducer from './reducers'
 import { Provider } from 'react-redux'
 import App from "./components/App.jsx"
 import "../sass/global.scss"
+import axios from "axios"
+
 
 const store = createStore(reducer, applyMiddleware(thunk))
 store.subscribe(() => {

@@ -2,6 +2,8 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import { create_new_folder_submit ,create_new_folder_success,create_new_folder_failure} from "../actions"
+import axios from 'axios';
+import { log } from "util";
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -21,10 +23,7 @@ class DirTree extends React.Component {
     keydown(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            let { _id, tree, createNewFolderSumbit } = this.props
-            let targetDir = tree.find(doc => doc._id === _id),
-                name = (targetDir.dirs.find(dir => dir._id == null)).name
-            createNewFolderSumbit(name)
+            this.props.createNewFolderSumbit(this.editableElem.textContent.trim())
         }
     }
     render() {
@@ -40,11 +39,11 @@ class DirTree extends React.Component {
             return null
         } else {
             return (
-                <ul className={styles.list}>
+                <ul className={styles.ul}>
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
                             return (
-                                <li key={dir._id} className={styles.item}>
+                                <li key={dir._id} className={styles.li}>
                                     <i className={styles.dirIcon} />
                                     <span className={styles.dirName}>{dir.name}</span>
                                     <DirTree tree={tree} _id={dir._id}
@@ -53,7 +52,7 @@ class DirTree extends React.Component {
                             )
                         } else {
                             return (
-                                <li key={"editable"} className={styles.item}>
+                                <li key={"editable"} className={styles.li}>
                                     <i className={styles.dirIcon} />
                                     <span className={styles.dirName}
                                         onKeyDown={this.keydown}
@@ -94,23 +93,42 @@ const mapDispatchToProps = dispatch => ({
         dispatch(create_new_folder_submit())
         dispatch((dispatch, getState) => {
             let currentDirId = getState().currentDirId
-                fetch("note/create-folder/", {
-                    method: "POST",
+            axios.post("note/create-folder/",{
+                name,
+                dirId:currentDirId
+            },
+            {
                     headers: {
                         "Content-Type": "application/json",
+                        'X-Requested-With': 'axios'
                     },
-                    body: JSON.stringify({
-                        name: name,
-                        dirId: currentDirId
-                    })
-                }).then(res => res.json())
-                .then(res=> {
-                    console.log('res',res);
-                    dispatch(create_new_folder_success(res.parentId,res.newId,res.name,res.time))
-                }).catch(err=>{
+                     timeout: 1000, // default is `0` (no timeout),
+                      responseType: 'json' // default
+            }).then(res=>{
+                let {parentId,newId,name,time} = res.data
+                    dispatch(create_new_folder_success(parentId,newId,name,time))
+            }).catch(err=>{
                     console.log('err',err);
                     dispatch(create_new_folder_failure())
-                })
+            })
+
+                // fetch("note/create-folder/", {
+                //     method: "POST",
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //     },
+                //     body: JSON.stringify({
+                //         name: name,
+                //         dirId: currentDirId
+                //     })
+                // }).then(res => res.json())
+                // .then(res=> {
+                //     console.log('res',res);
+                //     dispatch(create_new_folder_success(res.parentId,res.newId,res.name,res.time))
+                // }).catch(err=>{
+                //     console.log('err',err);
+                //     dispatch(create_new_folder_failure())
+                // })
         })
     }
 })

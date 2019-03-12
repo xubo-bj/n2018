@@ -72,7 +72,7 @@ const tree = (treeArray = [defaultV], action) => {
                     mtime: time,
                 })
                 parentDir.dirs = dirs
-                return treeArray
+                return [...treeArray]
             }
         default:
             return treeArray
