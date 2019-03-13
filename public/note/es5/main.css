@@ -144,7 +144,39 @@
   border: 1px solid #000; }
 
 ._3lPmwPnahBhz7xeKgSjp0m {
-  height: 30px; }
+  height: 30px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #000; }
+
+._3xezzTeOoF8at18l6puiP6 {
+  background: url(/note/images/sprite.svg) no-repeat;
+  width: 14px;
+  height: 14px; }
+
+.x0otYSECyU-0_ueYSCpao {
+  background-position: 68.31955922865014% 98.83381924198251%; }
+
+.EuyObZDU0G4R5p20DwViJ {
+  background-position: 56.74931129476584% 98.83381924198251%; }
+
+._3LDijpTdgHXx1toqIfuZOA {
+  flex-grow: 1;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center; }
+
+._3iBMFRcRBVzLL9LT2J0alZ {
+  background: url(/note/images/sprite.svg) no-repeat;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px; }
+
+._3aegqkwhgrINrAnUEv7CbC {
+  background-position: 56.657223796033996% 47.747747747747745%; }
+
+._1ZCqU_9LI9bYZP0ICANgk7 {
+  background-position: 88.6685552407932% 64.86486486486487%; }
 
 .A4Je2tkl7zhuIeuFJfZpK {
   height: 61px;

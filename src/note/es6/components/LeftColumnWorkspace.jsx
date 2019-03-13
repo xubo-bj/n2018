@@ -49,23 +49,30 @@ class DirTree extends React.Component {
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
                             return (
-                                <li key={dir._id} className={styles.li} data-id={dir._id}>
-                                    <i className={styles.arrow}></i>
-                                    <i className={styles.dirIcon} />
-                                    <span className={styles.dirName}>{dir.name}</span>
-                                    <DirTree tree={tree} _id={dir._id}
+                                <li key={dir._id} className={styles.li} data-id={dir._id}
+                                    style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                    <i className={styles["arrow-closed"]}></i>
+                                    <div className={styles.dir}>
+                                        <i className={styles["dir-closed"]} />
+                                        <span className={styles.dirName}>{dir.name}</span>
+                                    </div>
+                                    <DirTree tree={tree} _id={dir._id} level={this.props.level + 1}
                                         createNewFolderSumbit={this.props.createNewFolderSumbit} />
                                 </li>
                             )
                         } else {
                             return (
-                                <li key={"editable"} className={styles.li}>
-                                    <i className={styles.dirIcon} />
-                                    <span className={styles.dirName}
-                                        onKeyDown={this.keydown}
-                                        ref={elem => this.editableElem = elem}
-                                        contentEditable={dir.editable}
-                                    >{dir.name}</span>
+                                <li key={"editable"} className={styles.li}
+                                    style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                    <i className={styles["arrow-closed"]} />
+                                    <div className={styles.dir}>
+                                        <i className={styles["dir-closed"]} />
+                                        <span className={styles.dirName}
+                                            onKeyDown={this.keydown}
+                                            ref={elem => this.editableElem = elem}
+                                            contentEditable={dir.editable}
+                                        >{dir.name}</span>
+                                    </div>
                                 </li>
                             )
                         }
@@ -95,7 +102,7 @@ const LeftColumnWorkspace = (props) => {
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
                 </ul>
             </div>
-            <DirTree tree={props.tree} _id={shinelonId}
+            <DirTree tree={props.tree} _id={shinelonId} level={1}
                 createNewFolderSumbit={props.createNewFolderSumbit} />
         </Fragment>
     )
@@ -111,10 +118,10 @@ const mapDispatchToProps = dispatch => ({
     rightClickRootDir: e => {
         e.preventDefault()
         dispatch((dispatch, getState) => {
-            let { leftMenuOneDisplay } = getState()
-            if (leftMenuOneDisplay == "block") {
-                dispatch(toggle_left_menu_one("none"))
-            }
+            // let { leftMenuOneDisplay } = getState()
+            // if (leftMenuOneDisplay == "block") {
+            //     dispatch(toggle_left_menu_one("none"))
+            // }
             dispatch(toggle_left_menu_two("block", e.clientX, e.clientY))
         })
     },

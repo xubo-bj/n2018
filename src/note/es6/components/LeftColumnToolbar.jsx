@@ -24,10 +24,10 @@ const mapDispatchToProps = dispatch => ({
     displayLeftMenuOne: e => {
         e.stopPropagation()
         dispatch((dispatch,getState)=>{
-            let { leftMenuTwo } = getState()
-            if(leftMenuTwo.display == "block"){
-                dispatch(toggle_left_menu_two("none",0,0))
-            }
+            // let { leftMenuTwo } = getState()
+            // if(leftMenuTwo.display == "block"){
+            //     dispatch(toggle_left_menu_two("none",0,0))
+            // }
         dispatch(toggle_left_menu_one("block"))
         })
     },

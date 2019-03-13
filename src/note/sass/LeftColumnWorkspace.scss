@@ -52,4 +52,40 @@
 }
 .li{
     height: 30px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #000;
+}
+.arrow{
+    background: url(/note/images/sprite.svg) no-repeat;
+    width: 14px;
+    height: 14px;
+}
+.arrow-open{
+    composes:arrow;
+    background-position: 68.31955922865014% 98.83381924198251%;
+}
+.arrow-closed{
+    composes:arrow;
+    background-position: 56.74931129476584% 98.83381924198251%;
+}
+.dir{
+    flex-grow: 1;
+    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+}
+.dir-icon{
+    background: url(/note/images/sprite.svg) no-repeat;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+.dir-open{
+    composes:dir-icon;
+    background-position: 56.657223796033996% 47.747747747747745%;
+}
+.dir-closed{
+    composes:dir-icon;
+    background-position: 88.6685552407932% 64.86486486486487%;
 }

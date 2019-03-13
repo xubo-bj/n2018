@@ -12,11 +12,18 @@ const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
         case TOGGLE_LEFT_MENU_ONE:
             return action.display
+        case TOGGLE_LEFT_MENU_TWO:
+            {
+                if (action.display == "block") {
+                    return "none"
+                }
+                return display
+            }
         default:
             return display
     }
 }
-const leftMenuTwo= (r = {
+const leftMenuTwo = (r = {
     display: "none",
     clientX: "0px;",
     clientY: "0px"
@@ -24,15 +31,25 @@ const leftMenuTwo= (r = {
     switch (action.type) {
         case TOGGLE_LEFT_MENU_TWO:
             return {
-                display:action.display,
-                clientX:action.clientX,
-                clientY:action.clientY
+                display: action.display,
+                clientX: action.clientX,
+                clientY: action.clientY
+            }
+        case TOGGLE_LEFT_MENU_ONE:
+            {
+                if (action.display == "block") {
+                    return {
+                        display: "none",
+                        clientX: 0,
+                        clientY: 0
+                    }
+                }
+                return r
             }
         default:
             return r
     }
 }
-
 
 const currentDirId = (dirId = shinelonId, action) => {
     switch (action.type) {

@@ -29968,13 +29968,10 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     displayLeftMenuOne: function displayLeftMenuOne(e) {
       e.stopPropagation();
       dispatch(function (dispatch, getState) {
-        var _getState = getState(),
-            leftMenuTwo = _getState.leftMenuTwo;
-
-        if (leftMenuTwo.display == "block") {
-          dispatch((0, _actions.toggle_left_menu_two)("none", 0, 0));
-        }
-
+        // let { leftMenuTwo } = getState()
+        // if(leftMenuTwo.display == "block"){
+        //     dispatch(toggle_left_menu_two("none",0,0))
+        // }
         dispatch((0, _actions.toggle_left_menu_one)("block"));
       });
     },
@@ -30104,24 +30101,37 @@ function (_React$Component) {
             return _react.default.createElement("li", {
               key: dir._id,
               className: _LeftColumnWorkspace.default.li,
-              "data-id": dir._id
+              "data-id": dir._id,
+              style: {
+                paddingLeft: _this2.props.level * 20 + "px"
+              }
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default.arrow
-            }), _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default.dirIcon
+              className: _LeftColumnWorkspace.default["arrow-closed"]
+            }), _react.default.createElement("div", {
+              className: _LeftColumnWorkspace.default.dir
+            }, _react.default.createElement("i", {
+              className: _LeftColumnWorkspace.default["dir-closed"]
             }), _react.default.createElement("span", {
               className: _LeftColumnWorkspace.default.dirName
-            }, dir.name), _react.default.createElement(DirTree, {
+            }, dir.name)), _react.default.createElement(DirTree, {
               tree: tree,
               _id: dir._id,
+              level: _this2.props.level + 1,
               createNewFolderSumbit: _this2.props.createNewFolderSumbit
             }));
           } else {
             return _react.default.createElement("li", {
               key: "editable",
-              className: _LeftColumnWorkspace.default.li
+              className: _LeftColumnWorkspace.default.li,
+              style: {
+                paddingLeft: _this2.props.level * 20 + "px"
+              }
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default.dirIcon
+              className: _LeftColumnWorkspace.default["arrow-closed"]
+            }), _react.default.createElement("div", {
+              className: _LeftColumnWorkspace.default.dir
+            }, _react.default.createElement("i", {
+              className: _LeftColumnWorkspace.default["dir-closed"]
             }), _react.default.createElement("span", {
               className: _LeftColumnWorkspace.default.dirName,
               onKeyDown: _this2.keydown,
@@ -30129,7 +30139,7 @@ function (_React$Component) {
                 return _this2.editableElem = elem;
               },
               contentEditable: dir.editable
-            }, dir.name));
+            }, dir.name)));
           }
         }));
       }
@@ -30163,6 +30173,7 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
   }, "\u65B0\u5EFA\u6587\u4EF6\u5939"))), _react.default.createElement(DirTree, {
     tree: props.tree,
     _id: shinelonId,
+    level: 1,
     createNewFolderSumbit: props.createNewFolderSumbit
   }));
 };
@@ -30179,13 +30190,10 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     rightClickRootDir: function rightClickRootDir(e) {
       e.preventDefault();
       dispatch(function (dispatch, getState) {
-        var _getState = getState(),
-            leftMenuOneDisplay = _getState.leftMenuOneDisplay;
-
-        if (leftMenuOneDisplay == "block") {
-          dispatch((0, _actions.toggle_left_menu_one)("none"));
-        }
-
+        // let { leftMenuOneDisplay } = getState()
+        // if (leftMenuOneDisplay == "block") {
+        //     dispatch(toggle_left_menu_one("none"))
+        // }
         dispatch((0, _actions.toggle_left_menu_two)("block", e.clientX, e.clientY));
       });
     },
@@ -30383,6 +30391,15 @@ var leftMenuOneDisplay = function leftMenuOneDisplay() {
     case TOGGLE_LEFT_MENU_ONE:
       return action.display;
 
+    case TOGGLE_LEFT_MENU_TWO:
+      {
+        if (action.display == "block") {
+          return "none";
+        }
+
+        return display;
+      }
+
     default:
       return display;
   }
@@ -30403,6 +30420,19 @@ var leftMenuTwo = function leftMenuTwo() {
         clientX: action.clientX,
         clientY: action.clientY
       };
+
+    case TOGGLE_LEFT_MENU_ONE:
+      {
+        if (action.display == "block") {
+          return {
+            display: "none",
+            clientX: 0,
+            clientY: 0
+          };
+        }
+
+        return r;
+      }
 
     default:
       return r;
@@ -30594,7 +30624,7 @@ module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWev
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m"};
+module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ"};
 
 /***/ }),
 
