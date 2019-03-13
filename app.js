@@ -9,7 +9,7 @@ const logger = require('koa-logger')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const ctrip = require('./routes/ctrip')
-const note = require("./routes/note")
+const note = require("./routes/note/note.js")
 
 // error handler
 onerror(app)

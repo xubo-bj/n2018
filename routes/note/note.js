@@ -1,33 +1,39 @@
+require("@babel/register");
 const path = require('path')
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require("mongodb").ObjectID
 const assert = require('assert');
-const {createStore} = require("redux")
-const reducer = require("../../src/note/es6/reducers/")
+const {
+    createStore
+} = require("redux")
+const reducer = require("../../src/note/es6/reducers")
 const url = 'mongodb://localhost:27017';
 const dbName = 'note';
 const userdirs = 'userdirs'
 const client = new MongoClient(url, {
     useNewUrlParser: true
 });
-const shinelonId  = require("../../config").note.mongodb.shinelonId
-
+const shinelonId = require("../../config").note.mongodb.shinelonId
 const ejsPath = 'note/'
-
 const router = require('koa-router')()
 router.prefix('/note')
 
+
+
 router.get('/', async (ctx, next) => {
-let c= await client.connect()
-let userdirsCollection= c.db(dbName).collection(userdirs)
+    let dbConn = await client.connect()
+    let userdirsCol = dbConn.db(dbName).collection(userdirs)
 
-/**
- * 修改userdirs形状，需要一个parentId，递归生成
- */
-// let r = userdirsCollection.findOne({_id:new ObjectID(shinelonId)})
-
-      const store = createStore(reducer, { tree})
-  const preloadedState = store.getState()
+    /**
+     * 修改userdirs形状，增加一个parentId，响应到某一个具体的文档
+     */
+    let r = await userdirsCol.findOne({
+        _id: new ObjectID(shinelonId)
+    })
+    const store = createStore(reducer, {
+        tree: [r]
+    })
+    const preloadedState = store.getState()
 
     await ctx.render(path.join(ejsPath, 'index'), {
         preloadedState: JSON.stringify(preloadedState).replace(/</g, '\\u003c')
@@ -70,7 +76,7 @@ router.post('/create-folder', async (ctx, next) => {
                 parentId: dirId,
                 newId: r.insertedId,
                 name,
-                time:d
+                time: d
             }
         } else {
             await u.deleteOne({
@@ -87,6 +93,10 @@ router.post('/create-folder', async (ctx, next) => {
     }
 })
 
+
+/*
+** test
+
 let i = 0
 router.get('/test', async (ctx, next) => {
     let r = await client.connect()
@@ -99,5 +109,6 @@ router.get('/test', async (ctx, next) => {
 
     ctx.body = "success"
 })
+*/
 
 module.exports = router

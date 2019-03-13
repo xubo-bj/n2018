@@ -1,11 +1,12 @@
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
-import {
+const {
     TOGGLE_LEFT_MENU_ONE,
+    TOGGLE_LEFT_MENU_TWO,
     SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS
-} from "../actions"
+} = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
@@ -13,6 +14,22 @@ const leftMenuOneDisplay = (display = "none", action) => {
             return action.display
         default:
             return display
+    }
+}
+const leftMenuTwo= (r = {
+    display: "none",
+    clientX: "0px;",
+    clientY: "0px"
+}, action) => {
+    switch (action.type) {
+        case TOGGLE_LEFT_MENU_TWO:
+            return {
+                display:action.display,
+                clientX:action.clientX,
+                clientY:action.clientY
+            }
+        default:
+            return r
     }
 }
 
@@ -93,11 +110,12 @@ const showMask = (flag = false, action) => {
 
 
 
-import {
+const {
     combineReducers
-} from 'redux'
-export default combineReducers({
+} = require("redux")
+module.exports = combineReducers({
     leftMenuOneDisplay,
+    leftMenuTwo,
     tree,
     currentDirId,
     showMask

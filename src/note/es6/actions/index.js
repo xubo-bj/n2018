@@ -9,6 +9,13 @@ export const toggle_left_menu_one = display => {
     }
 }
 
+export const TOGGLE_LEFT_MENU_TWO = "TOGGLE_LEFT_MENU_TWO"
+export const toggle_left_menu_two = (display, clientX, clientY) => ({
+    type: TOGGLE_LEFT_MENU_TWO,
+    display,
+    clientX,
+    clientY
+})
 
 /**
  * create new folder

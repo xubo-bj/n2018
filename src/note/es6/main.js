@@ -6,13 +6,16 @@ import reducer from './reducers'
 import { Provider } from 'react-redux'
 import App from "./components/App.jsx"
 import "../sass/global.scss"
-import axios from "axios"
 
+const preloadedState = window.__PRELOADED_STATE__
+delete window.__PRELOADED_STATE__
 
-const store = createStore(reducer, applyMiddleware(thunk))
+const store = createStore(reducer,preloadedState,applyMiddleware(thunk))
 store.subscribe(() => {
   console.log('store :', store.getState())
 })
+console.log('initial store',store.getState());
+
 
 ReactDOM.render(
   <Provider store={store}>
