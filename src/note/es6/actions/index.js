@@ -2,19 +2,27 @@
  * pop menu in the toolbar of left-column
  */
 export const TOGGLE_LEFT_MENU_ONE = "TOGGLE_LEFT_MENU_ONE"
-export const toggle_left_menu_one = display => {
+export const toggle_left_menu_one = (display,_id) => {
     return {
         type: TOGGLE_LEFT_MENU_ONE,
-        display
+        display,
+        _id
     }
 }
-
 export const TOGGLE_LEFT_MENU_TWO = "TOGGLE_LEFT_MENU_TWO"
 export const toggle_left_menu_two = (display, clientX, clientY) => ({
     type: TOGGLE_LEFT_MENU_TWO,
     display,
     clientX,
     clientY
+})
+export const TOGGLE_LEFT_MENU_THREE = "TOGGLE_LEFT_MENU_THREE"
+export const toggle_left_menu_three= (display, clientX, clientY,_id) => ({
+    type: TOGGLE_LEFT_MENU_THREE,
+    display,
+    clientX,
+    clientY,
+    _id
 })
 
 /**

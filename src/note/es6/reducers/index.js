@@ -2,6 +2,7 @@ const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     TOGGLE_LEFT_MENU_ONE,
     TOGGLE_LEFT_MENU_TWO,
+    TOGGLE_LEFT_MENU_THREE,
     SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT,
@@ -13,6 +14,7 @@ const leftMenuOneDisplay = (display = "none", action) => {
         case TOGGLE_LEFT_MENU_ONE:
             return action.display
         case TOGGLE_LEFT_MENU_TWO:
+        case TOGGLE_LEFT_MENU_THREE:
             {
                 if (action.display == "block") {
                     return "none"
@@ -36,6 +38,36 @@ const leftMenuTwo = (r = {
                 clientY: action.clientY
             }
         case TOGGLE_LEFT_MENU_ONE:
+        case TOGGLE_LEFT_MENU_THREE:
+            {
+                if (action.display == "block") {
+                    return {
+                        display: "none",
+                        clientX: 0,
+                        clientY: 0
+                    }
+                }
+                return r
+            }
+        default:
+            return r
+    }
+}
+
+const leftMenuThree= (r = {
+    display: "none",
+    clientX: "0px;",
+    clientY: "0px"
+}, action) => {
+    switch (action.type) {
+        case TOGGLE_LEFT_MENU_THREE:
+            return {
+                display: action.display,
+                clientX: action.clientX,
+                clientY: action.clientY
+            }
+        case TOGGLE_LEFT_MENU_ONE:
+        case TOGGLE_LEFT_MENU_TWO:
             {
                 if (action.display == "block") {
                     return {
@@ -55,6 +87,12 @@ const currentDirId = (dirId = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
             return action.dirId
+        case TOGGLE_LEFT_MENU_ONE:
+            return action._id
+        case TOGGLE_LEFT_MENU_TWO:
+            return shinelonId
+        case TOGGLE_LEFT_MENU_THREE:
+            return action._id
         default:
             return dirId
     }
@@ -133,6 +171,7 @@ const {
 module.exports = combineReducers({
     leftMenuOneDisplay,
     leftMenuTwo,
+    leftMenuThree,
     tree,
     currentDirId,
     showMask

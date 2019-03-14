@@ -6,8 +6,9 @@ import {
     create_new_folder_submit,
     create_new_folder_success,
     create_new_folder_failure,
-    toggle_left_menu_one,
-    toggle_left_menu_two
+    toggle_left_menu_two,
+    toggle_left_menu_three,
+    select_dir
 } from "../actions"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -45,7 +46,9 @@ class DirTree extends React.Component {
             return null
         } else {
             return (
-                <ul className={styles.ul}>
+                <ul className={styles.ul}
+                onContextMenu={this.props.rightClickDir|| null}
+                >
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
                             return (
@@ -99,11 +102,24 @@ const LeftColumnWorkspace = (props) => {
                         top: props.leftMenuTwo.clientY + "px"
                     }}>
                     <li className={styles["menu-option"]}>新建文件</li>
-                    <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
             </div>
-            <DirTree tree={props.tree} _id={shinelonId} level={1}
+            <DirTree tree={props.tree} _id={shinelonId} level={1} rightClickDir={props.rightClickDir}
                 createNewFolderSumbit={props.createNewFolderSumbit} />
+                <ul className={styles["pop-menu"]}
+                    style={{
+                        display: props.leftMenuThree.display,
+                        left: props.leftMenuThree.clientX + "px",
+                        top: props.leftMenuThree.clientY + "px"
+                    }}>
+                    <li className={styles["menu-option"]}>新建文件</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
+                    <li className={styles["menu-option"]}>重命名</li>
+                    <li className={styles["menu-option"]}>移动到</li>
+                    <li className={styles["menu-option"]}>复制</li>
+                    <li className={styles["menu-option"]}>删除</li>
+                </ul>
         </Fragment>
     )
 }
@@ -111,6 +127,7 @@ const LeftColumnWorkspace = (props) => {
 const mapStateToProps = state => {
     return {
         leftMenuTwo: state.leftMenuTwo,
+        leftMenuThree: state.leftMenuThree,
         tree: state.tree
     }
 }
@@ -118,13 +135,17 @@ const mapDispatchToProps = dispatch => ({
     rightClickRootDir: e => {
         e.preventDefault()
         dispatch((dispatch, getState) => {
-            // let { leftMenuOneDisplay } = getState()
-            // if (leftMenuOneDisplay == "block") {
-            //     dispatch(toggle_left_menu_one("none"))
-            // }
             dispatch(toggle_left_menu_two("block", e.clientX, e.clientY))
         })
     },
+    rightClickDir:e=>{
+        e.preventDefault()
+        let target = e.target
+        while(target.tagName.toLowerCase() != "li"){
+            target = target.parentNode
+        }
+        dispatch(toggle_left_menu_two("block", e.clientX, e.clientY, target.dataset.id))
+    } ,
     createNewFolderSumbit: (name) => {
         dispatch(create_new_folder_submit())
         dispatch((dispatch, getState) => {
@@ -149,10 +170,9 @@ const mapDispatchToProps = dispatch => ({
                 })
         })
     },
-    createNewFolderPrompt: () => {
+    createNewFolderPromptInRoot: () => {
         dispatch((dispatch, getState) => {
-            let currentDirId = getState().currentDirId
-            dispatch(create_new_folder_prompt(currentDirId))
+            dispatch(create_new_folder_prompt(shinelonId))
         })
     }
 })

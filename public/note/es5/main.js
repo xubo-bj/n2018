@@ -29418,7 +29418,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.toggle_left_menu_two = exports.TOGGLE_LEFT_MENU_TWO = exports.toggle_left_menu_one = exports.TOGGLE_LEFT_MENU_ONE = void 0;
+exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.toggle_left_menu_three = exports.TOGGLE_LEFT_MENU_THREE = exports.toggle_left_menu_two = exports.TOGGLE_LEFT_MENU_TWO = exports.toggle_left_menu_one = exports.TOGGLE_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -29426,10 +29426,11 @@ exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = ex
 var TOGGLE_LEFT_MENU_ONE = "TOGGLE_LEFT_MENU_ONE";
 exports.TOGGLE_LEFT_MENU_ONE = TOGGLE_LEFT_MENU_ONE;
 
-var toggle_left_menu_one = function toggle_left_menu_one(display) {
+var toggle_left_menu_one = function toggle_left_menu_one(display, _id) {
   return {
     type: TOGGLE_LEFT_MENU_ONE,
-    display: display
+    display: display,
+    _id: _id
   };
 };
 
@@ -29445,12 +29446,26 @@ var toggle_left_menu_two = function toggle_left_menu_two(display, clientX, clien
     clientY: clientY
   };
 };
+
+exports.toggle_left_menu_two = toggle_left_menu_two;
+var TOGGLE_LEFT_MENU_THREE = "TOGGLE_LEFT_MENU_THREE";
+exports.TOGGLE_LEFT_MENU_THREE = TOGGLE_LEFT_MENU_THREE;
+
+var toggle_left_menu_three = function toggle_left_menu_three(display, clientX, clientY, _id) {
+  return {
+    type: TOGGLE_LEFT_MENU_THREE,
+    display: display,
+    clientX: clientX,
+    clientY: clientY,
+    _id: _id
+  };
+};
 /**
  * create new folder
  */
 
 
-exports.toggle_left_menu_two = toggle_left_menu_two;
+exports.toggle_left_menu_three = toggle_left_menu_three;
 var CREATE_NEW_FOLDER_PROMPT = "CREATE_NEW_FOLDER_PROMPT";
 exports.CREATE_NEW_FOLDER_PROMPT = CREATE_NEW_FOLDER_PROMPT;
 
@@ -30095,7 +30110,8 @@ function (_React$Component) {
         return null;
       } else {
         return _react.default.createElement("ul", {
-          className: _LeftColumnWorkspace.default.ul
+          className: _LeftColumnWorkspace.default.ul,
+          onContextMenu: this.props.rightClickDir || null
         }, targetDir.dirs.map(function (dir) {
           if (dir._id) {
             return _react.default.createElement("li", {
@@ -30169,18 +30185,40 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
     className: _LeftColumnWorkspace.default["menu-option"]
   }, "\u65B0\u5EFA\u6587\u4EF6"), _react.default.createElement("li", {
     className: _LeftColumnWorkspace.default["menu-option"],
-    onClick: props.createNewFolderPrompt
+    onClick: props.createNewFolderPromptInRoot
   }, "\u65B0\u5EFA\u6587\u4EF6\u5939"))), _react.default.createElement(DirTree, {
     tree: props.tree,
     _id: shinelonId,
     level: 1,
+    rightClickDir: props.rightClickDir,
     createNewFolderSumbit: props.createNewFolderSumbit
-  }));
+  }), _react.default.createElement("ul", {
+    className: _LeftColumnWorkspace.default["pop-menu"],
+    style: {
+      display: props.leftMenuThree.display,
+      left: props.leftMenuThree.clientX + "px",
+      top: props.leftMenuThree.clientY + "px"
+    }
+  }, _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"]
+  }, "\u65B0\u5EFA\u6587\u4EF6"), _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"],
+    onClick: props.createNewFolderPromptInRoot
+  }, "\u65B0\u5EFA\u6587\u4EF6\u5939"), _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"]
+  }, "\u91CD\u547D\u540D"), _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"]
+  }, "\u79FB\u52A8\u5230"), _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"]
+  }, "\u590D\u5236"), _react.default.createElement("li", {
+    className: _LeftColumnWorkspace.default["menu-option"]
+  }, "\u5220\u9664")));
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
     leftMenuTwo: state.leftMenuTwo,
+    leftMenuThree: state.leftMenuThree,
     tree: state.tree
   };
 };
@@ -30190,12 +30228,18 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     rightClickRootDir: function rightClickRootDir(e) {
       e.preventDefault();
       dispatch(function (dispatch, getState) {
-        // let { leftMenuOneDisplay } = getState()
-        // if (leftMenuOneDisplay == "block") {
-        //     dispatch(toggle_left_menu_one("none"))
-        // }
         dispatch((0, _actions.toggle_left_menu_two)("block", e.clientX, e.clientY));
       });
+    },
+    rightClickDir: function rightClickDir(e) {
+      e.preventDefault();
+      var target = e.target;
+
+      while (target.tagName.toLowerCase() != "li") {
+        target = target.parentNode;
+      }
+
+      dispatch((0, _actions.toggle_left_menu_two)("block", e.clientX, e.clientY, target.dataset.id));
     },
     createNewFolderSumbit: function createNewFolderSumbit(name) {
       dispatch((0, _actions.create_new_folder_submit)());
@@ -30227,10 +30271,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         });
       });
     },
-    createNewFolderPrompt: function createNewFolderPrompt() {
+    createNewFolderPromptInRoot: function createNewFolderPromptInRoot() {
       dispatch(function (dispatch, getState) {
-        var currentDirId = getState().currentDirId;
-        dispatch((0, _actions.create_new_folder_prompt)(currentDirId));
+        dispatch((0, _actions.create_new_folder_prompt)(shinelonId));
       });
     }
   };
@@ -30378,6 +30421,7 @@ var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.j
 var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js"),
     TOGGLE_LEFT_MENU_ONE = _require.TOGGLE_LEFT_MENU_ONE,
     TOGGLE_LEFT_MENU_TWO = _require.TOGGLE_LEFT_MENU_TWO,
+    TOGGLE_LEFT_MENU_THREE = _require.TOGGLE_LEFT_MENU_THREE,
     SELECT_DIR = _require.SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT = _require.CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
@@ -30392,6 +30436,7 @@ var leftMenuOneDisplay = function leftMenuOneDisplay() {
       return action.display;
 
     case TOGGLE_LEFT_MENU_TWO:
+    case TOGGLE_LEFT_MENU_THREE:
       {
         if (action.display == "block") {
           return "none";
@@ -30422,6 +30467,42 @@ var leftMenuTwo = function leftMenuTwo() {
       };
 
     case TOGGLE_LEFT_MENU_ONE:
+    case TOGGLE_LEFT_MENU_THREE:
+      {
+        if (action.display == "block") {
+          return {
+            display: "none",
+            clientX: 0,
+            clientY: 0
+          };
+        }
+
+        return r;
+      }
+
+    default:
+      return r;
+  }
+};
+
+var leftMenuThree = function leftMenuThree() {
+  var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    display: "none",
+    clientX: "0px;",
+    clientY: "0px"
+  };
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case TOGGLE_LEFT_MENU_THREE:
+      return {
+        display: action.display,
+        clientX: action.clientX,
+        clientY: action.clientY
+      };
+
+    case TOGGLE_LEFT_MENU_ONE:
+    case TOGGLE_LEFT_MENU_TWO:
       {
         if (action.display == "block") {
           return {
@@ -30446,6 +30527,15 @@ var currentDirId = function currentDirId() {
   switch (action.type) {
     case SELECT_DIR:
       return action.dirId;
+
+    case TOGGLE_LEFT_MENU_ONE:
+      return action._id;
+
+    case TOGGLE_LEFT_MENU_TWO:
+      return shinelonId;
+
+    case TOGGLE_LEFT_MENU_THREE:
+      return action._id;
 
     default:
       return dirId;
@@ -30537,6 +30627,7 @@ var _require2 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.
 module.exports = combineReducers({
   leftMenuOneDisplay: leftMenuOneDisplay,
   leftMenuTwo: leftMenuTwo,
+  leftMenuThree: leftMenuThree,
   tree: tree,
   currentDirId: currentDirId,
   showMask: showMask

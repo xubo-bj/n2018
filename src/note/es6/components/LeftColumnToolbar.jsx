@@ -2,7 +2,6 @@ import React from "react"
 import styles from "../../sass/LeftColumnToolbar.scss"
 import { connect } from 'react-redux'
 import { toggle_left_menu_one,
-    toggle_left_menu_two,
     create_new_folder_prompt } from "../actions"
 const LeftColumnToolbar = (props) => (
     <div className={styles.container}>
