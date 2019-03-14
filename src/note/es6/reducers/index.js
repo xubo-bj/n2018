@@ -1,8 +1,12 @@
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     TOGGLE_LEFT_MENU_ONE,
-    TOGGLE_LEFT_MENU_TWO,
-    TOGGLE_LEFT_MENU_THREE,
+    SHOW_LEFT_MENU_ONE,
+    HIDE_LEFT_MENU_ONE,
+    SHOW_LEFT_MENU_TWO,
+    HIDE_LEFT_MENU_TWO,
+    SHOW_LEFT_MENU_THREE,
+    HIDE_LEFT_MENU_THREE,
     SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT,
@@ -11,90 +15,74 @@ const {
 
 const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
-        case TOGGLE_LEFT_MENU_ONE:
-            return action.display
-        case TOGGLE_LEFT_MENU_TWO:
-        case TOGGLE_LEFT_MENU_THREE:
-            {
-                if (action.display == "block") {
-                    return "none"
-                }
-                return display
-            }
+        case SHOW_LEFT_MENU_ONE:
+            return "block"
+            case HIDE_LEFT_MENU_ONE:
+        case SHOW_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_THREE:
+            return "none"
         default:
             return display
     }
 }
 const leftMenuTwo = (r = {
     display: "none",
-    clientX: "0px;",
-    clientY: "0px"
+    clientX: 0,
+    clientY: 0
 }, action) => {
     switch (action.type) {
-        case TOGGLE_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_TWO:
             return {
-                display: action.display,
+                display: "block",
                 clientX: action.clientX,
                 clientY: action.clientY
             }
-        case TOGGLE_LEFT_MENU_ONE:
-        case TOGGLE_LEFT_MENU_THREE:
-            {
-                if (action.display == "block") {
-                    return {
-                        display: "none",
-                        clientX: 0,
-                        clientY: 0
-                    }
-                }
-                return r
+        case HIDE_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_ONE:
+        case SHOW_LEFT_MENU_THREE:
+            return {
+                display: "none",
+                clientX: r.clientX,
+                clientY: r.clientY
             }
         default:
             return r
     }
 }
 
-const leftMenuThree= (r = {
+const leftMenuThree = (r = {
     display: "none",
-    clientX: "0px;",
-    clientY: "0px"
+    clientX: 0,
+    clientY: 0,
 }, action) => {
     switch (action.type) {
-        case TOGGLE_LEFT_MENU_THREE:
+        case SHOW_LEFT_MENU_THREE:
             return {
-                display: action.display,
+                display: "block",
                 clientX: action.clientX,
-                clientY: action.clientY
+                clientY: action.clientY,
             }
-        case TOGGLE_LEFT_MENU_ONE:
-        case TOGGLE_LEFT_MENU_TWO:
-            {
-                if (action.display == "block") {
-                    return {
-                        display: "none",
-                        clientX: 0,
-                        clientY: 0
-                    }
-                }
-                return r
+            case HIDE_LEFT_MENU_THREE:
+        case SHOW_LEFT_MENU_ONE:
+        case SHOW_LEFT_MENU_TWO:
+            return {
+                display: "none",
+                clientX: r.clientX,
+                clientY: r.clientY
             }
         default:
             return r
     }
 }
 
-const currentDirId = (dirId = shinelonId, action) => {
+const currentDirId = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
-            return action.dirId
-        case TOGGLE_LEFT_MENU_ONE:
             return action._id
-        case TOGGLE_LEFT_MENU_TWO:
-            return shinelonId
-        case TOGGLE_LEFT_MENU_THREE:
+        case SHOW_LEFT_MENU_THREE:
             return action._id
         default:
-            return dirId
+            return _id 
     }
 }
 
@@ -111,12 +99,12 @@ const tree = (treeArray = [defaultV], action) => {
             {
                 let _id = action.currentDirId
                 let targetDir = treeArray.find(dir => dir._id === _id)
+                targetDir.folded = false
                 targetDir.dirs.push({
                     editable: true,
                     name: "新建文件夹"
                 })
-                let newTree = [...treeArray]
-                return newTree
+                return [...treeArray]
             }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
@@ -161,8 +149,6 @@ const showMask = (flag = false, action) => {
             return flag
     }
 }
-
-
 
 
 const {

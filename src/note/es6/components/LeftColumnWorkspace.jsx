@@ -6,8 +6,8 @@ import {
     create_new_folder_submit,
     create_new_folder_success,
     create_new_folder_failure,
-    toggle_left_menu_two,
-    toggle_left_menu_three,
+    show_left_menu_two,
+    show_left_menu_three,
     select_dir
 } from "../actions"
 import axios from 'axios';
@@ -114,7 +114,7 @@ const LeftColumnWorkspace = (props) => {
                         top: props.leftMenuThree.clientY + "px"
                     }}>
                     <li className={styles["menu-option"]}>新建文件</li>
-                    <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
                     <li className={styles["menu-option"]}>重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
@@ -135,7 +135,7 @@ const mapDispatchToProps = dispatch => ({
     rightClickRootDir: e => {
         e.preventDefault()
         dispatch((dispatch, getState) => {
-            dispatch(toggle_left_menu_two("block", e.clientX, e.clientY))
+            dispatch(show_left_menu_two( e.clientX, e.clientY))
         })
     },
     rightClickDir:e=>{
@@ -144,7 +144,7 @@ const mapDispatchToProps = dispatch => ({
         while(target.tagName.toLowerCase() != "li"){
             target = target.parentNode
         }
-        dispatch(toggle_left_menu_two("block", e.clientX, e.clientY, target.dataset.id))
+        dispatch(show_left_menu_three( e.clientX, e.clientY, target.dataset.id))
     } ,
     createNewFolderSumbit: (name) => {
         dispatch(create_new_folder_submit())
@@ -171,8 +171,12 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     createNewFolderPromptInRoot: () => {
-        dispatch((dispatch, getState) => {
             dispatch(create_new_folder_prompt(shinelonId))
+    },
+    createNewFolderPrompt: () => {
+        dispatch((dispatch, getState) => {
+            let {currentDirId} = getState()
+            dispatch(create_new_folder_prompt(currentDirId))
         })
     }
 })

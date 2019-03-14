@@ -27,11 +27,19 @@ router.get('/', async (ctx, next) => {
     /**
      * 修改userdirs形状，增加一个parentId，响应到某一个具体的文档
      */
+    let arr = []
     let r = await userdirsCol.findOne({
         _id: new ObjectID(shinelonId)
     })
+    r.folded = false
+    arr.push(r)
+    for(let i =0;i<r.dirs.length;i++){
+        let dir = await userdirsCol.findOne({_id:r.dirs[i]._id})
+        dir.folded = true
+        arr.push(dir)
+    }
     const store = createStore(reducer, {
-        tree: [r]
+        tree: arr
     })
     const preloadedState = store.getState()
 

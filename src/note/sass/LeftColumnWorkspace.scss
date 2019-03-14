@@ -55,6 +55,14 @@
     display: flex;
     align-items: center;
     border: 1px solid #000;
+    position: relative;
+}
+.li>.ul{
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    border: 1px solid #f00;
 }
 .arrow{
     background: url(/note/images/sprite.svg) no-repeat;

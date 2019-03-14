@@ -1,28 +1,42 @@
 /**
  * pop menu in the toolbar of left-column
  */
-export const TOGGLE_LEFT_MENU_ONE = "TOGGLE_LEFT_MENU_ONE"
-export const toggle_left_menu_one = (display,_id) => {
+export const SHOW_LEFT_MENU_ONE = "SHOW_LEFT_MENU_ONE"
+export const show_left_menu_one = () => {
     return {
-        type: TOGGLE_LEFT_MENU_ONE,
-        display,
-        _id
+        type: SHOW_LEFT_MENU_ONE
     }
 }
-export const TOGGLE_LEFT_MENU_TWO = "TOGGLE_LEFT_MENU_TWO"
-export const toggle_left_menu_two = (display, clientX, clientY) => ({
-    type: TOGGLE_LEFT_MENU_TWO,
-    display,
+export const HIDE_LEFT_MENU_ONE = "HIDE_LEFT_MENU_ONE"
+export const hide_left_menu_one = () => {
+    return {
+        type: HIDE_LEFT_MENU_ONE
+    }
+}
+
+
+export const SHOW_LEFT_MENU_TWO = "SHOW_LEFT_MENU_TWO"
+export const show_left_menu_two = (clientX, clientY) => ({
+    type: SHOW_LEFT_MENU_TWO,
     clientX,
     clientY
 })
-export const TOGGLE_LEFT_MENU_THREE = "TOGGLE_LEFT_MENU_THREE"
-export const toggle_left_menu_three= (display, clientX, clientY,_id) => ({
-    type: TOGGLE_LEFT_MENU_THREE,
-    display,
+export const HIDE_LEFT_MENU_TWO = "HIDE_LEFT_MENU_TWO"
+export const hide_left_menu_two = () => ({
+    type: HIDE_LEFT_MENU_TWO,
+})
+
+
+export const SHOW_LEFT_MENU_THREE = "SHOW_LEFT_MENU_THREE"
+export const show_left_menu_three= (clientX, clientY,_id) => ({
+    type: SHOW_LEFT_MENU_THREE,
     clientX,
     clientY,
     _id
+})
+export const HIDE_LEFT_MENU_THREE = "HIDE_LEFT_MENU_THREE"
+export const hide_left_menu_three= () => ({
+    type: HIDE_LEFT_MENU_THREE,
 })
 
 /**
@@ -55,7 +69,7 @@ export const create_new_folder_failure = ()=>({
 
 
 export const SELECT_DIR = "SELECT_DIR"
-export const select_dir = (dirId)=>({
+export const select_dir = (_id)=>({
     type:SELECT_DIR,
-    dirId
+    _id
 })

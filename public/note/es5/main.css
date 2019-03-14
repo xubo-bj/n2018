@@ -147,7 +147,15 @@
   height: 30px;
   display: flex;
   align-items: center;
-  border: 1px solid #000; }
+  border: 1px solid #000;
+  position: relative; }
+
+._3lPmwPnahBhz7xeKgSjp0m > .RtrrH9Kt6iZbyLYftY2sm {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  border: 1px solid #f00; }
 
 ._3xezzTeOoF8at18l6puiP6 {
   background: url(/note/images/sprite.svg) no-repeat;
