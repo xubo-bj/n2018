@@ -8,7 +8,8 @@ import {
     create_new_folder_failure,
     show_left_menu_two,
     show_left_menu_three,
-    select_dir
+    select_dir,
+    toggle_dir
 } from "../actions"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -51,13 +52,15 @@ class DirTree extends React.Component {
                 >
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
+                        let childTargetDir = tree.find(doc=>doc._id === dir._id)
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}
                                     style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={styles["arrow-closed"]}></i>
+                                    <i className={childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"]} 
+                                    onClick={()=>this.props.toggleDir(dir._id)}/>
                                     <div className={styles.dir}>
-                                        <i className={styles["dir-closed"]} />
-                                        <span className={styles.dirName}>{dir.name}</span>
+                                        <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
+                                        <span className={styles.dirName}>{childTargetDir.name}</span>
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={this.props.level + 1}
                                         createNewFolderSumbit={this.props.createNewFolderSumbit} />
@@ -67,7 +70,7 @@ class DirTree extends React.Component {
                             return (
                                 <li key={"editable"} className={styles.li}
                                     style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={styles["arrow-closed"]} />
+                                    <i className={styles["arrow-closed"]} style={{visibility:"hidden"}} />
                                     <div className={styles.dir}>
                                         <i className={styles["dir-closed"]} />
                                         <span className={styles.dirName}
@@ -106,7 +109,7 @@ const LeftColumnWorkspace = (props) => {
                 </ul>
             </div>
             <DirTree tree={props.tree} _id={shinelonId} level={1} rightClickDir={props.rightClickDir}
-                createNewFolderSumbit={props.createNewFolderSumbit} />
+                createNewFolderSumbit={props.createNewFolderSumbit} toggleDir={props.toggleDir} />
                 <ul className={styles["pop-menu"]}
                     style={{
                         display: props.leftMenuThree.display,
@@ -177,6 +180,11 @@ const mapDispatchToProps = dispatch => ({
         dispatch((dispatch, getState) => {
             let {currentDirId} = getState()
             dispatch(create_new_folder_prompt(currentDirId))
+        })
+    },
+    toggleDir:(_id)=>{
+        dispatch((dispatch,getState)=>{
+            dispatch(toggle_dir(_id))
         })
     }
 })

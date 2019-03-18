@@ -1,6 +1,5 @@
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
-    TOGGLE_LEFT_MENU_ONE,
     SHOW_LEFT_MENU_ONE,
     HIDE_LEFT_MENU_ONE,
     SHOW_LEFT_MENU_TWO,
@@ -10,7 +9,8 @@ const {
     SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT,
-    CREATE_NEW_FOLDER_SUCCESS
+    CREATE_NEW_FOLDER_SUCCESS,
+    TOGGLE_DIR,
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -134,6 +134,12 @@ const tree = (treeArray = [defaultV], action) => {
                 parentDir.dirs = dirs
                 return [...treeArray]
             }
+            case TOGGLE_DIR:{
+                let targetDir = treeArray.find(dir=>dir._id == action._id)
+                targetDir.folded = !targetDir.folded
+                return [...treeArray]
+            }
+
         default:
             return treeArray
     }

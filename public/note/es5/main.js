@@ -29418,7 +29418,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -29548,6 +29548,17 @@ var select_dir = function select_dir(_id) {
 };
 
 exports.select_dir = select_dir;
+var TOGGLE_DIR = "TOGGLE_DIR";
+exports.TOGGLE_DIR = TOGGLE_DIR;
+
+var toggle_dir = function toggle_dir(_id) {
+  return {
+    type: TOGGLE_DIR,
+    _id: _id
+  };
+};
+
+exports.toggle_dir = toggle_dir;
 
 /***/ }),
 
@@ -30141,6 +30152,9 @@ function (_React$Component) {
           onContextMenu: this.props.rightClickDir || null
         }, targetDir.dirs.map(function (dir) {
           if (dir._id) {
+            var childTargetDir = tree.find(function (doc) {
+              return doc._id === dir._id;
+            });
             return _react.default.createElement("li", {
               key: dir._id,
               className: _LeftColumnWorkspace.default.li,
@@ -30149,14 +30163,17 @@ function (_React$Component) {
                 paddingLeft: _this2.props.level * 20 + "px"
               }
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default["arrow-closed"]
+              className: childTargetDir.folded ? _LeftColumnWorkspace.default["arrow-closed"] : _LeftColumnWorkspace.default["arrow-open"],
+              onClick: function onClick() {
+                return _this2.props.toggleDir(dir._id);
+              }
             }), _react.default.createElement("div", {
               className: _LeftColumnWorkspace.default.dir
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default["dir-closed"]
+              className: childTargetDir.folded ? _LeftColumnWorkspace.default["dir-closed"] : _LeftColumnWorkspace.default["dir-open"]
             }), _react.default.createElement("span", {
               className: _LeftColumnWorkspace.default.dirName
-            }, dir.name)), _react.default.createElement(DirTree, {
+            }, childTargetDir.name)), _react.default.createElement(DirTree, {
               tree: tree,
               _id: dir._id,
               level: _this2.props.level + 1,
@@ -30170,7 +30187,10 @@ function (_React$Component) {
                 paddingLeft: _this2.props.level * 20 + "px"
               }
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default["arrow-closed"]
+              className: _LeftColumnWorkspace.default["arrow-closed"],
+              style: {
+                visibility: "hidden"
+              }
             }), _react.default.createElement("div", {
               className: _LeftColumnWorkspace.default.dir
             }, _react.default.createElement("i", {
@@ -30218,7 +30238,8 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
     _id: shinelonId,
     level: 1,
     rightClickDir: props.rightClickDir,
-    createNewFolderSumbit: props.createNewFolderSumbit
+    createNewFolderSumbit: props.createNewFolderSumbit,
+    toggleDir: props.toggleDir
   }), _react.default.createElement("ul", {
     className: _LeftColumnWorkspace.default["pop-menu"],
     style: {
@@ -30307,6 +30328,11 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
             currentDirId = _getState.currentDirId;
 
         dispatch((0, _actions.create_new_folder_prompt)(currentDirId));
+      });
+    },
+    toggleDir: function toggleDir(_id) {
+      dispatch(function (dispatch, getState) {
+        dispatch((0, _actions.toggle_dir)(_id));
       });
     }
   };
@@ -30452,7 +30478,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.mongodb.shinelonId;
 
 var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js"),
-    TOGGLE_LEFT_MENU_ONE = _require.TOGGLE_LEFT_MENU_ONE,
     SHOW_LEFT_MENU_ONE = _require.SHOW_LEFT_MENU_ONE,
     HIDE_LEFT_MENU_ONE = _require.HIDE_LEFT_MENU_ONE,
     SHOW_LEFT_MENU_TWO = _require.SHOW_LEFT_MENU_TWO,
@@ -30462,7 +30487,8 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     SELECT_DIR = _require.SELECT_DIR,
     CREATE_NEW_FOLDER_PROMPT = _require.CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
-    CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS;
+    CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
+    TOGGLE_DIR = _require.TOGGLE_DIR;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -30613,6 +30639,16 @@ var tree = function tree() {
           mtime: time
         });
         parentDir.dirs = dirs;
+        return _toConsumableArray(treeArray);
+      }
+
+    case TOGGLE_DIR:
+      {
+        var _targetDir = treeArray.find(function (dir) {
+          return dir._id == action._id;
+        });
+
+        _targetDir.folded = !_targetDir.folded;
         return _toConsumableArray(treeArray);
       }
 

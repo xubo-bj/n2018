@@ -73,3 +73,9 @@ export const select_dir = (_id)=>({
     type:SELECT_DIR,
     _id
 })
+
+export const TOGGLE_DIR = "TOGGLE_DIR"
+export const toggle_dir = _id=>({
+    type:TOGGLE_DIR,
+    _id
+})
