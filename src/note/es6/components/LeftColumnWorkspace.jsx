@@ -56,8 +56,15 @@ class DirTree extends React.Component {
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}
                                     style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"]} 
-                                    onClick={()=>this.props.toggleDir(dir._id)}/>
+                                    <i className={childTargetDir.dirs.length == 0
+                                        ? styles["arrow-hidden"]
+                                        : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
+                                    } 
+                                    onClick={childTargetDir.dirs.length > 0
+                                        ? e=>this.props.toggleDir(e,dir._id)
+                                        : null
+
+                                    }/>
                                     <div className={styles.dir}>
                                         <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
                                         <span className={styles.dirName}>{childTargetDir.name}</span>
@@ -182,7 +189,10 @@ const mapDispatchToProps = dispatch => ({
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
-    toggleDir:(_id)=>{
+    toggleDir:(e,_id)=>{
+        console.log('toggleDir');
+        
+        e.stopPropagation()
         dispatch((dispatch,getState)=>{
             dispatch(toggle_dir(_id))
         })

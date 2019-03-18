@@ -77,6 +77,10 @@
     composes:arrow;
     background-position: 56.74931129476584% 98.83381924198251%;
 }
+.arrow-hidden{
+    composes:arrow;
+    visibility: "hidden";
+}
 .dir{
     flex-grow: 1;
     border: 1px solid #000;

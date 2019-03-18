@@ -5,7 +5,7 @@
             "db": "note",
             "collections": {
                 "userdirs": "userdirs",
-                "userdocs": "userfiles"
+                "userfiles": "userfiles"
             },
             "shinelonId": "5c7f1be57ec3a84bbc893e74"
         }

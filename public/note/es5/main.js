@@ -93,7 +93,7 @@
 /*! exports provided: appPort, note, default */
 /***/ (function(module) {
 
-module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":{"userdirs":"userdirs","userdocs":"userfiles"},"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
+module.exports = {"appPort":"18080","note":{"mongodb":{"db":"note","collections":{"userdirs":"userdirs","userfiles":"userfiles"},"shinelonId":"5c7f1be57ec3a84bbc893e74"}}};
 
 /***/ }),
 
@@ -30163,10 +30163,10 @@ function (_React$Component) {
                 paddingLeft: _this2.props.level * 20 + "px"
               }
             }, _react.default.createElement("i", {
-              className: childTargetDir.folded ? _LeftColumnWorkspace.default["arrow-closed"] : _LeftColumnWorkspace.default["arrow-open"],
-              onClick: function onClick() {
-                return _this2.props.toggleDir(dir._id);
-              }
+              className: childTargetDir.dirs.length == 0 ? _LeftColumnWorkspace.default["arrow-hidden"] : childTargetDir.folded ? _LeftColumnWorkspace.default["arrow-closed"] : _LeftColumnWorkspace.default["arrow-open"],
+              onClick: childTargetDir.dirs.length > 0 ? function (e) {
+                return _this2.props.toggleDir(e, dir._id);
+              } : null
             }), _react.default.createElement("div", {
               className: _LeftColumnWorkspace.default.dir
             }, _react.default.createElement("i", {
@@ -30330,7 +30330,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         dispatch((0, _actions.create_new_folder_prompt)(currentDirId));
       });
     },
-    toggleDir: function toggleDir(_id) {
+    toggleDir: function toggleDir(e, _id) {
+      console.log('toggleDir');
+      e.stopPropagation();
       dispatch(function (dispatch, getState) {
         dispatch((0, _actions.toggle_dir)(_id));
       });
@@ -30766,7 +30768,7 @@ module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWev
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ"};
+module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","arrow-hidden":"_18q4TFgQgTy4K_GkKrOF3i _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ"};
 
 /***/ }),
 

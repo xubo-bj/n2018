@@ -28,15 +28,25 @@ router.get('/', async (ctx, next) => {
      * 修改userdirs形状，增加一个parentId，响应到某一个具体的文档
      */
     let arr = []
-    let r = await userdirsCol.findOne({
-        _id: new ObjectID(shinelonId)
+    let d0 = await userdirsCol.findOne({
+        // _id: new ObjectID(shinelonId)
+        _id: shinelonId
     })
-    r.folded = false
-    arr.push(r)
-    for(let i =0;i<r.dirs.length;i++){
-        let dir = await userdirsCol.findOne({_id:r.dirs[i]._id})
-        dir.folded = true
-        arr.push(dir)
+    d0.folded = false
+    arr.push(d0)
+    for (let i = 0; i < d0.dirs.length; i++) {
+        let d1= await userdirsCol.findOne({
+            _id: d0.dirs[i]._id
+        })
+        d1.folded = true
+        arr.push(d1)
+        for (let j = 0; j < d1.dirs.length; j++) {
+            let d2= await userdirsCol.findOne({
+                _id: d1.dirs[j]._id
+            })
+            d2.folded = true
+            arr.push(d2)
+        }
     }
     const store = createStore(reducer, {
         tree: arr
@@ -64,10 +74,13 @@ router.post('/create-folder', async (ctx, next) => {
         dirs: [],
         files: []
     })
+    // console.log('dirId :',dirId);
+
 
     if (r.insertedCount === 1) {
         let r2 = await u.updateOne({
             _id: new ObjectID(dirId)
+            // _id: dirId
         }, {
             $push: {
                 dirs: {
@@ -78,6 +91,8 @@ router.post('/create-folder', async (ctx, next) => {
                 }
             }
         })
+        console.log('r2 :', r2);
+
         if (r2.modifiedCount === 1) {
             ctx.body = {
                 success: "ok",
@@ -91,12 +106,14 @@ router.post('/create-folder', async (ctx, next) => {
                 _id: r.insertedId
             })
             ctx.body = {
-                success: "no"
+                success: "no",
+                msg: "modify failure"
             }
         }
     } else {
         ctx.body = {
-            success: "no"
+            success: "no",
+            msg: "insert failure"
         }
     }
 })

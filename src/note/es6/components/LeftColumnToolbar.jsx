@@ -12,9 +12,11 @@ const LeftColumnToolbar = (props) => (
             <span className={styles.text}>新文档</span>
             <i className={styles.arrow} />
         </div>
-        <ul className={styles["pop-menu"]} style={{ display: props.leftMenuOneDisplay }}>
+        <ul className={styles["pop-menu"]}
+            style={{ display: props.leftMenuOneDisplay }}>
             <li className={styles["menu-option"]}>新建文件</li>
-            <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
+            <li className={styles["menu-option"]}
+                onClick={props.createNewFolderPrompt}>新建文件夹</li>
         </ul>
     </div>
 )
@@ -26,8 +28,8 @@ const mapDispatchToProps = dispatch => ({
         e.stopPropagation()
         dispatch(show_left_menu_one())
     },
-    createNewFolderPrompt:()=>{
-        dispatch((dispatch,getState)=>{
+    createNewFolderPrompt: () => {
+        dispatch((dispatch, getState) => {
             let currentDirId = getState().currentDirId
             dispatch(create_new_folder_prompt(currentDirId))
         })
