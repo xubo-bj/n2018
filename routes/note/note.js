@@ -35,19 +35,27 @@ router.get('/', async (ctx, next) => {
     d0.folded = false
     arr.push(d0)
     for (let i = 0; i < d0.dirs.length; i++) {
-        let d1= await userdirsCol.findOne({
+        let d1 = await userdirsCol.findOne({
             _id: d0.dirs[i]._id
         })
         d1.folded = true
         arr.push(d1)
+        if (i === 1) {
+            console.log('doc :', d1);
+        }
+
         for (let j = 0; j < d1.dirs.length; j++) {
-            let d2= await userdirsCol.findOne({
+            let d2 = await userdirsCol.findOne({
                 _id: d1.dirs[j]._id
             })
             d2.folded = true
             arr.push(d2)
+            console.log('j :', j);
+
         }
     }
+    console.log('arr.length', arr.length);
+
     const store = createStore(reducer, {
         tree: arr
     })
@@ -74,13 +82,11 @@ router.post('/create-folder', async (ctx, next) => {
         dirs: [],
         files: []
     })
-    // console.log('dirId :',dirId);
 
 
     if (r.insertedCount === 1) {
         let r2 = await u.updateOne({
             _id: new ObjectID(dirId)
-            // _id: dirId
         }, {
             $push: {
                 dirs: {
@@ -91,9 +97,10 @@ router.post('/create-folder', async (ctx, next) => {
                 }
             }
         })
-        console.log('r2 :', r2);
 
         if (r2.modifiedCount === 1) {
+            console.log('modify success');
+
             ctx.body = {
                 success: "ok",
                 parentId: dirId,
@@ -102,6 +109,8 @@ router.post('/create-folder', async (ctx, next) => {
                 time: d
             }
         } else {
+            console.log('modify ');
+
             await u.deleteOne({
                 _id: r.insertedId
             })
@@ -116,6 +125,20 @@ router.post('/create-folder', async (ctx, next) => {
             msg: "insert failure"
         }
     }
+})
+router.get("/get-folders", async (ctx, next) => {
+    let dbConn = await client.connect()
+    let userdirsCol = dbConn.db(dbName).collection(userdirs)
+    let ids = JSON.parse(ctx.query.ids)
+    let arr = []
+    for (let i = 0; i < ids.length; i++) {
+        let dir = await userdirsCol.findOne({
+            _id: new ObjectID(ids[i])
+        })
+        dir.folded = true
+        arr.push(dir)
+    }
+    ctx.body = arr
 })
 
 

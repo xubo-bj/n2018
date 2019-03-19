@@ -79,3 +79,9 @@ export const toggle_dir = _id=>({
     type:TOGGLE_DIR,
     _id
 })
+
+export const ADD_FOLDERS = "ADD_FOLDERS"
+export const add_folders = folders=>({
+    type:ADD_FOLDERS,
+    folders
+})

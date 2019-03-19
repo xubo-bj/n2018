@@ -29418,7 +29418,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.add_folders = exports.ADD_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -29559,6 +29559,17 @@ var toggle_dir = function toggle_dir(_id) {
 };
 
 exports.toggle_dir = toggle_dir;
+var ADD_FOLDERS = "ADD_FOLDERS";
+exports.ADD_FOLDERS = ADD_FOLDERS;
+
+var add_folders = function add_folders(folders) {
+  return {
+    type: ADD_FOLDERS,
+    folders: folders
+  };
+};
+
+exports.add_folders = add_folders;
 
 /***/ }),
 
@@ -30177,7 +30188,8 @@ function (_React$Component) {
               tree: tree,
               _id: dir._id,
               level: _this2.props.level + 1,
-              createNewFolderSumbit: _this2.props.createNewFolderSumbit
+              createNewFolderSumbit: _this2.props.createNewFolderSumbit,
+              toggleDir: _this2.props.toggleDir
             }));
           } else {
             return _react.default.createElement("li", {
@@ -30331,10 +30343,49 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       });
     },
     toggleDir: function toggleDir(e, _id) {
-      console.log('toggleDir');
       e.stopPropagation();
+      dispatch((0, _actions.toggle_dir)(_id));
       dispatch(function (dispatch, getState) {
-        dispatch((0, _actions.toggle_dir)(_id));
+        var _getState2 = getState(),
+            tree = _getState2.tree;
+
+        var d0 = tree.find(function (doc) {
+          return doc._id == _id;
+        });
+        var arr = [];
+
+        var _loop = function _loop(i) {
+          var d1 = tree.find(function (doc) {
+            return doc._id == d0.dirs[i]._id;
+          });
+
+          for (var j = 0; j < d1.dirs.length; j++) {
+            arr.push(d1.dirs[j]._id);
+          }
+        };
+
+        for (var i = 0; i < d0.dirs.length; i++) {
+          _loop(i);
+        }
+
+        if (arr.length > 0) {
+          _axios.default.get("note/get-folders", {
+            params: {
+              ids: JSON.stringify(arr)
+            },
+            headers: {
+              'X-Requested-With': 'axios'
+            },
+            timeout: 1000,
+            // default is `0` (no timeout),
+            responseType: 'json' // default
+
+          }).then(function (res) {
+            dispatch((0, _actions.add_folders)(res.data));
+          }).catch(function (err) {
+            console.log('err', err); // dispatch(create_new_folder_failure())
+          });
+        }
       });
     }
   };
@@ -30490,7 +30541,8 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     CREATE_NEW_FOLDER_PROMPT = _require.CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
-    TOGGLE_DIR = _require.TOGGLE_DIR;
+    TOGGLE_DIR = _require.TOGGLE_DIR,
+    ADD_FOLDERS = _require.ADD_FOLDERS;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -30652,6 +30704,11 @@ var tree = function tree() {
 
         _targetDir.folded = !_targetDir.folded;
         return _toConsumableArray(treeArray);
+      }
+
+    case ADD_FOLDERS:
+      {
+        return [].concat(_toConsumableArray(treeArray), _toConsumableArray(action.folders));
       }
 
     default:

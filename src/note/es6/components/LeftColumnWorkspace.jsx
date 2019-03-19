@@ -9,7 +9,8 @@ import {
     show_left_menu_two,
     show_left_menu_three,
     select_dir,
-    toggle_dir
+    toggle_dir,
+    add_folders
 } from "../actions"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -48,36 +49,38 @@ class DirTree extends React.Component {
         } else {
             return (
                 <ul className={styles.ul}
-                onContextMenu={this.props.rightClickDir|| null}
+                    onContextMenu={this.props.rightClickDir || null}
                 >
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
-                        let childTargetDir = tree.find(doc=>doc._id === dir._id)
+                            let childTargetDir = tree.find(doc => doc._id === dir._id)
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}
                                     style={{ paddingLeft: this.props.level * 20 + "px" }}>
                                     <i className={childTargetDir.dirs.length == 0
                                         ? styles["arrow-hidden"]
                                         : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
-                                    } 
-                                    onClick={childTargetDir.dirs.length > 0
-                                        ? e=>this.props.toggleDir(e,dir._id)
-                                        : null
+                                    }
+                                        onClick={childTargetDir.dirs.length > 0
+                                            ? e => this.props.toggleDir(e, dir._id)
+                                            : null
 
-                                    }/>
+                                        } />
                                     <div className={styles.dir}>
                                         <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
                                         <span className={styles.dirName}>{childTargetDir.name}</span>
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={this.props.level + 1}
-                                        createNewFolderSumbit={this.props.createNewFolderSumbit} />
+                                        createNewFolderSumbit={this.props.createNewFolderSumbit}
+                                        toggleDir={this.props.toggleDir}
+                                    />
                                 </li>
                             )
                         } else {
                             return (
                                 <li key={"editable"} className={styles.li}
                                     style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={styles["arrow-closed"]} style={{visibility:"hidden"}} />
+                                    <i className={styles["arrow-closed"]} style={{ visibility: "hidden" }} />
                                     <div className={styles.dir}>
                                         <i className={styles["dir-closed"]} />
                                         <span className={styles.dirName}
@@ -117,19 +120,19 @@ const LeftColumnWorkspace = (props) => {
             </div>
             <DirTree tree={props.tree} _id={shinelonId} level={1} rightClickDir={props.rightClickDir}
                 createNewFolderSumbit={props.createNewFolderSumbit} toggleDir={props.toggleDir} />
-                <ul className={styles["pop-menu"]}
-                    style={{
-                        display: props.leftMenuThree.display,
-                        left: props.leftMenuThree.clientX + "px",
-                        top: props.leftMenuThree.clientY + "px"
-                    }}>
-                    <li className={styles["menu-option"]}>新建文件</li>
-                    <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
-                    <li className={styles["menu-option"]}>重命名</li>
-                    <li className={styles["menu-option"]}>移动到</li>
-                    <li className={styles["menu-option"]}>复制</li>
-                    <li className={styles["menu-option"]}>删除</li>
-                </ul>
+            <ul className={styles["pop-menu"]}
+                style={{
+                    display: props.leftMenuThree.display,
+                    left: props.leftMenuThree.clientX + "px",
+                    top: props.leftMenuThree.clientY + "px"
+                }}>
+                <li className={styles["menu-option"]}>新建文件</li>
+                <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
+                <li className={styles["menu-option"]}>重命名</li>
+                <li className={styles["menu-option"]}>移动到</li>
+                <li className={styles["menu-option"]}>复制</li>
+                <li className={styles["menu-option"]}>删除</li>
+            </ul>
         </Fragment>
     )
 }
@@ -145,17 +148,17 @@ const mapDispatchToProps = dispatch => ({
     rightClickRootDir: e => {
         e.preventDefault()
         dispatch((dispatch, getState) => {
-            dispatch(show_left_menu_two( e.clientX, e.clientY))
+            dispatch(show_left_menu_two(e.clientX, e.clientY))
         })
     },
-    rightClickDir:e=>{
+    rightClickDir: e => {
         e.preventDefault()
         let target = e.target
-        while(target.tagName.toLowerCase() != "li"){
+        while (target.tagName.toLowerCase() != "li") {
             target = target.parentNode
         }
-        dispatch(show_left_menu_three( e.clientX, e.clientY, target.dataset.id))
-    } ,
+        dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+    },
     createNewFolderSumbit: (name) => {
         dispatch(create_new_folder_submit())
         dispatch((dispatch, getState) => {
@@ -181,20 +184,45 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     createNewFolderPromptInRoot: () => {
-            dispatch(create_new_folder_prompt(shinelonId))
+        dispatch(create_new_folder_prompt(shinelonId))
     },
     createNewFolderPrompt: () => {
         dispatch((dispatch, getState) => {
-            let {currentDirId} = getState()
+            let { currentDirId } = getState()
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
-    toggleDir:(e,_id)=>{
-        console.log('toggleDir');
-        
+    toggleDir: (e, _id) => {
         e.stopPropagation()
-        dispatch((dispatch,getState)=>{
-            dispatch(toggle_dir(_id))
+        dispatch(toggle_dir(_id))
+
+        dispatch((dispatch, getState) => {
+            let { tree } = getState()
+            let d0 = tree.find(doc => doc._id == _id)
+            let arr = []
+            for (let i = 0; i < d0.dirs.length; i++) {
+                let d1 = tree.find(doc => doc._id == d0.dirs[i]._id)
+                for (let j = 0; j < d1.dirs.length; j++) {
+                    arr.push(d1.dirs[j]._id)
+                }
+            }
+            if (arr.length > 0) {
+                axios.get("note/get-folders", {
+                    params: {
+                        ids: JSON.stringify(arr)
+                    },
+                    headers: {
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    dispatch(add_folders(res.data))
+                }).catch(err => {
+                    console.log('err', err);
+                    // dispatch(create_new_folder_failure())
+                })
+            }
         })
     }
 })

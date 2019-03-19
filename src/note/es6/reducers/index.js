@@ -11,6 +11,7 @@ const {
     CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR,
+    ADD_FOLDERS
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -138,6 +139,9 @@ const tree = (treeArray = [defaultV], action) => {
                 let targetDir = treeArray.find(dir=>dir._id == action._id)
                 targetDir.folded = !targetDir.folded
                 return [...treeArray]
+            }
+            case ADD_FOLDERS:{
+                return [...treeArray,...action.folders]
             }
 
         default:
