@@ -30689,10 +30689,7 @@ var tree = function tree() {
           return dir.editable == null;
         });
         dirs.push({
-          _id: newId,
-          name: name,
-          ctime: time,
-          mtime: time
+          _id: newId
         });
         parentDir.dirs = dirs;
         return _toConsumableArray(treeArray);

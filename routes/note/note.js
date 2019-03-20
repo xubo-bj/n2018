@@ -29,8 +29,7 @@ router.get('/', async (ctx, next) => {
      */
     let arr = []
     let d0 = await userdirsCol.findOne({
-        // _id: new ObjectID(shinelonId)
-        _id: shinelonId
+        _id: new ObjectID(shinelonId)
     })
     d0.folded = false
     arr.push(d0)
@@ -69,6 +68,9 @@ router.post('/create-folder', async (ctx, next) => {
         dirId,
         name
     } = ctx.request.body
+    console.log('id :',typeof dirId);
+    console.log('id :',dirId.length);
+    
     let d = new Date()
     let r = await u.insertOne({
         name,
@@ -86,9 +88,9 @@ router.post('/create-folder', async (ctx, next) => {
             $push: {
                 dirs: {
                     _id: r.insertedId,
-                    name,
-                    ctime: d,
-                    mtime: d
+                    // name,
+                    // ctime: d,
+                    // mtime: d
                 }
             }
         })

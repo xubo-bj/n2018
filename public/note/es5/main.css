@@ -177,15 +177,14 @@
   width: 100%;
   border: 1px solid #f00;
   margin-left: 14px;
-  display: flex;
-  align-items: center;
-  height: 100%; }
+  height: 100%;
+  position: relative; }
 
 ._3iBMFRcRBVzLL9LT2J0alZ {
   background: url(/note/images/sprite.svg) no-repeat;
+  position: absolute;
   width: 24px;
-  height: 24px;
-  margin-right: 10px; }
+  height: 24px; }
 
 ._3aegqkwhgrINrAnUEv7CbC {
   background-position: 56.657223796033996% 47.747747747747745%; }
@@ -194,6 +193,9 @@
   background-position: 88.6685552407932% 64.86486486486487%; }
 
 ._37mvSkgKF6T81hJ46ZwPX_ {
+  position: absolute;
+  left: 32px;
+  top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }

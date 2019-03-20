@@ -93,15 +93,14 @@
     width: 100%;
     border: 1px solid #f00;
     margin-left: 14px;
-    display: flex;
-    align-items: center;
     height: 100%;
+    position: relative;
 }
 .dir-icon{
     background: url(/note/images/sprite.svg) no-repeat;
+    position: absolute;
     width: 24px;
     height: 24px;
-    margin-right: 10px;
 }
 .dir-open{
     composes:dir-icon;
@@ -112,6 +111,9 @@
     background-position: 88.6685552407932% 64.86486486486487%;
 }
 .dirName{
+    position: absolute;
+    left: 32px;
+    top: 5px;
      overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap

@@ -128,9 +128,6 @@ const tree = (treeArray = [defaultV], action) => {
                 let dirs = parentDir.dirs.filter(dir => dir.editable == null)
                 dirs.push({
                     _id: newId,
-                    name: name,
-                    ctime: time,
-                    mtime: time,
                 })
                 parentDir.dirs = dirs
                 return [...treeArray]
