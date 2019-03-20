@@ -11,14 +11,14 @@ const {
     CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR,
-    ADD_FOLDERS
+    FETCH_FOLDERS
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
     switch (action.type) {
         case SHOW_LEFT_MENU_ONE:
             return "block"
-            case HIDE_LEFT_MENU_ONE:
+        case HIDE_LEFT_MENU_ONE:
         case SHOW_LEFT_MENU_TWO:
         case SHOW_LEFT_MENU_THREE:
             return "none"
@@ -63,7 +63,7 @@ const leftMenuThree = (r = {
                 clientX: action.clientX,
                 clientY: action.clientY,
             }
-            case HIDE_LEFT_MENU_THREE:
+        case HIDE_LEFT_MENU_THREE:
         case SHOW_LEFT_MENU_ONE:
         case SHOW_LEFT_MENU_TWO:
             return {
@@ -83,7 +83,7 @@ const currentDirId = (_id = shinelonId, action) => {
         case SHOW_LEFT_MENU_THREE:
             return action._id
         default:
-            return _id 
+            return _id
     }
 }
 
@@ -135,19 +135,26 @@ const tree = (treeArray = [defaultV], action) => {
                 parentDir.dirs = dirs
                 return [...treeArray]
             }
-            case TOGGLE_DIR:{
-                let targetDir = treeArray.find(dir=>dir._id == action._id)
-                targetDir.folded = !targetDir.folded
+        case TOGGLE_DIR:
+            {
+                let targetDir = treeArray.find(dir => dir._id == action._id)
+                if(targetDir.folded == true){
+                    targetDir.folded = false
+                }else{
+                    descendantDirsTraversal(targetDir,treeArray)
+                }
                 return [...treeArray]
             }
-            case ADD_FOLDERS:{
-                return [...treeArray,...action.folders]
+        case FETCH_FOLDERS:
+            {
+                return [...treeArray, ...action.folders]
             }
 
         default:
             return treeArray
     }
 }
+
 
 const showMask = (flag = false, action) => {
     switch (action.type) {
@@ -172,3 +179,13 @@ module.exports = combineReducers({
     currentDirId,
     showMask
 })
+
+function descendantDirsTraversal(targetDir, treeArray) {
+    targetDir.folded = true
+        for (let i = 0; i < targetDir.dirs.length; i++) {
+            let childTargetDir = treeArray.find(dir => dir._id == targetDir.dirs[i]._id)
+            if (childTargetDir != undefined) {
+                descendantDirsTraversal(childTargetDir, treeArray)
+            }
+        }
+}

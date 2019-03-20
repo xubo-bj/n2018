@@ -80,8 +80,8 @@ export const toggle_dir = _id=>({
     _id
 })
 
-export const ADD_FOLDERS = "ADD_FOLDERS"
+export const FETCH_FOLDERS = "ADD_FOLDERS"
 export const add_folders = folders=>({
-    type:ADD_FOLDERS,
+    type:FETCH_FOLDERS,
     folders
 })

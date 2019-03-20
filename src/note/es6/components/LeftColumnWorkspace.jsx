@@ -55,20 +55,22 @@ class DirTree extends React.Component {
                         if (dir._id) {
                             let childTargetDir = tree.find(doc => doc._id === dir._id)
                             return (
-                                <li key={dir._id} className={styles.li} data-id={dir._id}
-                                    style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={childTargetDir.dirs.length == 0
-                                        ? styles["arrow-hidden"]
-                                        : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
-                                    }
-                                        onClick={childTargetDir.dirs.length > 0
-                                            ? e => this.props.toggleDir(e, dir._id)
-                                            : null
+                                <li key={dir._id} className={styles.li} data-id={dir._id}>
+                                    <div className={styles["li-content"]}
+                                        style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                        <i className={childTargetDir.dirs.length == 0
+                                            ? styles["arrow-hidden"]
+                                            : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
+                                        }
+                                            onClick={childTargetDir.dirs.length > 0
+                                                ? e => this.props.toggleDir(e, dir._id)
+                                                : null
 
-                                        } />
-                                    <div className={styles.dir}>
-                                        <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
-                                        <span className={styles.dirName}>{childTargetDir.name}</span>
+                                            } />
+                                        <div className={styles.dir}>
+                                            <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
+                                            <span className={styles.dirName}>{childTargetDir.name}</span>
+                                        </div>
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={this.props.level + 1}
                                         createNewFolderSumbit={this.props.createNewFolderSumbit}
@@ -78,16 +80,18 @@ class DirTree extends React.Component {
                             )
                         } else {
                             return (
-                                <li key={"editable"} className={styles.li}
-                                    style={{ paddingLeft: this.props.level * 20 + "px" }}>
-                                    <i className={styles["arrow-closed"]} style={{ visibility: "hidden" }} />
-                                    <div className={styles.dir}>
-                                        <i className={styles["dir-closed"]} />
-                                        <span className={styles.dirName}
-                                            onKeyDown={this.keydown}
-                                            ref={elem => this.editableElem = elem}
-                                            contentEditable={dir.editable}
-                                        >{dir.name}</span>
+                                <li key={"editable"} className={styles.li}>
+                                    <div className={styles["li-content"]}
+                                        style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                        <i className={styles["arrow-hidden"]}/>
+                                        <div className={styles.dir}>
+                                            <i className={styles["dir-closed"]} />
+                                            <span className={styles.dirName}
+                                                onKeyDown={this.keydown}
+                                                ref={elem => this.editableElem = elem}
+                                                contentEditable={dir.editable}
+                                            >{dir.name}</span>
+                                        </div>
                                     </div>
                                 </li>
                             )
@@ -175,6 +179,8 @@ const mapDispatchToProps = dispatch => ({
                     timeout: 1000, // default is `0` (no timeout),
                     responseType: 'json' // default
                 }).then(res => {
+                    console.log('res :', res.data);
+
                     let { parentId, newId, name, time } = res.data
                     dispatch(create_new_folder_success(parentId, newId, name, time))
                 }).catch(err => {

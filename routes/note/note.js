@@ -40,9 +40,6 @@ router.get('/', async (ctx, next) => {
         })
         d1.folded = true
         arr.push(d1)
-        if (i === 1) {
-            console.log('doc :', d1);
-        }
 
         for (let j = 0; j < d1.dirs.length; j++) {
             let d2 = await userdirsCol.findOne({
@@ -50,11 +47,9 @@ router.get('/', async (ctx, next) => {
             })
             d2.folded = true
             arr.push(d2)
-            console.log('j :', j);
 
         }
     }
-    console.log('arr.length', arr.length);
 
     const store = createStore(reducer, {
         tree: arr

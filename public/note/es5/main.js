@@ -29418,7 +29418,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.add_folders = exports.ADD_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.add_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -29559,12 +29559,12 @@ var toggle_dir = function toggle_dir(_id) {
 };
 
 exports.toggle_dir = toggle_dir;
-var ADD_FOLDERS = "ADD_FOLDERS";
-exports.ADD_FOLDERS = ADD_FOLDERS;
+var FETCH_FOLDERS = "ADD_FOLDERS";
+exports.FETCH_FOLDERS = FETCH_FOLDERS;
 
 var add_folders = function add_folders(folders) {
   return {
-    type: ADD_FOLDERS,
+    type: FETCH_FOLDERS,
     folders: folders
   };
 };
@@ -30169,7 +30169,9 @@ function (_React$Component) {
             return _react.default.createElement("li", {
               key: dir._id,
               className: _LeftColumnWorkspace.default.li,
-              "data-id": dir._id,
+              "data-id": dir._id
+            }, _react.default.createElement("div", {
+              className: _LeftColumnWorkspace.default["li-content"],
               style: {
                 paddingLeft: _this2.props.level * 20 + "px"
               }
@@ -30184,7 +30186,7 @@ function (_React$Component) {
               className: childTargetDir.folded ? _LeftColumnWorkspace.default["dir-closed"] : _LeftColumnWorkspace.default["dir-open"]
             }), _react.default.createElement("span", {
               className: _LeftColumnWorkspace.default.dirName
-            }, childTargetDir.name)), _react.default.createElement(DirTree, {
+            }, childTargetDir.name))), _react.default.createElement(DirTree, {
               tree: tree,
               _id: dir._id,
               level: _this2.props.level + 1,
@@ -30194,15 +30196,14 @@ function (_React$Component) {
           } else {
             return _react.default.createElement("li", {
               key: "editable",
-              className: _LeftColumnWorkspace.default.li,
+              className: _LeftColumnWorkspace.default.li
+            }, _react.default.createElement("div", {
+              className: _LeftColumnWorkspace.default["li-content"],
               style: {
                 paddingLeft: _this2.props.level * 20 + "px"
               }
             }, _react.default.createElement("i", {
-              className: _LeftColumnWorkspace.default["arrow-closed"],
-              style: {
-                visibility: "hidden"
-              }
+              className: _LeftColumnWorkspace.default["arrow-hidden"]
             }), _react.default.createElement("div", {
               className: _LeftColumnWorkspace.default.dir
             }, _react.default.createElement("i", {
@@ -30214,7 +30215,7 @@ function (_React$Component) {
                 return _this2.editableElem = elem;
               },
               contentEditable: dir.editable
-            }, dir.name)));
+            }, dir.name))));
           }
         }));
       }
@@ -30319,6 +30320,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
           responseType: 'json' // default
 
         }).then(function (res) {
+          console.log('res :', res.data);
           var _res$data = res.data,
               parentId = _res$data.parentId,
               newId = _res$data.newId,
@@ -30542,7 +30544,7 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR = _require.TOGGLE_DIR,
-    ADD_FOLDERS = _require.ADD_FOLDERS;
+    FETCH_FOLDERS = _require.FETCH_FOLDERS;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -30702,11 +30704,16 @@ var tree = function tree() {
           return dir._id == action._id;
         });
 
-        _targetDir.folded = !_targetDir.folded;
+        if (_targetDir.folded == true) {
+          _targetDir.folded = false;
+        } else {
+          descendantDirsTraversal(_targetDir, treeArray);
+        }
+
         return _toConsumableArray(treeArray);
       }
 
-    case ADD_FOLDERS:
+    case FETCH_FOLDERS:
       {
         return [].concat(_toConsumableArray(treeArray), _toConsumableArray(action.folders));
       }
@@ -30742,6 +30749,24 @@ module.exports = combineReducers({
   currentDirId: currentDirId,
   showMask: showMask
 });
+
+function descendantDirsTraversal(targetDir, treeArray) {
+  targetDir.folded = true;
+
+  var _loop = function _loop(i) {
+    var childTargetDir = treeArray.find(function (dir) {
+      return dir._id == targetDir.dirs[i]._id;
+    });
+
+    if (childTargetDir != undefined) {
+      descendantDirsTraversal(childTargetDir, treeArray);
+    }
+  };
+
+  for (var i = 0; i < targetDir.dirs.length; i++) {
+    _loop(i);
+  }
+}
 
 /***/ }),
 
@@ -30825,7 +30850,7 @@ module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWev
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","arrow-hidden":"_18q4TFgQgTy4K_GkKrOF3i _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ"};
+module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","li":"_3lPmwPnahBhz7xeKgSjp0m","ul":"RtrrH9Kt6iZbyLYftY2sm","li-content":"n-VnYYvRd9pubI1Q1VbqN","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","arrow-hidden":"_18q4TFgQgTy4K_GkKrOF3i _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ","dirName":"_37mvSkgKF6T81hJ46ZwPX_"};
 
 /***/ }),
 
