@@ -1,0 +1,32 @@
+.title{
+    margin-left: 20px;
+    flex-grow: 1;
+    padding: 19px 0;
+    height: 22px;
+    line-height: 22px;
+    outline: none;
+    border: 0 none;
+    font-size: 18px;
+    color: #393939;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.submit-btn{
+    flex-basis: 82px;
+    height: 32px;
+    line-height: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    // position: absolute;
+    // top: -46px;
+    // right: 200px;
+    font-size: 11px;
+    color: #82B6F4;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid #e2e2e2;
+    // z-index: 50;
+    cursor: pointer;
+    background-color: #fff;
+}

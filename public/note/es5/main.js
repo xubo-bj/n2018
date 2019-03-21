@@ -52071,15 +52071,10 @@ function (_React$Component2) {
   }
 
   _createClass(MyEditor, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.focusEditor();
-    }
-  }, {
     key: "render",
     value: function render() {
       return _react.default.createElement("div", {
-        style: _RightColumnContent.default.editor,
+        className: _RightColumnContent.default.editor,
         onClick: this.focusEditor
       }, _react.default.createElement(_draftJs.Editor, {
         ref: this.setEditor,
@@ -52133,11 +52128,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
 var _draftJs = __webpack_require__(/*! draft-js */ "./node_modules/draft-js/lib/Draft.js");
 
+var _RightColumnHeader = _interopRequireDefault(__webpack_require__(/*! ../../sass/RightColumnHeader.scss */ "./src/note/sass/RightColumnHeader.scss"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -52171,7 +52170,14 @@ function (_React$Component) {
   _createClass(MyEditor, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", null, "123");
+      return _react.default.createElement(_react.Fragment, null, _react.default.createElement("input", {
+        type: "text",
+        className: _RightColumnHeader.default["title"]
+      }), _react.default.createElement("input", {
+        type: "button",
+        value: "保存",
+        className: _RightColumnHeader.default["submit-btn"]
+      }));
     }
   }]);
 
@@ -52599,7 +52605,19 @@ module.exports = {"header":"_2Lp99dvNWAOt1-baBYa1Yw","content":"_29sdjLnXUu0B2rv
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"_2Vglke_6HAes5QHkg6_8F6"};
+module.exports = {"toolbar":"_2Vglke_6HAes5QHkg6_8F6","editor":"_1cJVz4KB-5ids5MZXPvojU"};
+
+/***/ }),
+
+/***/ "./src/note/sass/RightColumnHeader.scss":
+/*!**********************************************!*\
+  !*** ./src/note/sass/RightColumnHeader.scss ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+module.exports = {"title":"_2OWA4vM9Wan2t1HRRvx5Tc","submit-btn":"_3h0oU6QAneSEpqrZXe6_ug"};
 
 /***/ }),
 

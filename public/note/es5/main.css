@@ -238,7 +238,9 @@
 
 ._2Lp99dvNWAOt1-baBYa1Yw {
   height: 61px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center; }
 
 ._29sdjLnXUu0B2rvsvlMHM9 {
   position: absolute;
@@ -247,9 +249,45 @@
   left: 0;
   right: 0; }
 
+._2OWA4vM9Wan2t1HRRvx5Tc {
+  margin-left: 20px;
+  flex-grow: 1;
+  padding: 19px 0;
+  height: 22px;
+  line-height: 22px;
+  outline: none;
+  border: 0 none;
+  font-size: 18px;
+  color: #393939;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; }
+
+._3h0oU6QAneSEpqrZXe6_ug {
+  flex-basis: 82px;
+  height: 32px;
+  line-height: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-size: 11px;
+  color: #82B6F4;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #e2e2e2;
+  cursor: pointer;
+  background-color: #fff; }
+
 ._2Vglke_6HAes5QHkg6_8F6 {
   height: 46px;
   border: 1px solid #000; }
+
+._1cJVz4KB-5ids5MZXPvojU {
+  border: 1px solid #f00;
+  position: absolute;
+  top: 46px;
+  bottom: 0;
+  left: 0;
+  right: 0; }
 
 ._27a-UrgGiyP1PpzXPPPqJi {
   position: absolute;
