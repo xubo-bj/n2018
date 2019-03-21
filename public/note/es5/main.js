@@ -29418,7 +29418,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.add_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -29562,14 +29562,14 @@ exports.toggle_dir = toggle_dir;
 var FETCH_FOLDERS = "ADD_FOLDERS";
 exports.FETCH_FOLDERS = FETCH_FOLDERS;
 
-var add_folders = function add_folders(folders) {
+var fetch_folders = function fetch_folders(folders) {
   return {
     type: FETCH_FOLDERS,
     folders: folders
   };
 };
 
-exports.add_folders = add_folders;
+exports.fetch_folders = fetch_folders;
 
 /***/ }),
 
@@ -30160,7 +30160,8 @@ function (_React$Component) {
       } else {
         return _react.default.createElement("ul", {
           className: _LeftColumnWorkspace.default.ul,
-          onContextMenu: this.props.rightClickDir || null
+          onContextMenu: this.props.rightClickDir || null,
+          onClick: this.props.leftClickDir
         }, targetDir.dirs.map(function (dir) {
           if (dir._id) {
             var childTargetDir = tree.find(function (doc) {
@@ -30173,7 +30174,8 @@ function (_React$Component) {
             }, _react.default.createElement("div", {
               className: _LeftColumnWorkspace.default["li-content"],
               style: {
-                paddingLeft: _this2.props.level * 20 + "px"
+                paddingLeft: _this2.props.level * 20 + "px",
+                backgroundColor: _this2.props.centerColumnDir == _id ? "#00f" : ""
               }
             }, _react.default.createElement("i", {
               className: childTargetDir.dirs.length == 0 ? _LeftColumnWorkspace.default["arrow-hidden"] : childTargetDir.folded ? _LeftColumnWorkspace.default["arrow-closed"] : _LeftColumnWorkspace.default["arrow-open"],
@@ -30226,6 +30228,12 @@ function (_React$Component) {
 }(_react.default.Component);
 
 var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
+  var tree = props.tree,
+      rightClickDir = props.rightClickDir,
+      createNewFolderSumbit = props.createNewFolderSumbit,
+      toggleDir = props.toggleDir,
+      leftClickDir = props.leftClickDir,
+      centerColumnDir = props.centerColumnDir;
   return _react.default.createElement(_react.Fragment, null, _react.default.createElement("div", {
     className: _LeftColumnWorkspace.default["my-dir"],
     "data-id": shinelonId,
@@ -30247,12 +30255,14 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
     className: _LeftColumnWorkspace.default["menu-option"],
     onClick: props.createNewFolderPromptInRoot
   }, "\u65B0\u5EFA\u6587\u4EF6\u5939"))), _react.default.createElement(DirTree, {
-    tree: props.tree,
+    tree: tree,
     _id: shinelonId,
     level: 1,
-    rightClickDir: props.rightClickDir,
-    createNewFolderSumbit: props.createNewFolderSumbit,
-    toggleDir: props.toggleDir
+    rightClickDir: rightClickDir,
+    createNewFolderSumbit: createNewFolderSumbit,
+    toggleDir: toggleDir,
+    centerColumnDir: centerColumnDir,
+    leftClickDir: leftClickDir
   }), _react.default.createElement("ul", {
     className: _LeftColumnWorkspace.default["pop-menu"],
     style: {
@@ -30278,6 +30288,7 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    centerColumnDir: state.centerColumnDir,
     leftMenuTwo: state.leftMenuTwo,
     leftMenuThree: state.leftMenuThree,
     tree: state.tree
@@ -30286,6 +30297,15 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
+    leftClickDir: function leftClickDir(e) {
+      var target = e.target;
+
+      while (target.tagName.toLowerCase() != "li") {
+        target = target.parentNode;
+      }
+
+      dispatch((0, _actions.select_dir)(target.dataset.id));
+    },
     rightClickRootDir: function rightClickRootDir(e) {
       e.preventDefault();
       dispatch(function (dispatch, getState) {
@@ -30361,16 +30381,38 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
             return doc._id == d0.dirs[i]._id;
           });
 
+          if (d1 == undefined) {
+            arr.push(d0.dirs[i]._id);
+            return "continue";
+          }
+
+          var _loop2 = function _loop2(j) {
+            var d2 = tree.find(function (doc) {
+              return doc._id == d1.dirs[j]._id;
+            });
+
+            if (d2 == undefined) {
+              arr.push(d1.dirs[j]._id);
+              return "continue";
+            }
+          };
+
           for (var j = 0; j < d1.dirs.length; j++) {
-            arr.push(d1.dirs[j]._id);
+            var _ret2 = _loop2(j);
+
+            if (_ret2 === "continue") continue;
           }
         };
 
         for (var i = 0; i < d0.dirs.length; i++) {
-          _loop(i);
+          var _ret = _loop(i);
+
+          if (_ret === "continue") continue;
         }
 
         if (arr.length > 0) {
+          console.log('fetch-folders');
+
           _axios.default.get("note/get-folders", {
             params: {
               ids: JSON.stringify(arr)
@@ -30383,7 +30425,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
             responseType: 'json' // default
 
           }).then(function (res) {
-            dispatch((0, _actions.add_folders)(res.data));
+            dispatch((0, _actions.fetch_folders)(res.data));
           }).catch(function (err) {
             console.log('err', err); // dispatch(create_new_folder_failure())
           });
@@ -30641,6 +30683,20 @@ var currentDirId = function currentDirId() {
   }
 };
 
+var centerColumnDir = function centerColumnDir() {
+  var _id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : shinelonId;
+
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case SELECT_DIR:
+      return action._id;
+
+    default:
+      return _id;
+  }
+};
+
 var defaultV = {
   _id: shinelonId,
   dirs: [],
@@ -30744,6 +30800,7 @@ module.exports = combineReducers({
   leftMenuThree: leftMenuThree,
   tree: tree,
   currentDirId: currentDirId,
+  centerColumnDir: centerColumnDir,
   showMask: showMask
 });
 

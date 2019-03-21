@@ -86,6 +86,14 @@ const currentDirId = (_id = shinelonId, action) => {
             return _id
     }
 }
+const centerColumnDir =(_id=shinelonId,action)=>{
+switch(action.type){
+    case SELECT_DIR:
+    return action._id
+    default:
+    return _id
+}
+}
 
 
 let defaultV = {
@@ -174,6 +182,7 @@ module.exports = combineReducers({
     leftMenuThree,
     tree,
     currentDirId,
+    centerColumnDir,
     showMask
 })
 

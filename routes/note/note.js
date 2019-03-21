@@ -96,8 +96,6 @@ router.post('/create-folder', async (ctx, next) => {
         })
 
         if (r2.modifiedCount === 1) {
-            console.log('modify success');
-
             ctx.body = {
                 success: "ok",
                 parentId: dirId,
@@ -106,8 +104,6 @@ router.post('/create-folder', async (ctx, next) => {
                 time: d
             }
         } else {
-            console.log('modify ');
-
             await u.deleteOne({
                 _id: r.insertedId
             })

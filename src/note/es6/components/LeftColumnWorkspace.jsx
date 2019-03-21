@@ -10,7 +10,7 @@ import {
     show_left_menu_three,
     select_dir,
     toggle_dir,
-    add_folders
+    fetch_folders
 } from "../actions"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -41,7 +41,6 @@ class DirTree extends React.Component {
         if (targetDir == null) {
             return null
         }
-
         if (targetDir.folded) {
             return null
         } else if (targetDir.dirs.length === 0) {
@@ -50,6 +49,7 @@ class DirTree extends React.Component {
             return (
                 <ul className={styles.ul}
                     onContextMenu={this.props.rightClickDir || null}
+                    onClick={this.props.leftClickDir}
                 >
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
@@ -57,7 +57,9 @@ class DirTree extends React.Component {
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}>
                                     <div className={styles["li-content"]}
-                                        style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                        style={{ paddingLeft: this.props.level * 20 + "px",
+                                        backgroundColor:this.props.centerColumnDir==_id?"#00f":"" 
+                                         }}>
                                         <i className={childTargetDir.dirs.length == 0
                                             ? styles["arrow-hidden"]
                                             : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
@@ -65,7 +67,6 @@ class DirTree extends React.Component {
                                             onClick={childTargetDir.dirs.length > 0
                                                 ? e => this.props.toggleDir(e, dir._id)
                                                 : null
-
                                             } />
                                         <div className={styles.dir}>
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
@@ -105,6 +106,7 @@ class DirTree extends React.Component {
 }
 
 const LeftColumnWorkspace = (props) => {
+    const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir } = props
     return (
         <Fragment>
             <div className={styles["my-dir"]} data-id={shinelonId}
@@ -122,8 +124,10 @@ const LeftColumnWorkspace = (props) => {
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
             </div>
-            <DirTree tree={props.tree} _id={shinelonId} level={1} rightClickDir={props.rightClickDir}
-                createNewFolderSumbit={props.createNewFolderSumbit} toggleDir={props.toggleDir} />
+            <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
+                createNewFolderSumbit={createNewFolderSumbit} toggleDir={toggleDir}
+                centerColumnDir={centerColumnDir}
+                leftClickDir={leftClickDir} />
             <ul className={styles["pop-menu"]}
                 style={{
                     display: props.leftMenuThree.display,
@@ -143,12 +147,21 @@ const LeftColumnWorkspace = (props) => {
 
 const mapStateToProps = state => {
     return {
+        centerColumnDir:state.centerColumnDir,
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
         tree: state.tree
     }
 }
 const mapDispatchToProps = dispatch => ({
+    leftClickDir: e => {
+        
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
+            target = target.parentNode
+        }
+        dispatch(select_dir(target.dataset.id))
+    },
     rightClickRootDir: e => {
         e.preventDefault()
         dispatch((dispatch, getState) => {
@@ -208,11 +221,20 @@ const mapDispatchToProps = dispatch => ({
             let arr = []
             for (let i = 0; i < d0.dirs.length; i++) {
                 let d1 = tree.find(doc => doc._id == d0.dirs[i]._id)
+                if (d1 == undefined) {
+                    arr.push(d0.dirs[i]._id)
+                    continue
+                }
                 for (let j = 0; j < d1.dirs.length; j++) {
-                    arr.push(d1.dirs[j]._id)
+                    let d2 = tree.find(doc => doc._id == d1.dirs[j]._id)
+                    if (d2 == undefined) {
+                        arr.push(d1.dirs[j]._id)
+                        continue
+                    }
                 }
             }
             if (arr.length > 0) {
+                console.log('fetch-folders');
                 axios.get("note/get-folders", {
                     params: {
                         ids: JSON.stringify(arr)
@@ -223,7 +245,7 @@ const mapDispatchToProps = dispatch => ({
                     timeout: 1000, // default is `0` (no timeout),
                     responseType: 'json' // default
                 }).then(res => {
-                    dispatch(add_folders(res.data))
+                    dispatch(fetch_folders(res.data))
                 }).catch(err => {
                     console.log('err', err);
                     // dispatch(create_new_folder_failure())

@@ -1,5 +1,7 @@
-let a1 = [1,2]
-let a2 = [3,4]
-let x = a2.find(elem => elem === 3)
-console.log('x',x);
-
+for(let i =0;i<5;i++){
+    if( i ==1){
+        continue
+    }
+    console.log('i :',i);
+    
+}
