@@ -6,7 +6,7 @@ class CenterColumn extends React.Component {
         return (
             <Fragment>
                 <div className={styles.header}>1</div>
-                <div className={styles.content}>
+                <div className={styles.content}>2
                 </div>
             </Fragment>
         )

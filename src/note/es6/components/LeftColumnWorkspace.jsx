@@ -36,7 +36,7 @@ class DirTree extends React.Component {
         }
     }
     render() {
-        let { _id, tree } = this.props
+        let { _id, tree,centerColumnDir,level,createNewFolderSumbit,toggleDir} = this.props
         let targetDir = tree.find(doc => doc._id === _id)
         if (targetDir == null) {
             return null
@@ -56,16 +56,14 @@ class DirTree extends React.Component {
                             let childTargetDir = tree.find(doc => doc._id === dir._id)
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}>
-                                    <div className={styles["li-content"]}
-                                        style={{ paddingLeft: this.props.level * 20 + "px",
-                                        backgroundColor:this.props.centerColumnDir==_id?"#00f":"" 
-                                         }}>
+                                    <div className={centerColumnDir == dir._id ? styles["li-content-selected"] : styles["li-content"]}
+                                        style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={childTargetDir.dirs.length == 0
                                             ? styles["arrow-hidden"]
                                             : (childTargetDir.folded ? styles["arrow-closed"] : styles["arrow-open"])
                                         }
                                             onClick={childTargetDir.dirs.length > 0
-                                                ? e => this.props.toggleDir(e, dir._id)
+                                                ? e => toggleDir(e, dir._id)
                                                 : null
                                             } />
                                         <div className={styles.dir}>
@@ -73,9 +71,10 @@ class DirTree extends React.Component {
                                             <span className={styles.dirName}>{childTargetDir.name}</span>
                                         </div>
                                     </div>
-                                    <DirTree tree={tree} _id={dir._id} level={this.props.level + 1}
-                                        createNewFolderSumbit={this.props.createNewFolderSumbit}
-                                        toggleDir={this.props.toggleDir}
+                                    <DirTree tree={tree} _id={dir._id} level={level + 1}
+                                        createNewFolderSumbit={createNewFolderSumbit}
+                                        toggleDir={toggleDir}
+                                        centerColumnDir={centerColumnDir}
                                     />
                                 </li>
                             )
@@ -83,7 +82,7 @@ class DirTree extends React.Component {
                             return (
                                 <li key={"editable"} className={styles.li}>
                                     <div className={styles["li-content"]}
-                                        style={{ paddingLeft: this.props.level * 20 + "px" }}>
+                                        style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]}/>
                                         <div className={styles.dir}>
                                             <i className={styles["dir-closed"]} />

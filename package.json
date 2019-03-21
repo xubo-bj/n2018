@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "debug": "^2.6.3",
+    "draft-js": "^0.10.5",
     "ejs": "~2.3.3",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
