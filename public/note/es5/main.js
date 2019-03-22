@@ -51112,6 +51112,10 @@ var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_mo
 
 var _CenterColumn = _interopRequireDefault(__webpack_require__(/*! ../../sass/CenterColumn.scss */ "./src/note/sass/CenterColumn.scss"));
 
+var _CenterColumnToolbar = _interopRequireDefault(__webpack_require__(/*! ./CenterColumnToolbar.jsx */ "./src/note/es6/components/CenterColumnToolbar.jsx"));
+
+var _CenterColumnWorkspace = _interopRequireDefault(__webpack_require__(/*! ./CenterColumnWorkspace.jsx */ "./src/note/es6/components/CenterColumnWorkspace.jsx"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -51148,11 +51152,7 @@ function (_React$Component) {
   _createClass(CenterColumn, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement("div", {
-        className: _CenterColumn.default.header
-      }, "1"), _react.default.createElement("div", {
-        className: _CenterColumn.default.content
-      }, "2"));
+      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(_CenterColumnToolbar.default, null), _react.default.createElement(_CenterColumnWorkspace.default, null));
     }
   }]);
 
@@ -51160,6 +51160,112 @@ function (_React$Component) {
 }(_react.default.Component);
 
 var _default = CenterColumn;
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./src/note/es6/components/CenterColumnToolbar.jsx":
+/*!*********************************************************!*\
+  !*** ./src/note/es6/components/CenterColumnToolbar.jsx ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _CenterColumnToolbar = _interopRequireDefault(__webpack_require__(/*! ../../sass/CenterColumnToolbar.scss */ "./src/note/sass/CenterColumnToolbar.scss"));
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CenterColumnToolbar = function CenterColumnToolbar(props) {
+  return _react.default.createElement("div", {
+    className: _CenterColumnToolbar.default.toolbar
+  }, _react.default.createElement("i", {
+    className: _CenterColumnToolbar.default["return-btn"]
+  }), _react.default.createElement("div", {
+    className: _CenterColumnToolbar.default["search-container"]
+  }, _react.default.createElement("i", {
+    className: _CenterColumnToolbar.default["search-btn"]
+  }), _react.default.createElement("input", {
+    type: "text",
+    placeholder: "搜索",
+    className: _CenterColumnToolbar.default["input-box"]
+  })), _react.default.createElement("i", {
+    className: _CenterColumnToolbar.default["sort-btn"]
+  }));
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {};
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CenterColumnToolbar);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./src/note/es6/components/CenterColumnWorkspace.jsx":
+/*!***********************************************************!*\
+  !*** ./src/note/es6/components/CenterColumnWorkspace.jsx ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _CenterColumnWorkspace = _interopRequireDefault(__webpack_require__(/*! ../../sass/CenterColumnWorkspace.scss */ "./src/note/sass/CenterColumnWorkspace.scss"));
+
+var _actions = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
+
+var _axios = _interopRequireDefault(__webpack_require__(/*! axios */ "./node_modules/axios/index.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.mongodb.shinelonId;
+
+var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
+  return _react.default.createElement("div", {
+    className: _CenterColumnWorkspace.default.workspace
+  });
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {};
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CenterColumnWorkspace);
+
 exports.default = _default;
 
 /***/ }),
@@ -52509,7 +52615,7 @@ function descendantDirsTraversal(targetDir, treeArray) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"container":"_27a-UrgGiyP1PpzXPPPqJi"};
+module.exports = {"container":"container__27a-UrgGiyP1PpzXPPPqJi"};
 
 /***/ }),
 
@@ -52521,7 +52627,30 @@ module.exports = {"container":"_27a-UrgGiyP1PpzXPPPqJi"};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"header":"_2Th6o30rrcdYigzLtrXCqi","content":"_3sK-G-VkhpAmRLJQBJBVfB"};
+
+/***/ }),
+
+/***/ "./src/note/sass/CenterColumnToolbar.scss":
+/*!************************************************!*\
+  !*** ./src/note/sass/CenterColumnToolbar.scss ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+module.exports = {"toolbar":"toolbar__2QQIXZE_4QCebafYuIjo79","return-btn":"return-btn__17fO9Ot1rbv_ST1j7RnzBu","search-container":"search-container__mRwlKN5p91b1XRO4mRFgP","search-btn":"search-btn__1rOrtZ0L9R_EhOnQi_B2LD","input-box":"input-box__29KXI-uF31QeTSU3FSLadG","sort-btn":"sort-btn__2o51-I1PVoKRdj0L9Q-dKg"};
+
+/***/ }),
+
+/***/ "./src/note/sass/CenterColumnWorkspace.scss":
+/*!**************************************************!*\
+  !*** ./src/note/sass/CenterColumnWorkspace.scss ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+module.exports = {"workspace":"workspace__1P67H632nLJLN7Qnvmv5a9"};
 
 /***/ }),
 
@@ -52533,7 +52662,7 @@ module.exports = {"header":"_2Th6o30rrcdYigzLtrXCqi","content":"_3sK-G-VkhpAmRLJ
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"content":"_1VgBmk6dG-bExp88umppii","content-left":"_1GRFaYfwvfVUNNiHMhJzy2","content-center":"_1y-UK8--J5yKgmvxcd1rhj","content-right":"CMvS-KN9E7bKjAtP7QrER","drag-line":"_37MEdKjXTq5WUNyPnCCWxO"};
+module.exports = {"content":"content__1VgBmk6dG-bExp88umppii","content-left":"content-left__1GRFaYfwvfVUNNiHMhJzy2","content-center":"content-center__1y-UK8--J5yKgmvxcd1rhj","content-right":"content-right__CMvS-KN9E7bKjAtP7QrER","drag-line":"drag-line__37MEdKjXTq5WUNyPnCCWxO"};
 
 /***/ }),
 
@@ -52545,7 +52674,7 @@ module.exports = {"content":"_1VgBmk6dG-bExp88umppii","content-left":"_1GRFaYfwv
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"header":"n_2C16IAiOKcsAkGXz_IX"};
+module.exports = {"header":"header__n_2C16IAiOKcsAkGXz_IX"};
 
 /***/ }),
 
@@ -52557,7 +52686,7 @@ module.exports = {"header":"n_2C16IAiOKcsAkGXz_IX"};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"A4Je2tkl7zhuIeuFJfZpK","workspace":"Vhl1_OvXjFTY2VpGwJddN"};
+module.exports = {"toolbar":"toolbar__A4Je2tkl7zhuIeuFJfZpK","workspace":"workspace__Vhl1_OvXjFTY2VpGwJddN"};
 
 /***/ }),
 
@@ -52569,7 +52698,7 @@ module.exports = {"toolbar":"A4Je2tkl7zhuIeuFJfZpK","workspace":"Vhl1_OvXjFTY2Vp
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWevRbcKJyA6wf","text":"_32m5BF_L3AoyqmRVUJlUc-","icon":"eEJ-kpbryf-q1RBCqBltM","arrow":"Z0nBev1fke2XQrq-lcmf","pop-menu":"_3Vrx5ssuq2GqY1zAM6n6-E","menu-option":"_3H0HMsSxDtYpt0-fvR7J8B"};
+module.exports = {"container":"container__1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"pop-btn__2YVbYJ-cTWevRbcKJyA6wf","text":"text__32m5BF_L3AoyqmRVUJlUc-","icon":"icon__eEJ-kpbryf-q1RBCqBltM","arrow":"arrow__Z0nBev1fke2XQrq-lcmf","pop-menu":"pop-menu__3Vrx5ssuq2GqY1zAM6n6-E","menu-option":"menu-option__3H0HMsSxDtYpt0-fvR7J8B"};
 
 /***/ }),
 
@@ -52581,7 +52710,7 @@ module.exports = {"container":"_1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"_2YVbYJ-cTWev
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5DTPt2kr9xzu","my-dir-name":"_3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"_3_q2o7fA2RIgJs4dqNY7yz","menu-option":"_1ZWBo8FIl6DKRwT5iKUoOw","ul":"RtrrH9Kt6iZbyLYftY2sm","li":"_3lPmwPnahBhz7xeKgSjp0m","li-content":"n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"_3uo_8nWoo3Wh4U4H7wGqDG","arrow":"_3xezzTeOoF8at18l6puiP6","arrow-open":"x0otYSECyU-0_ueYSCpao _3xezzTeOoF8at18l6puiP6","arrow-closed":"EuyObZDU0G4R5p20DwViJ _3xezzTeOoF8at18l6puiP6","arrow-hidden":"_18q4TFgQgTy4K_GkKrOF3i _3xezzTeOoF8at18l6puiP6","dir":"_3LDijpTdgHXx1toqIfuZOA","dir-icon":"_3iBMFRcRBVzLL9LT2J0alZ","dir-open":"_3aegqkwhgrINrAnUEv7CbC _3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"_1ZCqU_9LI9bYZP0ICANgk7 _3iBMFRcRBVzLL9LT2J0alZ","dirName":"_37mvSkgKF6T81hJ46ZwPX_"};
+module.exports = {"my-dir":"my-dir__2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"my-dir-icon__1apa2FprME5DTPt2kr9xzu","my-dir-name":"my-dir-name__3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"pop-menu__3_q2o7fA2RIgJs4dqNY7yz","menu-option":"menu-option__1ZWBo8FIl6DKRwT5iKUoOw","ul":"ul__RtrrH9Kt6iZbyLYftY2sm","li":"li__3lPmwPnahBhz7xeKgSjp0m","li-content":"li-content__n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"li-content-selected__3uo_8nWoo3Wh4U4H7wGqDG","arrow":"arrow__3xezzTeOoF8at18l6puiP6","arrow-open":"arrow-open__x0otYSECyU-0_ueYSCpao arrow__3xezzTeOoF8at18l6puiP6","arrow-closed":"arrow-closed__EuyObZDU0G4R5p20DwViJ arrow__3xezzTeOoF8at18l6puiP6","arrow-hidden":"arrow-hidden__18q4TFgQgTy4K_GkKrOF3i arrow__3xezzTeOoF8at18l6puiP6","dir":"dir__3LDijpTdgHXx1toqIfuZOA","dir-icon":"dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-open":"dir-open__3aegqkwhgrINrAnUEv7CbC dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"dir-closed__1ZCqU_9LI9bYZP0ICANgk7 dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dirName":"dirName__37mvSkgKF6T81hJ46ZwPX_"};
 
 /***/ }),
 
@@ -52593,7 +52722,7 @@ module.exports = {"my-dir":"_2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"_1apa2FprME5
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"header":"_2Lp99dvNWAOt1-baBYa1Yw","content":"_29sdjLnXUu0B2rvsvlMHM9"};
+module.exports = {"header":"header__2Lp99dvNWAOt1-baBYa1Yw","content":"content__29sdjLnXUu0B2rvsvlMHM9"};
 
 /***/ }),
 
@@ -52605,7 +52734,7 @@ module.exports = {"header":"_2Lp99dvNWAOt1-baBYa1Yw","content":"_29sdjLnXUu0B2rv
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"_2Vglke_6HAes5QHkg6_8F6","editor":"_1cJVz4KB-5ids5MZXPvojU"};
+module.exports = {"toolbar":"toolbar__2Vglke_6HAes5QHkg6_8F6","editor":"editor__1cJVz4KB-5ids5MZXPvojU"};
 
 /***/ }),
 
@@ -52617,7 +52746,7 @@ module.exports = {"toolbar":"_2Vglke_6HAes5QHkg6_8F6","editor":"_1cJVz4KB-5ids5M
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"title":"_2OWA4vM9Wan2t1HRRvx5Tc","submit-btn":"_3h0oU6QAneSEpqrZXe6_ug"};
+module.exports = {"title":"title__2OWA4vM9Wan2t1HRRvx5Tc","submit-btn":"submit-btn__3h0oU6QAneSEpqrZXe6_ug"};
 
 /***/ }),
 
