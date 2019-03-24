@@ -16,7 +16,15 @@ import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 const CenterColumnWorkspace = props =>
-    <div className={styles.workspace}></div>
+    <div className={styles.workspace}>
+        <ul className={styles["ul-dirs"]}>
+            <li className={styles["li-dir"]}>
+                <svg className={styles["dir-icon"]}>
+                    <use  xlinkHref="/note/images/folder.svg#folder" />
+            </svg>
+            </li>
+        </ul>
+    </div>
 
 const mapStateToProps = state => ({
 

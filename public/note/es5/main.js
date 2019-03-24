@@ -51251,7 +51251,15 @@ var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.j
 var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
   return _react.default.createElement("div", {
     className: _CenterColumnWorkspace.default.workspace
-  });
+  }, _react.default.createElement("ul", {
+    className: _CenterColumnWorkspace.default["ul-dirs"]
+  }, _react.default.createElement("li", {
+    className: _CenterColumnWorkspace.default["li-dir"]
+  }, _react.default.createElement("svg", {
+    className: _CenterColumnWorkspace.default["dir-icon"]
+  }, _react.default.createElement("use", {
+    xlinkHref: "/note/images/folder.svg#folder"
+  })))));
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -52633,7 +52641,7 @@ module.exports = {"toolbar":"toolbar__2QQIXZE_4QCebafYuIjo79","return-btn":"retu
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"workspace":"workspace__1P67H632nLJLN7Qnvmv5a9"};
+module.exports = {"workspace":"workspace__1P67H632nLJLN7Qnvmv5a9","li-dir":"li-dir__9nw4EDDFjWehQ3QIFqU37","dir-icon":"dir-icon__Fq5Kj6WUUGzB54xau6uNK"};
 
 /***/ }),
 

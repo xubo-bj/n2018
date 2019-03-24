@@ -1,7 +1,21 @@
-.workspace{
+.workspace {
     position: absolute;
     top: 61px;
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.ul-dirs {}
+
+.li-dir {
+    display: flex;
+    height: 53px;
+    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #e0e1e5;
+    .dir-icon {
+        width: 16px;
+        height: 16px;
+        // border: 1px solid #000;
+    }
 }
