@@ -5,7 +5,7 @@ const CenterColumnToolbar = (props) =>
     <div className={styles.toolbar}>
         <i className={styles["return-btn"]} />
         <div className={styles["search-container"]}>
-            <i className={styles["search-btn"]} />
+            <i className={styles["search-icon"]} />
             <input type="text" placeholder={"搜索"} className={styles["input-box"]} />
         </div>
         <i className={styles["sort-btn"]}/>

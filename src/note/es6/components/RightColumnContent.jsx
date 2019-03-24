@@ -43,10 +43,10 @@ class MyEditor extends React.Component {
 class RightColumnCotent extends React.Component {
   render() {
     return (
-      <Fragment>
+      <div className={styles.content}>
         <Toolbar />
         <MyEditor />
-      </Fragment>
+</div>
     )
   }
 }

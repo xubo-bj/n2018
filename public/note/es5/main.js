@@ -51110,8 +51110,6 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
-var _CenterColumn = _interopRequireDefault(__webpack_require__(/*! ../../sass/CenterColumn.scss */ "./src/note/sass/CenterColumn.scss"));
-
 var _CenterColumnToolbar = _interopRequireDefault(__webpack_require__(/*! ./CenterColumnToolbar.jsx */ "./src/note/es6/components/CenterColumnToolbar.jsx"));
 
 var _CenterColumnWorkspace = _interopRequireDefault(__webpack_require__(/*! ./CenterColumnWorkspace.jsx */ "./src/note/es6/components/CenterColumnWorkspace.jsx"));
@@ -51195,7 +51193,7 @@ var CenterColumnToolbar = function CenterColumnToolbar(props) {
   }), _react.default.createElement("div", {
     className: _CenterColumnToolbar.default["search-container"]
   }, _react.default.createElement("i", {
-    className: _CenterColumnToolbar.default["search-btn"]
+    className: _CenterColumnToolbar.default["search-icon"]
   }), _react.default.createElement("input", {
     type: "text",
     placeholder: "搜索",
@@ -51479,8 +51477,6 @@ var _LeftColumnToolbar = _interopRequireDefault(__webpack_require__(/*! ./LeftCo
 
 var _LeftColumnWorkspace = _interopRequireDefault(__webpack_require__(/*! ./LeftColumnWorkspace.jsx */ "./src/note/es6/components/LeftColumnWorkspace.jsx"));
 
-var _LeftColumn = _interopRequireDefault(__webpack_require__(/*! ../../sass/LeftColumn.scss */ "./src/note/sass/LeftColumn.scss"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -51517,11 +51513,7 @@ function (_React$Component) {
   _createClass(LeftColumn, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement("div", {
-        className: _LeftColumn.default.toolbar
-      }, _react.default.createElement(_LeftColumnToolbar.default, null)), _react.default.createElement("div", {
-        className: _LeftColumn.default.workspace
-      }, _react.default.createElement(_LeftColumnWorkspace.default, null)));
+      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(_LeftColumnToolbar.default, null), _react.default.createElement(_LeftColumnWorkspace.default, null));
     }
   }]);
 
@@ -51560,6 +51552,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var LeftColumnToolbar = function LeftColumnToolbar(props) {
   return _react.default.createElement("div", {
+    className: _LeftColumnToolbar.default.toolbar
+  }, _react.default.createElement("div", {
     className: _LeftColumnToolbar.default.container
   }, _react.default.createElement("div", {
     className: _LeftColumnToolbar.default["pop-btn"],
@@ -51580,7 +51574,7 @@ var LeftColumnToolbar = function LeftColumnToolbar(props) {
   }, "\u65B0\u5EFA\u6587\u4EF6"), _react.default.createElement("li", {
     className: _LeftColumnToolbar.default["menu-option"],
     onClick: props.createNewFolderPrompt
-  }, "\u65B0\u5EFA\u6587\u4EF6\u5939")));
+  }, "\u65B0\u5EFA\u6587\u4EF6\u5939"))));
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -51794,7 +51788,9 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
       toggleDir = props.toggleDir,
       leftClickDir = props.leftClickDir,
       centerColumnDir = props.centerColumnDir;
-  return _react.default.createElement(_react.Fragment, null, _react.default.createElement("div", {
+  return _react.default.createElement("div", {
+    className: _LeftColumnWorkspace.default.workspace
+  }, _react.default.createElement("div", {
     className: _LeftColumnWorkspace.default["my-dir"],
     "data-id": shinelonId,
     onContextMenu: props.rightClickRootDir
@@ -52018,8 +52014,6 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
-var _RightColumn = _interopRequireDefault(__webpack_require__(/*! ../../sass/RightColumn.scss */ "./src/note/sass/RightColumn.scss"));
-
 var _RightColumnHeader = _interopRequireDefault(__webpack_require__(/*! ./RightColumnHeader.jsx */ "./src/note/es6/components/RightColumnHeader.jsx"));
 
 var _RightColumnContent = _interopRequireDefault(__webpack_require__(/*! ./RightColumnContent.jsx */ "./src/note/es6/components/RightColumnContent.jsx"));
@@ -52060,11 +52054,7 @@ function (_React$Component) {
   _createClass(RightColumn, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement("div", {
-        className: _RightColumn.default.header
-      }, _react.default.createElement(_RightColumnHeader.default, null)), _react.default.createElement("div", {
-        className: _RightColumn.default.content
-      }, _react.default.createElement(_RightColumnContent.default, null)));
+      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(_RightColumnHeader.default, null), _react.default.createElement(_RightColumnContent.default, null));
     }
   }]);
 
@@ -52207,7 +52197,9 @@ function (_React$Component3) {
   _createClass(RightColumnCotent, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(Toolbar, null), _react.default.createElement(MyEditor, null));
+      return _react.default.createElement("div", {
+        className: _RightColumnContent.default.content
+      }, _react.default.createElement(Toolbar, null), _react.default.createElement(MyEditor, null));
     }
   }]);
 
@@ -52276,7 +52268,9 @@ function (_React$Component) {
   _createClass(MyEditor, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement("input", {
+      return _react.default.createElement("div", {
+        className: _RightColumnHeader.default.header
+      }, _react.default.createElement("input", {
         type: "text",
         className: _RightColumnHeader.default["title"]
       }), _react.default.createElement("input", {
@@ -52619,17 +52613,6 @@ module.exports = {"container":"container__27a-UrgGiyP1PpzXPPPqJi"};
 
 /***/ }),
 
-/***/ "./src/note/sass/CenterColumn.scss":
-/*!*****************************************!*\
-  !*** ./src/note/sass/CenterColumn.scss ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "./src/note/sass/CenterColumnToolbar.scss":
 /*!************************************************!*\
   !*** ./src/note/sass/CenterColumnToolbar.scss ***!
@@ -52638,7 +52621,7 @@ module.exports = {"container":"container__27a-UrgGiyP1PpzXPPPqJi"};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"toolbar__2QQIXZE_4QCebafYuIjo79","return-btn":"return-btn__17fO9Ot1rbv_ST1j7RnzBu","search-container":"search-container__mRwlKN5p91b1XRO4mRFgP","search-btn":"search-btn__1rOrtZ0L9R_EhOnQi_B2LD","input-box":"input-box__29KXI-uF31QeTSU3FSLadG","sort-btn":"sort-btn__2o51-I1PVoKRdj0L9Q-dKg"};
+module.exports = {"toolbar":"toolbar__2QQIXZE_4QCebafYuIjo79","return-btn":"return-btn__17fO9Ot1rbv_ST1j7RnzBu","search-container":"search-container__mRwlKN5p91b1XRO4mRFgP","search-icon":"search-icon__3TqIitX6eML7vQ6YZGKyAQ","input-box":"input-box__29KXI-uF31QeTSU3FSLadG","sort-btn":"sort-btn__2o51-I1PVoKRdj0L9Q-dKg"};
 
 /***/ }),
 
@@ -52678,18 +52661,6 @@ module.exports = {"header":"header__n_2C16IAiOKcsAkGXz_IX"};
 
 /***/ }),
 
-/***/ "./src/note/sass/LeftColumn.scss":
-/*!***************************************!*\
-  !*** ./src/note/sass/LeftColumn.scss ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"toolbar__A4Je2tkl7zhuIeuFJfZpK","workspace":"workspace__Vhl1_OvXjFTY2VpGwJddN"};
-
-/***/ }),
-
 /***/ "./src/note/sass/LeftColumnToolbar.scss":
 /*!**********************************************!*\
   !*** ./src/note/sass/LeftColumnToolbar.scss ***!
@@ -52698,7 +52669,7 @@ module.exports = {"toolbar":"toolbar__A4Je2tkl7zhuIeuFJfZpK","workspace":"worksp
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"container":"container__1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"pop-btn__2YVbYJ-cTWevRbcKJyA6wf","text":"text__32m5BF_L3AoyqmRVUJlUc-","icon":"icon__eEJ-kpbryf-q1RBCqBltM","arrow":"arrow__Z0nBev1fke2XQrq-lcmf","pop-menu":"pop-menu__3Vrx5ssuq2GqY1zAM6n6-E","menu-option":"menu-option__3H0HMsSxDtYpt0-fvR7J8B"};
+module.exports = {"toolbar":"toolbar__oL1_ZBpAf9Xx0_HLJ-rra","container":"container__1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"pop-btn__2YVbYJ-cTWevRbcKJyA6wf","text":"text__32m5BF_L3AoyqmRVUJlUc-","icon":"icon__eEJ-kpbryf-q1RBCqBltM","arrow":"arrow__Z0nBev1fke2XQrq-lcmf","pop-menu":"pop-menu__3Vrx5ssuq2GqY1zAM6n6-E","menu-option":"menu-option__3H0HMsSxDtYpt0-fvR7J8B"};
 
 /***/ }),
 
@@ -52710,19 +52681,7 @@ module.exports = {"container":"container__1YB2_J9TW9NXPdeJMcEmYK","pop-btn":"pop
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"my-dir":"my-dir__2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"my-dir-icon__1apa2FprME5DTPt2kr9xzu","my-dir-name":"my-dir-name__3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"pop-menu__3_q2o7fA2RIgJs4dqNY7yz","menu-option":"menu-option__1ZWBo8FIl6DKRwT5iKUoOw","ul":"ul__RtrrH9Kt6iZbyLYftY2sm","li":"li__3lPmwPnahBhz7xeKgSjp0m","li-content":"li-content__n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"li-content-selected__3uo_8nWoo3Wh4U4H7wGqDG","arrow":"arrow__3xezzTeOoF8at18l6puiP6","arrow-open":"arrow-open__x0otYSECyU-0_ueYSCpao arrow__3xezzTeOoF8at18l6puiP6","arrow-closed":"arrow-closed__EuyObZDU0G4R5p20DwViJ arrow__3xezzTeOoF8at18l6puiP6","arrow-hidden":"arrow-hidden__18q4TFgQgTy4K_GkKrOF3i arrow__3xezzTeOoF8at18l6puiP6","dir":"dir__3LDijpTdgHXx1toqIfuZOA","dir-icon":"dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-open":"dir-open__3aegqkwhgrINrAnUEv7CbC dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"dir-closed__1ZCqU_9LI9bYZP0ICANgk7 dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dirName":"dirName__37mvSkgKF6T81hJ46ZwPX_"};
-
-/***/ }),
-
-/***/ "./src/note/sass/RightColumn.scss":
-/*!****************************************!*\
-  !*** ./src/note/sass/RightColumn.scss ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-module.exports = {"header":"header__2Lp99dvNWAOt1-baBYa1Yw","content":"content__29sdjLnXUu0B2rvsvlMHM9"};
+module.exports = {"workspace":"workspace__1zisjNZ8u5HFiiAbtfKlzX","my-dir":"my-dir__2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"my-dir-icon__1apa2FprME5DTPt2kr9xzu","my-dir-name":"my-dir-name__3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"pop-menu__3_q2o7fA2RIgJs4dqNY7yz","menu-option":"menu-option__1ZWBo8FIl6DKRwT5iKUoOw","ul":"ul__RtrrH9Kt6iZbyLYftY2sm","li":"li__3lPmwPnahBhz7xeKgSjp0m","li-content":"li-content__n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"li-content-selected__3uo_8nWoo3Wh4U4H7wGqDG","arrow":"arrow__3xezzTeOoF8at18l6puiP6","arrow-open":"arrow-open__x0otYSECyU-0_ueYSCpao arrow__3xezzTeOoF8at18l6puiP6","arrow-closed":"arrow-closed__EuyObZDU0G4R5p20DwViJ arrow__3xezzTeOoF8at18l6puiP6","arrow-hidden":"arrow-hidden__18q4TFgQgTy4K_GkKrOF3i arrow__3xezzTeOoF8at18l6puiP6","dir":"dir__3LDijpTdgHXx1toqIfuZOA","dir-icon":"dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-open":"dir-open__3aegqkwhgrINrAnUEv7CbC dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"dir-closed__1ZCqU_9LI9bYZP0ICANgk7 dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dirName":"dirName__37mvSkgKF6T81hJ46ZwPX_"};
 
 /***/ }),
 
@@ -52734,7 +52693,7 @@ module.exports = {"header":"header__2Lp99dvNWAOt1-baBYa1Yw","content":"content__
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"toolbar":"toolbar__2Vglke_6HAes5QHkg6_8F6","editor":"editor__1cJVz4KB-5ids5MZXPvojU"};
+module.exports = {"content":"content__3cOc0u_YLRFHBt6EjIxuE_","toolbar":"toolbar__2Vglke_6HAes5QHkg6_8F6","editor":"editor__1cJVz4KB-5ids5MZXPvojU"};
 
 /***/ }),
 
@@ -52746,7 +52705,7 @@ module.exports = {"toolbar":"toolbar__2Vglke_6HAes5QHkg6_8F6","editor":"editor__
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"title":"title__2OWA4vM9Wan2t1HRRvx5Tc","submit-btn":"submit-btn__3h0oU6QAneSEpqrZXe6_ug"};
+module.exports = {"header":"header__2auYECyxv5YGzMF28F4RrH","title":"title__2OWA4vM9Wan2t1HRRvx5Tc","submit-btn":"submit-btn__3h0oU6QAneSEpqrZXe6_ug"};
 
 /***/ }),
 

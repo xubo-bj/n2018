@@ -6,6 +6,7 @@ import {
     create_new_folder_prompt
 } from "../actions"
 const LeftColumnToolbar = (props) => (
+    <div className={styles.toolbar}>
     <div className={styles.container}>
         <div className={styles["pop-btn"]} onClick={props.displayLeftMenuOne}>
             <i className={styles.icon} />
@@ -18,7 +19,7 @@ const LeftColumnToolbar = (props) => (
             <li className={styles["menu-option"]}
                 onClick={props.createNewFolderPrompt}>新建文件夹</li>
         </ul>
-    </div>
+    </div></div>
 )
 const mapStateToProps = state => ({
     leftMenuOneDisplay: state.leftMenuOneDisplay

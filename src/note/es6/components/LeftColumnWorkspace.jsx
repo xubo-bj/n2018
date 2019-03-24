@@ -36,7 +36,7 @@ class DirTree extends React.Component {
         }
     }
     render() {
-        let { _id, tree,centerColumnDir,level,createNewFolderSumbit,toggleDir} = this.props
+        let { _id, tree, centerColumnDir, level, createNewFolderSumbit, toggleDir } = this.props
         let targetDir = tree.find(doc => doc._id === _id)
         if (targetDir == null) {
             return null
@@ -83,7 +83,7 @@ class DirTree extends React.Component {
                                 <li key={"editable"} className={styles.li}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
-                                        <i className={styles["arrow-hidden"]}/>
+                                        <i className={styles["arrow-hidden"]} />
                                         <div className={styles.dir}>
                                             <i className={styles["dir-closed"]} />
                                             <span className={styles.dirName}
@@ -107,7 +107,7 @@ class DirTree extends React.Component {
 const LeftColumnWorkspace = (props) => {
     const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir } = props
     return (
-        <Fragment>
+        <div className={styles.workspace}>
             <div className={styles["my-dir"]} data-id={shinelonId}
                 onContextMenu={props.rightClickRootDir}
             >
@@ -140,13 +140,13 @@ const LeftColumnWorkspace = (props) => {
                 <li className={styles["menu-option"]}>复制</li>
                 <li className={styles["menu-option"]}>删除</li>
             </ul>
-        </Fragment>
+        </div>
     )
 }
 
 const mapStateToProps = state => {
     return {
-        centerColumnDir:state.centerColumnDir,
+        centerColumnDir: state.centerColumnDir,
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
         tree: state.tree
@@ -154,7 +154,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
-        
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentNode
