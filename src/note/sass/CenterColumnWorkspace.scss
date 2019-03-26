@@ -8,14 +8,43 @@
 
 .ul-dirs {}
 
-.li-dir {
+.li-dir,
+.li-file {
     display: flex;
+    align-items: center;
     height: 53px;
     border-bottom: 1px solid #000;
     border-bottom: 1px solid #e0e1e5;
-    .dir-icon {
-        width: 16px;
-        height: 16px;
-        // border: 1px solid #000;
-    }
+    padding-left: 20px;
+    padding-right: 20px;
 }
+
+.dir-icon,
+.file-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    // border: 1px solid #000;
+}
+
+.dir-name,
+.file-name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #393939;
+}
+
+.dir-mtime,
+.file-mtime {
+    flex-shrink: 0;
+    color: #c2c2c2;
+    font-size: 12px;
+    position: relative;
+    top: 2px;
+}
+
+.ul-files {}

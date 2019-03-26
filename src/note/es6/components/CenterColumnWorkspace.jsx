@@ -20,8 +20,20 @@ const CenterColumnWorkspace = props =>
         <ul className={styles["ul-dirs"]}>
             <li className={styles["li-dir"]}>
                 <svg className={styles["dir-icon"]}>
-                    <use  xlinkHref="/note/images/folder.svg#folder" />
-            </svg>
+                    <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
+                </svg>
+                <span className={styles["dir-name"]}>星辰大海我们是共产主义接班人星辰大海我们是共产主义接班人</span>
+                <span className={styles["dir-mtime"]}>2019-02-22</span>
+            </li>
+        </ul>
+        <ul className={styles["ul-files"]}>
+            <li className={styles["li-file"]}>
+                <svg className={styles["file-icon"]}>
+                    <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
+                </svg>
+                <span className={styles["file-name"]}>星辰大海我们是共产主义接班人星辰大海我们是共产主义接班人</span>
+                <span className={styles["file-mtime"]}>2019-02-22</span>
+
             </li>
         </ul>
     </div>
@@ -30,7 +42,7 @@ const mapStateToProps = state => ({
 
 })
 
-const mapDispatchToProps= dispatch=>({
+const mapDispatchToProps = dispatch => ({
 
 })
 

@@ -51258,8 +51258,26 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
   }, _react.default.createElement("svg", {
     className: _CenterColumnWorkspace.default["dir-icon"]
   }, _react.default.createElement("use", {
-    xlinkHref: "/note/images/folder.svg#folder"
-  })))));
+    xlinkHref: "/note/images/centerColumn.svg#folder",
+    transform: "scale(0.5)"
+  })), _react.default.createElement("span", {
+    className: _CenterColumnWorkspace.default["dir-name"]
+  }, "\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA"), _react.default.createElement("span", {
+    className: _CenterColumnWorkspace.default["dir-mtime"]
+  }, "2019-02-22"))), _react.default.createElement("ul", {
+    className: _CenterColumnWorkspace.default["ul-files"]
+  }, _react.default.createElement("li", {
+    className: _CenterColumnWorkspace.default["li-file"]
+  }, _react.default.createElement("svg", {
+    className: _CenterColumnWorkspace.default["file-icon"]
+  }, _react.default.createElement("use", {
+    xlinkHref: "/note/images/centerColumn.svg#file",
+    transform: "scale(0.5)"
+  })), _react.default.createElement("span", {
+    className: _CenterColumnWorkspace.default["file-name"]
+  }, "\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA"), _react.default.createElement("span", {
+    className: _CenterColumnWorkspace.default["file-mtime"]
+  }, "2019-02-22"))));
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -52641,7 +52659,7 @@ module.exports = {"toolbar":"toolbar__2QQIXZE_4QCebafYuIjo79","return-btn":"retu
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"workspace":"workspace__1P67H632nLJLN7Qnvmv5a9","li-dir":"li-dir__9nw4EDDFjWehQ3QIFqU37","dir-icon":"dir-icon__Fq5Kj6WUUGzB54xau6uNK"};
+module.exports = {"workspace":"workspace__1P67H632nLJLN7Qnvmv5a9","li-dir":"li-dir__9nw4EDDFjWehQ3QIFqU37","li-file":"li-file__1AqxZI8F5pxj7_b0FPNR-0","dir-icon":"dir-icon__Fq5Kj6WUUGzB54xau6uNK","file-icon":"file-icon__1ZE-23noTmCRfAM6xWQMT9","dir-name":"dir-name__UZ-tLaw5_dl-QfuHHRAX","file-name":"file-name__1gedkV2DhvWXtrn5LobiR","dir-mtime":"dir-mtime__2Vb8wFpq_AKexFVTmz7Of","file-mtime":"file-mtime__1h3CvYB05y6ddF19KMsgVX"};
 
 /***/ }),
 

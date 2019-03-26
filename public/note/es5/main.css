@@ -284,14 +284,39 @@
   left: 0;
   right: 0; }
 
-.li-dir__9nw4EDDFjWehQ3QIFqU37 {
+.li-dir__9nw4EDDFjWehQ3QIFqU37,
+.li-file__1AqxZI8F5pxj7_b0FPNR-0 {
   display: flex;
+  align-items: center;
   height: 53px;
   border-bottom: 1px solid #000;
-  border-bottom: 1px solid #e0e1e5; }
-  .li-dir__9nw4EDDFjWehQ3QIFqU37 .dir-icon__Fq5Kj6WUUGzB54xau6uNK {
-    width: 16px;
-    height: 16px; }
+  border-bottom: 1px solid #e0e1e5;
+  padding-left: 20px;
+  padding-right: 20px; }
+
+.dir-icon__Fq5Kj6WUUGzB54xau6uNK,
+.file-icon__1ZE-23noTmCRfAM6xWQMT9 {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0; }
+
+.dir-name__UZ-tLaw5_dl-QfuHHRAX,
+.file-name__1gedkV2DhvWXtrn5LobiR {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: #393939; }
+
+.dir-mtime__2Vb8wFpq_AKexFVTmz7Of,
+.file-mtime__1h3CvYB05y6ddF19KMsgVX {
+  flex-shrink: 0;
+  color: #c2c2c2;
+  font-size: 12px;
+  position: relative;
+  top: 2px; }
 
 .header__2auYECyxv5YGzMF28F4RrH {
   height: 61px;
@@ -362,7 +387,8 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  right: 0; }
+  right: 0;
+  font: 12px '\5FAE\8F6F\96C5\9ED1', 'Microsoft Yahei', Helvetica Neue, Hiragino Sans GB, '\5B8B\4F53', 'simsun', '\9ED1\4F53', Arial, sans-serif; }
 
 #root {
   position: absolute;
