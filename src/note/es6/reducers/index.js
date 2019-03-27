@@ -102,18 +102,18 @@ let defaultV = {
     docs: [],
     folded: false
 }
-const tree = (treeArray = [defaultV], action) => {
+const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
             {
                 let _id = action.currentDirId
-                let targetDir = treeArray.find(dir => dir._id === _id)
+                let targetDir = treeObj[_id]
                 targetDir.folded = false
                 targetDir.dirs.push({
                     editable: true,
                     name: "新建文件夹"
                 })
-                return [...treeArray]
+                return Object.assign({},treeObj)
             }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
@@ -123,40 +123,42 @@ const tree = (treeArray = [defaultV], action) => {
                     name,
                     time
                 } = action
-                treeArray.push({
-                    _id: newId,
-                    name: name,
-                    ctime: time,
-                    mtime: time,
-                    folded: true,
-                    dirs: [],
-                    files: []
-                })
-                let parentDir = treeArray.find(dir => dir._id == parentId)
+                let newDir = {
+                        _id: newId,
+                        name: name,
+                        ctime: time,
+                        mtime: time,
+                        folded: true,
+                        dirs: [],
+                        files: []
+                }
+
+                let parentDir = treeObj[parentId]
                 let dirs = parentDir.dirs.filter(dir => dir.editable == null)
-                dirs.push({
-                    _id: newId,
-                })
+
+                dirs.push(newDir)
                 parentDir.dirs = dirs
-                return [...treeArray]
+
+                let newTreeObj= Object.assign({}, treeObj, { [newId]: newDir })
+                return newTreeObj
             }
         case TOGGLE_DIR:
             {
-                let targetDir = treeArray.find(dir => dir._id == action._id)
+                let targetDir = treeObj[action._id]
                 if(targetDir.folded == true){
                     targetDir.folded = false
                 }else{
-                    descendantDirsTraversal(targetDir,treeArray)
+                    descendantDirsTraversal(targetDir,treeObj)
                 }
-                return [...treeArray]
+                return Object.assign({},treeObj)
             }
         case FETCH_FOLDERS:
             {
-                return [...treeArray, ...action.folders]
+                return Object.assign({},treeObj,action.folders)
             }
 
         default:
-            return treeArray
+            return treeObj
     }
 }
 
@@ -189,7 +191,7 @@ module.exports = combineReducers({
 function descendantDirsTraversal(targetDir, treeArray) {
     targetDir.folded = true
         for (let i = 0; i < targetDir.dirs.length; i++) {
-            let childTargetDir = treeArray.find(dir => dir._id == targetDir.dirs[i]._id)
+            let childTargetDir = treeArray[targetDir.dirs[i]._id]
             if (childTargetDir != undefined) {
                 descendantDirsTraversal(childTargetDir, treeArray)
             }

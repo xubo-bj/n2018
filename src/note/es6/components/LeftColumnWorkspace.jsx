@@ -37,7 +37,7 @@ class DirTree extends React.Component {
     }
     render() {
         let { _id, tree, centerColumnDir, level, createNewFolderSumbit, toggleDir } = this.props
-        let targetDir = tree.find(doc => doc._id === _id)
+        let targetDir = tree[_id]
         if (targetDir == null) {
             return null
         }
@@ -53,7 +53,7 @@ class DirTree extends React.Component {
                 >
                     {targetDir.dirs.map(dir => {
                         if (dir._id) {
-                            let childTargetDir = tree.find(doc => doc._id === dir._id)
+                            let childTargetDir = tree[dir._id]
                             return (
                                 <li key={dir._id} className={styles.li} data-id={dir._id}>
                                     <div className={centerColumnDir == dir._id ? styles["li-content-selected"] : styles["li-content"]}
@@ -216,16 +216,16 @@ const mapDispatchToProps = dispatch => ({
 
         dispatch((dispatch, getState) => {
             let { tree } = getState()
-            let d0 = tree.find(doc => doc._id == _id)
+            let d0 = tree[_id]
             let arr = []
             for (let i = 0; i < d0.dirs.length; i++) {
-                let d1 = tree.find(doc => doc._id == d0.dirs[i]._id)
+                let d1 = tree[d0.dirs[i]._id]
                 if (d1 == undefined) {
                     arr.push(d0.dirs[i]._id)
                     continue
                 }
                 for (let j = 0; j < d1.dirs.length; j++) {
-                    let d2 = tree.find(doc => doc._id == d1.dirs[j]._id)
+                    let d2 = tree[d1.dirs[j]._id]
                     if (d2 == undefined) {
                         arr.push(d1.dirs[j]._id)
                         continue

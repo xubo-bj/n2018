@@ -1,7 +1,2 @@
-for(let i =0;i<5;i++){
-    if( i ==1){
-        continue
-    }
-    console.log('i :',i);
-    
-}
+let obj = {a:1}
+console.log('obj',obj.b);

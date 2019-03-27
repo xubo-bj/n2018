@@ -27,31 +27,31 @@ router.get('/', async (ctx, next) => {
     /**
      * 修改userdirs形状，增加一个parentId，响应到某一个具体的文档
      */
-    let arr = []
+    let treeObj = {}
     let d0 = await userdirsCol.findOne({
         _id: new ObjectID(shinelonId)
     })
     d0.folded = false
-    arr.push(d0)
+    treeObj[shinelonId] = d0
     for (let i = 0; i < d0.dirs.length; i++) {
         let d1 = await userdirsCol.findOne({
             _id: d0.dirs[i]._id
         })
         d1.folded = true
-        arr.push(d1)
+        treeObj[d0.dirs[i]._id] = d1
 
         for (let j = 0; j < d1.dirs.length; j++) {
             let d2 = await userdirsCol.findOne({
                 _id: d1.dirs[j]._id
             })
             d2.folded = true
-            arr.push(d2)
+            treeObj[d1.dirs[j]._id] = d2
 
         }
     }
 
     const store = createStore(reducer, {
-        tree: arr
+        tree:treeObj 
     })
     const preloadedState = store.getState()
 
@@ -68,8 +68,6 @@ router.post('/create-folder', async (ctx, next) => {
         dirId,
         name
     } = ctx.request.body
-    console.log('id :',typeof dirId);
-    console.log('id :',dirId.length);
     
     let d = new Date()
     let r = await u.insertOne({
@@ -88,9 +86,9 @@ router.post('/create-folder', async (ctx, next) => {
             $push: {
                 dirs: {
                     _id: r.insertedId,
-                    // name,
-                    // ctime: d,
-                    // mtime: d
+                    name,
+                    ctime: d,
+                    mtime: d
                 }
             }
         })
@@ -123,15 +121,15 @@ router.get("/get-folders", async (ctx, next) => {
     let dbConn = await client.connect()
     let userdirsCol = dbConn.db(dbName).collection(userdirs)
     let ids = JSON.parse(ctx.query.ids)
-    let arr = []
+    let partialDirTree = {}
     for (let i = 0; i < ids.length; i++) {
         let dir = await userdirsCol.findOne({
             _id: new ObjectID(ids[i])
         })
         dir.folded = true
-        arr.push(dir)
+        partialDirTree[ids[i]] = dir
     }
-    ctx.body = arr
+    ctx.body =partialDirTree 
 })
 
 
