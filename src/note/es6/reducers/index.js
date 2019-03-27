@@ -82,6 +82,8 @@ const currentDirId = (_id = shinelonId, action) => {
             return action._id
         case SHOW_LEFT_MENU_THREE:
             return action._id
+            case SHOW_LEFT_MENU_TWO:
+            return shinelonId
         default:
             return _id
     }
