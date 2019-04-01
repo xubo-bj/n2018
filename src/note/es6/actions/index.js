@@ -91,3 +91,15 @@ export const change_editor_state = state=>({
     type:CHANGE_EDITOR_STATE,
     state
 })
+
+export const CREATE_NEW_FILE = "CREATE_NEW_FILE"
+export const create_new_file = ()=>({
+    type:CREATE_NEW_FILE,
+    name:"无标题笔记"
+})
+
+export const CHANGE_FILE_NAME = "CHANGE_FILE_NAME"
+export const change_file_name=(name)=>({
+    type:CHANGE_FILE_NAME,
+    name
+})

@@ -50868,7 +50868,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.change_file_name = exports.CHANGE_FILE_NAME = exports.create_new_file = exports.CREATE_NEW_FILE = exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -51031,6 +51031,28 @@ var change_editor_state = function change_editor_state(state) {
 };
 
 exports.change_editor_state = change_editor_state;
+var CREATE_NEW_FILE = "CREATE_NEW_FILE";
+exports.CREATE_NEW_FILE = CREATE_NEW_FILE;
+
+var create_new_file = function create_new_file() {
+  return {
+    type: CREATE_NEW_FILE,
+    name: "无标题笔记"
+  };
+};
+
+exports.create_new_file = create_new_file;
+var CHANGE_FILE_NAME = "CHANGE_FILE_NAME";
+exports.CHANGE_FILE_NAME = CHANGE_FILE_NAME;
+
+var change_file_name = function change_file_name(name) {
+  return {
+    type: CHANGE_FILE_NAME,
+    name: name
+  };
+};
+
+exports.change_file_name = change_file_name;
 
 /***/ }),
 
@@ -51264,18 +51286,27 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
     className: _CenterColumnWorkspace.default.workspace
   }, _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-dirs"]
-  }, _react.default.createElement("li", {
-    className: _CenterColumnWorkspace.default["li-dir"]
-  }, _react.default.createElement("svg", {
-    className: _CenterColumnWorkspace.default["dir-icon"]
-  }, _react.default.createElement("use", {
-    xlinkHref: "/note/images/centerColumn.svg#folder",
-    transform: "scale(0.5)"
-  })), _react.default.createElement("span", {
-    className: _CenterColumnWorkspace.default["dir-name"]
-  }, "\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA"), _react.default.createElement("span", {
-    className: _CenterColumnWorkspace.default["dir-mtime"]
-  }, "2019-02-22"))), _react.default.createElement("ul", {
+  }, props.dirs.map(function (dir) {
+    return _react.default.createElement("li", {
+      className: _CenterColumnWorkspace.default["li-dir"]
+    }, _react.default.createElement("svg", {
+      className: _CenterColumnWorkspace.default["dir-icon"]
+    }, _react.default.createElement("use", {
+      xlinkHref: "/note/images/centerColumn.svg#folder",
+      transform: "scale(0.5)"
+    })), _react.default.createElement("span", {
+      className: _CenterColumnWorkspace.default["dir-name"]
+    }, dir.name), _react.default.createElement("span", {
+      className: _CenterColumnWorkspace.default["dir-mtime"]
+    }, "2019-02-22"));
+  }) // <li className={styles["li-dir"]}>
+  //     <svg className={styles["dir-icon"]}>
+  //         <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
+  //     </svg>
+  //     <span className={styles["dir-name"]}>星辰大海我们是共产主义接班人星辰大海我们是共产主义接班人</span>
+  //     <span className={styles["dir-mtime"]}>2019-02-22</span>
+  // </li>
+  ), _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-files"]
   }, _react.default.createElement("li", {
     className: _CenterColumnWorkspace.default["li-file"]
@@ -51292,7 +51323,11 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
 };
 
 var mapStateToProps = function mapStateToProps(state) {
-  return {};
+  var current = state.tree[state.currentDirId];
+  return {
+    dirs: current.dirs,
+    files: current.files
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -52209,7 +52244,7 @@ function (_React$Component2) {
 
 var mapStateToPropsOnMyEditor = function mapStateToPropsOnMyEditor(state) {
   return {
-    editorState: state.editorState
+    editorState: state.editorState || _draftJs.EditorState.createEmpty()
   };
 };
 
@@ -52270,9 +52305,11 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
-var _draftJs = __webpack_require__(/*! draft-js */ "./node_modules/draft-js/lib/Draft.js");
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
 var _RightColumnHeader = _interopRequireDefault(__webpack_require__(/*! ../../sass/RightColumnHeader.scss */ "./src/note/sass/RightColumnHeader.scss"));
+
+var _actions = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52314,7 +52351,9 @@ function (_React$Component) {
         className: _RightColumnHeader.default.header
       }, _react.default.createElement("input", {
         type: "text",
-        className: _RightColumnHeader.default["title"]
+        className: _RightColumnHeader.default["title"],
+        value: this.props.fileName,
+        onChange: this.props.onChangeFileName
       }), _react.default.createElement("input", {
         type: "button",
         value: "保存",
@@ -52326,7 +52365,22 @@ function (_React$Component) {
   return MyEditor;
 }(_react.default.Component);
 
-var _default = MyEditor;
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    fileName: state.fileName
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    onChangeFileName: function onChangeFileName(event) {
+      dispatch((0, _actions.change_file_name)(event.target.value));
+    }
+  };
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MyEditor);
+
 exports.default = _default;
 
 /***/ }),
@@ -52402,7 +52456,9 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR = _require.TOGGLE_DIR,
     FETCH_FOLDERS = _require.FETCH_FOLDERS,
-    CHANGE_EDITOR_STATE = _require.CHANGE_EDITOR_STATE;
+    CHANGE_EDITOR_STATE = _require.CHANGE_EDITOR_STATE,
+    CREATE_NEW_FILE = _require.CREATE_NEW_FILE,
+    CHANGE_FILE_NAME = _require.CHANGE_FILE_NAME;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -52616,7 +52672,7 @@ var showMask = function showMask() {
 };
 
 var editorState = function editorState() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _draftJs.EditorState.createEmpty();
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
@@ -52627,6 +52683,26 @@ var editorState = function editorState() {
 
     default:
       return state;
+  }
+};
+
+var fileName = function fileName() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case CREATE_NEW_FILE:
+      {
+        return action.name;
+      }
+
+    case CHANGE_FILE_NAME:
+      {
+        return action.name;
+      }
+
+    default:
+      return name;
   }
 };
 
@@ -52641,7 +52717,8 @@ module.exports = combineReducers({
   currentDirId: currentDirId,
   centerColumnDir: centerColumnDir,
   showMask: showMask,
-  editorState: editorState
+  editorState: editorState,
+  fileName: fileName
 });
 
 /***/ }),

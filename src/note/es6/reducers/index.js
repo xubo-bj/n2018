@@ -1,4 +1,6 @@
-import { EditorState } from 'draft-js';
+import {
+    EditorState
+} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     SHOW_LEFT_MENU_ONE,
@@ -13,7 +15,9 @@ const {
     CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR,
     FETCH_FOLDERS,
-    CHANGE_EDITOR_STATE
+    CHANGE_EDITOR_STATE,
+    CREATE_NEW_FILE,
+    CHANGE_FILE_NAME
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -84,19 +88,19 @@ const currentDirId = (_id = shinelonId, action) => {
             return action._id
         case SHOW_LEFT_MENU_THREE:
             return action._id
-            case SHOW_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_TWO:
             return shinelonId
         default:
             return _id
     }
 }
-const centerColumnDir =(_id=shinelonId,action)=>{
-switch(action.type){
-    case SELECT_DIR:
-    return action._id
-    default:
-    return _id
-}
+const centerColumnDir = (_id = shinelonId, action) => {
+    switch (action.type) {
+        case SELECT_DIR:
+            return action._id
+        default:
+            return _id
+    }
 }
 
 
@@ -106,7 +110,9 @@ let defaultV = {
     docs: [],
     folded: false
 }
-const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
+const tree = (treeObj = {
+    [shinelonId]: defaultV
+}, action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
             {
@@ -117,7 +123,7 @@ const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
                     editable: true,
                     name: "新建文件夹"
                 })
-                return Object.assign({},treeObj)
+                return Object.assign({}, treeObj)
             }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
@@ -128,13 +134,13 @@ const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
                     time
                 } = action
                 let newDir = {
-                        _id: newId,
-                        name: name,
-                        ctime: time,
-                        mtime: time,
-                        folded: true,
-                        dirs: [],
-                        files: []
+                    _id: newId,
+                    name: name,
+                    ctime: time,
+                    mtime: time,
+                    folded: true,
+                    dirs: [],
+                    files: []
                 }
 
                 let parentDir = treeObj[parentId]
@@ -143,22 +149,24 @@ const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
                 dirs.push(newDir)
                 parentDir.dirs = dirs
 
-                let newTreeObj= Object.assign({}, treeObj, { [newId]: newDir })
+                let newTreeObj = Object.assign({}, treeObj, {
+                    [newId]: newDir
+                })
                 return newTreeObj
             }
         case TOGGLE_DIR:
             {
                 let targetDir = treeObj[action._id]
-                if(targetDir.folded == true){
+                if (targetDir.folded == true) {
                     targetDir.folded = false
-                }else{
-                    descendantDirsTraversal(targetDir,treeObj)
+                } else {
+                    descendantDirsTraversal(targetDir, treeObj)
                 }
-                return Object.assign({},treeObj)
+                return Object.assign({}, treeObj)
             }
         case FETCH_FOLDERS:
             {
-                return Object.assign({},treeObj,action.folders)
+                return Object.assign({}, treeObj, action.folders)
             }
 
         default:
@@ -168,12 +176,12 @@ const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
 
 function descendantDirsTraversal(targetDir, treeArray) {
     targetDir.folded = true
-        for (let i = 0; i < targetDir.dirs.length; i++) {
-            let childTargetDir = treeArray[targetDir.dirs[i]._id]
-            if (childTargetDir != undefined) {
-                descendantDirsTraversal(childTargetDir, treeArray)
-            }
+    for (let i = 0; i < targetDir.dirs.length; i++) {
+        let childTargetDir = treeArray[targetDir.dirs[i]._id]
+        if (childTargetDir != undefined) {
+            descendantDirsTraversal(childTargetDir, treeArray)
         }
+    }
 }
 
 const showMask = (flag = false, action) => {
@@ -187,7 +195,7 @@ const showMask = (flag = false, action) => {
     }
 }
 
-const editorState = (state = EditorState.createEmpty(), action) => {
+const editorState = (state = null, action) => {
     switch (action.type) {
         case CHANGE_EDITOR_STATE:
             {
@@ -197,6 +205,25 @@ const editorState = (state = EditorState.createEmpty(), action) => {
             return state
     }
 }
+
+const fileName = (name = "", action) => {
+    switch (action.type) {
+        case CREATE_NEW_FILE:
+            {
+                return action.name
+            }
+
+        case CHANGE_FILE_NAME:
+            {
+                return action.name
+            }
+        default:
+            return name
+    }
+}
+
+
+
 
 const {
     combineReducers
@@ -209,5 +236,6 @@ module.exports = combineReducers({
     currentDirId,
     centerColumnDir,
     showMask,
-    editorState
+    editorState,
+    fileName
 })

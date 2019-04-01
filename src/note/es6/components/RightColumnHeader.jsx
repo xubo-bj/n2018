@@ -1,14 +1,16 @@
 import React, { Fragment } from "react"
-import { Editor, EditorState } from 'draft-js';
+import { connect } from 'react-redux'
 import styles from "../../sass/RightColumnHeader.scss"
+import { change_file_name } from "../actions"
 
 class MyEditor extends React.Component {
-
     render() {
         return (
             <div className={styles.header}>
                 <input type="text"
                     className={styles["title"]}
+                    value={this.props.fileName}
+                    onChange={this.props.onChangeFileName}
                 />
                 <input type="button" value={"保存"}
                     className={styles["submit-btn"]}
@@ -18,4 +20,17 @@ class MyEditor extends React.Component {
     }
 }
 
-export default MyEditor
+const mapStateToProps= state => {
+  return{
+      fileName:state.fileName
+  }
+}
+
+const mapDispatchToProps= dispatch => ({
+    onChangeFileName:event=>{
+        dispatch(change_file_name(event.target.value))
+    }
+})
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(MyEditor)
