@@ -50868,7 +50868,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -51020,6 +51020,17 @@ var fetch_folders = function fetch_folders(folders) {
 };
 
 exports.fetch_folders = fetch_folders;
+var CHANGE_EDITOR_STATE = "CHANGE_EDITOR_STATE";
+exports.CHANGE_EDITOR_STATE = CHANGE_EDITOR_STATE;
+
+var change_editor_state = function change_editor_state(state) {
+  return {
+    type: CHANGE_EDITOR_STATE,
+    state: state
+  };
+};
+
+exports.change_editor_state = change_editor_state;
 
 /***/ }),
 
@@ -52087,9 +52098,13 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
 var _draftJs = __webpack_require__(/*! draft-js */ "./node_modules/draft-js/lib/Draft.js");
 
 var _RightColumnContent = _interopRequireDefault(__webpack_require__(/*! ../../sass/RightColumnContent.scss */ "./src/note/sass/RightColumnContent.scss"));
+
+var _actions = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52136,6 +52151,19 @@ function (_React$Component) {
   return Toolbar;
 }(_react.default.Component);
 
+var mapStateToPropsOnToolbar = function mapStateToPropsOnToolbar(state) {
+  return {};
+};
+
+var mapDispatchToPropsOnToolbar = function mapDispatchToPropsOnToolbar(dispatch) {
+  return {};
+}; // const ToolbarBindingRedux = connect(mapStateToPropsOnToolbar,mapDispatchToPropsOnToolbar)(Toolbar)
+
+/**
+ * 
+ */
+
+
 var MyEditor =
 /*#__PURE__*/
 function (_React$Component2) {
@@ -52146,16 +52174,8 @@ function (_React$Component2) {
 
     _classCallCheck(this, MyEditor);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(MyEditor).call(this, props));
-    _this.state = {
-      editorState: _draftJs.EditorState.createEmpty()
-    };
-
-    _this.onChange = function (editorState) {
-      return _this.setState({
-        editorState: editorState
-      });
-    };
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MyEditor).call(this, props)); // this.state = { editorState: EditorState.createEmpty() };
+    // this.onChange = (editorState) => this.setState({ editorState });
 
     _this.setEditor = function (editor) {
       _this.editor = editor;
@@ -52178,14 +52198,33 @@ function (_React$Component2) {
         onClick: this.focusEditor
       }, _react.default.createElement(_draftJs.Editor, {
         ref: this.setEditor,
-        editorState: this.state.editorState,
-        onChange: this.onChange
+        editorState: this.props.editorState,
+        onChange: this.props.onChangeEditorState
       }));
     }
   }]);
 
   return MyEditor;
 }(_react.default.Component);
+
+var mapStateToPropsOnMyEditor = function mapStateToPropsOnMyEditor(state) {
+  return {
+    editorState: state.editorState
+  };
+};
+
+var mapDispatchToPropsOnMyEditor = function mapDispatchToPropsOnMyEditor(dispatch) {
+  return {
+    onChangeEditorState: function onChangeEditorState(editorState) {
+      dispatch((0, _actions.change_editor_state)(editorState));
+    }
+  };
+};
+
+var MyEditorBindingRedux = (0, _reactRedux.connect)(mapStateToPropsOnMyEditor, mapDispatchToPropsOnMyEditor)(MyEditor);
+/**
+ * 
+ */
 
 var RightColumnCotent =
 /*#__PURE__*/
@@ -52203,15 +52242,14 @@ function (_React$Component3) {
     value: function render() {
       return _react.default.createElement("div", {
         className: _RightColumnContent.default.content
-      }, _react.default.createElement(Toolbar, null), _react.default.createElement(MyEditor, null));
+      }, _react.default.createElement(Toolbar, null), _react.default.createElement(MyEditorBindingRedux, null));
     }
   }]);
 
   return RightColumnCotent;
 }(_react.default.Component);
 
-var _default = RightColumnCotent;
-exports.default = _default;
+exports.default = RightColumnCotent;
 
 /***/ }),
 
@@ -52345,6 +52383,8 @@ _reactDom.default.render(_react.default.createElement(_reactRedux.Provider, {
 "use strict";
 
 
+var _draftJs = __webpack_require__(/*! draft-js */ "./node_modules/draft-js/lib/Draft.js");
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var shinelonId = __webpack_require__(/*! ../../../../config */ "./config/index.json").note.mongodb.shinelonId;
@@ -52361,7 +52401,8 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR = _require.TOGGLE_DIR,
-    FETCH_FOLDERS = _require.FETCH_FOLDERS;
+    FETCH_FOLDERS = _require.FETCH_FOLDERS,
+    CHANGE_EDITOR_STATE = _require.CHANGE_EDITOR_STATE;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -52547,6 +52588,18 @@ var tree = function tree() {
   }
 };
 
+function descendantDirsTraversal(targetDir, treeArray) {
+  targetDir.folded = true;
+
+  for (var i = 0; i < targetDir.dirs.length; i++) {
+    var childTargetDir = treeArray[targetDir.dirs[i]._id];
+
+    if (childTargetDir != undefined) {
+      descendantDirsTraversal(childTargetDir, treeArray);
+    }
+  }
+}
+
 var showMask = function showMask() {
   var flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var action = arguments.length > 1 ? arguments[1] : undefined;
@@ -52562,6 +52615,21 @@ var showMask = function showMask() {
   }
 };
 
+var editorState = function editorState() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _draftJs.EditorState.createEmpty();
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case CHANGE_EDITOR_STATE:
+      {
+        return action.state;
+      }
+
+    default:
+      return state;
+  }
+};
+
 var _require2 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js"),
     combineReducers = _require2.combineReducers;
 
@@ -52572,20 +52640,9 @@ module.exports = combineReducers({
   tree: tree,
   currentDirId: currentDirId,
   centerColumnDir: centerColumnDir,
-  showMask: showMask
+  showMask: showMask,
+  editorState: editorState
 });
-
-function descendantDirsTraversal(targetDir, treeArray) {
-  targetDir.folded = true;
-
-  for (var i = 0; i < targetDir.dirs.length; i++) {
-    var childTargetDir = treeArray[targetDir.dirs[i]._id];
-
-    if (childTargetDir != undefined) {
-      descendantDirsTraversal(childTargetDir, treeArray);
-    }
-  }
-}
 
 /***/ }),
 

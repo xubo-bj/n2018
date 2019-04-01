@@ -1,3 +1,4 @@
+import { EditorState } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     SHOW_LEFT_MENU_ONE,
@@ -11,7 +12,8 @@ const {
     CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS,
     TOGGLE_DIR,
-    FETCH_FOLDERS
+    FETCH_FOLDERS,
+    CHANGE_EDITOR_STATE
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -164,6 +166,15 @@ const tree = (treeObj = {[shinelonId]:defaultV}, action) => {
     }
 }
 
+function descendantDirsTraversal(targetDir, treeArray) {
+    targetDir.folded = true
+        for (let i = 0; i < targetDir.dirs.length; i++) {
+            let childTargetDir = treeArray[targetDir.dirs[i]._id]
+            if (childTargetDir != undefined) {
+                descendantDirsTraversal(childTargetDir, treeArray)
+            }
+        }
+}
 
 const showMask = (flag = false, action) => {
     switch (action.type) {
@@ -176,6 +187,16 @@ const showMask = (flag = false, action) => {
     }
 }
 
+const editorState = (state = EditorState.createEmpty(), action) => {
+    switch (action.type) {
+        case CHANGE_EDITOR_STATE:
+            {
+                return action.state
+            }
+        default:
+            return state
+    }
+}
 
 const {
     combineReducers
@@ -187,15 +208,6 @@ module.exports = combineReducers({
     tree,
     currentDirId,
     centerColumnDir,
-    showMask
+    showMask,
+    editorState
 })
-
-function descendantDirsTraversal(targetDir, treeArray) {
-    targetDir.folded = true
-        for (let i = 0; i < targetDir.dirs.length; i++) {
-            let childTargetDir = treeArray[targetDir.dirs[i]._id]
-            if (childTargetDir != undefined) {
-                descendantDirsTraversal(childTargetDir, treeArray)
-            }
-        }
-}

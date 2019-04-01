@@ -85,3 +85,9 @@ export const fetch_folders = folders=>({
     type:FETCH_FOLDERS,
     folders
 })
+
+export const CHANGE_EDITOR_STATE = "CHANGE_EDITOR_STATE"
+export const change_editor_state = state=>({
+    type:CHANGE_EDITOR_STATE,
+    state
+})
