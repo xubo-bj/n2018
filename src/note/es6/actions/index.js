@@ -92,14 +92,35 @@ export const change_editor_state = state=>({
     state
 })
 
-export const CREATE_NEW_FILE = "CREATE_NEW_FILE"
-export const create_new_file = ()=>({
-    type:CREATE_NEW_FILE,
-    name:"无标题笔记"
-})
 
 export const CHANGE_FILE_NAME = "CHANGE_FILE_NAME"
 export const change_file_name=(name)=>({
     type:CHANGE_FILE_NAME,
     name
+})
+
+
+
+export const CREATE_NEW_FILE_PROMPT = "CREATE_NEW_FILE_PROMPT"
+export const create_new_file_prompt = (currentDirId) => ({
+    type: CREATE_NEW_FILE_PROMPT,
+    currentDirId
+})
+export const CREATE_NEW_FILE_SUBMIT = "CREATE_NEW_FILE_SUBMIT"
+export const create_new_file_submit= () => ({
+    type: CREATE_NEW_FILE_SUBMIT
+})
+
+
+export const CREATE_NEW_FILE_SUCCESS = "CREATE_NEW_FILE_SUCCESS"
+export const create_new_file_success= (parentId,newId,name,time) => ({
+    type:CREATE_NEW_FILE_SUCCESS,
+    parentId,
+    newId,
+    name,
+    time
+})
+export const CREATE_NEW_FILE_FAILURE= "CREATE_NEW_FILE_FAILURE"
+export const create_new_file_failure = ()=>({
+    type:CREATE_NEW_FILE_FAILURE
 })

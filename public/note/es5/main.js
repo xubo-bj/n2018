@@ -50868,7 +50868,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.change_file_name = exports.CHANGE_FILE_NAME = exports.create_new_file = exports.CREATE_NEW_FILE = exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.create_new_file_failure = exports.CREATE_NEW_FILE_FAILURE = exports.create_new_file_success = exports.CREATE_NEW_FILE_SUCCESS = exports.create_new_file_submit = exports.CREATE_NEW_FILE_SUBMIT = exports.create_new_file_prompt = exports.CREATE_NEW_FILE_PROMPT = exports.change_file_name = exports.CHANGE_FILE_NAME = exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -51031,17 +51031,6 @@ var change_editor_state = function change_editor_state(state) {
 };
 
 exports.change_editor_state = change_editor_state;
-var CREATE_NEW_FILE = "CREATE_NEW_FILE";
-exports.CREATE_NEW_FILE = CREATE_NEW_FILE;
-
-var create_new_file = function create_new_file() {
-  return {
-    type: CREATE_NEW_FILE,
-    name: "无标题笔记"
-  };
-};
-
-exports.create_new_file = create_new_file;
 var CHANGE_FILE_NAME = "CHANGE_FILE_NAME";
 exports.CHANGE_FILE_NAME = CHANGE_FILE_NAME;
 
@@ -51053,6 +51042,51 @@ var change_file_name = function change_file_name(name) {
 };
 
 exports.change_file_name = change_file_name;
+var CREATE_NEW_FILE_PROMPT = "CREATE_NEW_FILE_PROMPT";
+exports.CREATE_NEW_FILE_PROMPT = CREATE_NEW_FILE_PROMPT;
+
+var create_new_file_prompt = function create_new_file_prompt(currentDirId) {
+  return {
+    type: CREATE_NEW_FILE_PROMPT,
+    currentDirId: currentDirId
+  };
+};
+
+exports.create_new_file_prompt = create_new_file_prompt;
+var CREATE_NEW_FILE_SUBMIT = "CREATE_NEW_FILE_SUBMIT";
+exports.CREATE_NEW_FILE_SUBMIT = CREATE_NEW_FILE_SUBMIT;
+
+var create_new_file_submit = function create_new_file_submit() {
+  return {
+    type: CREATE_NEW_FILE_SUBMIT
+  };
+};
+
+exports.create_new_file_submit = create_new_file_submit;
+var CREATE_NEW_FILE_SUCCESS = "CREATE_NEW_FILE_SUCCESS";
+exports.CREATE_NEW_FILE_SUCCESS = CREATE_NEW_FILE_SUCCESS;
+
+var create_new_file_success = function create_new_file_success(parentId, newId, name, time) {
+  return {
+    type: CREATE_NEW_FILE_SUCCESS,
+    parentId: parentId,
+    newId: newId,
+    name: name,
+    time: time
+  };
+};
+
+exports.create_new_file_success = create_new_file_success;
+var CREATE_NEW_FILE_FAILURE = "CREATE_NEW_FILE_FAILURE";
+exports.CREATE_NEW_FILE_FAILURE = CREATE_NEW_FILE_FAILURE;
+
+var create_new_file_failure = function create_new_file_failure() {
+  return {
+    type: CREATE_NEW_FILE_FAILURE
+  };
+};
+
+exports.create_new_file_failure = create_new_file_failure;
 
 /***/ }),
 
@@ -51271,8 +51305,6 @@ var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-r
 
 var _CenterColumnWorkspace = _interopRequireDefault(__webpack_require__(/*! ../../sass/CenterColumnWorkspace.scss */ "./src/note/sass/CenterColumnWorkspace.scss"));
 
-var _actions = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/index.js");
-
 var _axios = _interopRequireDefault(__webpack_require__(/*! axios */ "./node_modules/axios/index.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -51286,8 +51318,9 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
     className: _CenterColumnWorkspace.default.workspace
   }, _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-dirs"]
-  }, props.dirs.map(function (dir) {
+  }, props.dirs && props.dirs.map(function (dir) {
     return _react.default.createElement("li", {
+      key: dir._id,
       className: _CenterColumnWorkspace.default["li-dir"]
     }, _react.default.createElement("svg", {
       className: _CenterColumnWorkspace.default["dir-icon"]
@@ -51298,41 +51331,47 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
       className: _CenterColumnWorkspace.default["dir-name"]
     }, dir.name), _react.default.createElement("span", {
       className: _CenterColumnWorkspace.default["dir-mtime"]
-    }, "2019-02-22"));
-  }) // <li className={styles["li-dir"]}>
-  //     <svg className={styles["dir-icon"]}>
-  //         <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
-  //     </svg>
-  //     <span className={styles["dir-name"]}>星辰大海我们是共产主义接班人星辰大海我们是共产主义接班人</span>
-  //     <span className={styles["dir-mtime"]}>2019-02-22</span>
-  // </li>
-  ), _react.default.createElement("ul", {
+    }, convertTimeFormat(dir.mtime)));
+  })), _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-files"]
-  }, _react.default.createElement("li", {
-    className: _CenterColumnWorkspace.default["li-file"]
-  }, _react.default.createElement("svg", {
-    className: _CenterColumnWorkspace.default["file-icon"]
-  }, _react.default.createElement("use", {
-    xlinkHref: "/note/images/centerColumn.svg#file",
-    transform: "scale(0.5)"
-  })), _react.default.createElement("span", {
-    className: _CenterColumnWorkspace.default["file-name"]
-  }, "\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA\u661F\u8FB0\u5927\u6D77\u6211\u4EEC\u662F\u5171\u4EA7\u4E3B\u4E49\u63A5\u73ED\u4EBA"), _react.default.createElement("span", {
-    className: _CenterColumnWorkspace.default["file-mtime"]
-  }, "2019-02-22"))));
+  }, props.files && props.files.map(function (file) {
+    return _react.default.createElement("li", {
+      key: file._id,
+      className: _CenterColumnWorkspace.default["li-file"]
+    }, _react.default.createElement("svg", {
+      className: _CenterColumnWorkspace.default["file-icon"]
+    }, _react.default.createElement("use", {
+      xlinkHref: "/note/images/centerColumn.svg#file",
+      transform: "scale(0.5)"
+    })), _react.default.createElement("span", {
+      className: _CenterColumnWorkspace.default["file-name"]
+    }, file.name), _react.default.createElement("span", {
+      className: _CenterColumnWorkspace.default["file-mtime"]
+    }, convertTimeFormat(file.mtime)));
+  })));
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   var current = state.tree[state.currentDirId];
   return {
-    dirs: current.dirs,
-    files: current.files
+    dirs: current.dirs.length > 0 ? current.dirs : null,
+    files: current.files.length > 0 ? current.files : null
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {};
 };
+
+function convertTimeFormat(timeString) {
+  var d = new Date(timeString);
+  var year = d.getFullYear(),
+      month = d.getMonth() + 1,
+      date = d.getDate();
+  month = month < 10 ? "0" + month : month;
+  date = date < 10 ? "0" + date : date;
+  return "".concat(year, "-").concat(month, "-").concat(date);
+}
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CenterColumnWorkspace);
 
@@ -51874,7 +51913,8 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
       top: props.leftMenuTwo.clientY + "px"
     }
   }, _react.default.createElement("li", {
-    className: _LeftColumnWorkspace.default["menu-option"]
+    className: _LeftColumnWorkspace.default["menu-option"],
+    onClick: props.createNewFilePromptInRoot
   }, "\u65B0\u5EFA\u6587\u4EF6"), _react.default.createElement("li", {
     className: _LeftColumnWorkspace.default["menu-option"],
     onClick: props.createNewFolderPromptInRoot
@@ -51987,6 +52027,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
         dispatch((0, _actions.create_new_folder_prompt)(currentDirId));
       });
+    },
+    createNewFilePromptInRoot: function createNewFilePromptInRoot() {
+      dispatch((0, _actions.create_new_file_prompt)(shinelonId));
     },
     toggleDir: function toggleDir(e, _id) {
       e.stopPropagation();
@@ -52454,11 +52497,15 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     CREATE_NEW_FOLDER_PROMPT = _require.CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT = _require.CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS = _require.CREATE_NEW_FOLDER_SUCCESS,
+    CREATE_NEW_FOLDER_FAILURE = _require.CREATE_NEW_FOLDER_FAILURE,
     TOGGLE_DIR = _require.TOGGLE_DIR,
     FETCH_FOLDERS = _require.FETCH_FOLDERS,
     CHANGE_EDITOR_STATE = _require.CHANGE_EDITOR_STATE,
-    CREATE_NEW_FILE = _require.CREATE_NEW_FILE,
-    CHANGE_FILE_NAME = _require.CHANGE_FILE_NAME;
+    CHANGE_FILE_NAME = _require.CHANGE_FILE_NAME,
+    CREATE_NEW_FILE_PROMPT = _require.CREATE_NEW_FILE_PROMPT,
+    CREATE_NEW_FILE_SUBMIT = _require.CREATE_NEW_FILE_SUBMIT,
+    CREATE_NEW_FILE_SUCCESS = _require.CREATE_NEW_FILE_SUCCESS,
+    CREATE_NEW_FILE_FAILURE = _require.CREATE_NEW_FILE_FAILURE;
 
 var leftMenuOneDisplay = function leftMenuOneDisplay() {
   var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "none";
@@ -52596,6 +52643,19 @@ var tree = function tree() {
         return Object.assign({}, treeObj);
       }
 
+    case CREATE_NEW_FILE_PROMPT:
+      {
+        var _id2 = action.currentDirId;
+        var _targetDir = treeObj[_id2];
+
+        _targetDir.files.push({
+          editable: true,
+          name: "无标题笔记"
+        });
+
+        return Object.assign({}, treeObj);
+      }
+
     case CREATE_NEW_FOLDER_SUCCESS:
       {
         var parentId = action.parentId,
@@ -52623,12 +52683,12 @@ var tree = function tree() {
 
     case TOGGLE_DIR:
       {
-        var _targetDir = treeObj[action._id];
+        var _targetDir2 = treeObj[action._id];
 
-        if (_targetDir.folded == true) {
-          _targetDir.folded = false;
+        if (_targetDir2.folded == true) {
+          _targetDir2.folded = false;
         } else {
-          descendantDirsTraversal(_targetDir, treeObj);
+          descendantDirsTraversal(_targetDir2, treeObj);
         }
 
         return Object.assign({}, treeObj);
@@ -52691,11 +52751,6 @@ var fileName = function fileName() {
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case CREATE_NEW_FILE:
-      {
-        return action.name;
-      }
-
     case CHANGE_FILE_NAME:
       {
         return action.name;

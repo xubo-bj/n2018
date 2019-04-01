@@ -13,11 +13,15 @@ const {
     CREATE_NEW_FOLDER_PROMPT,
     CREATE_NEW_FOLDER_SUBMIT,
     CREATE_NEW_FOLDER_SUCCESS,
+    CREATE_NEW_FOLDER_FAILURE,
     TOGGLE_DIR,
     FETCH_FOLDERS,
     CHANGE_EDITOR_STATE,
-    CREATE_NEW_FILE,
-    CHANGE_FILE_NAME
+    CHANGE_FILE_NAME,
+    CREATE_NEW_FILE_PROMPT,
+    CREATE_NEW_FILE_SUBMIT,
+    CREATE_NEW_FILE_SUCCESS,
+    CREATE_NEW_FILE_FAILURE
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -114,17 +118,25 @@ const tree = (treeObj = {
     [shinelonId]: defaultV
 }, action) => {
     switch (action.type) {
-        case CREATE_NEW_FOLDER_PROMPT:
-            {
-                let _id = action.currentDirId
-                let targetDir = treeObj[_id]
-                targetDir.folded = false
-                targetDir.dirs.push({
-                    editable: true,
-                    name: "新建文件夹"
-                })
-                return Object.assign({}, treeObj)
-            }
+        case CREATE_NEW_FOLDER_PROMPT: {
+            let _id = action.currentDirId
+            let targetDir = treeObj[_id]
+            targetDir.folded = false
+            targetDir.dirs.push({
+                editable: true,
+                name: "新建文件夹"
+            })
+            return Object.assign({}, treeObj)
+        }
+        case CREATE_NEW_FILE_PROMPT: {
+            let _id = action.currentDirId
+            let targetDir = treeObj[_id]
+            targetDir.files.push({
+                editable: true,
+                name: "无标题笔记"
+            })
+            return Object.assign({}, treeObj)
+        }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
                 let {
@@ -168,7 +180,6 @@ const tree = (treeObj = {
             {
                 return Object.assign({}, treeObj, action.folders)
             }
-
         default:
             return treeObj
     }
@@ -208,11 +219,6 @@ const editorState = (state = null, action) => {
 
 const fileName = (name = "", action) => {
     switch (action.type) {
-        case CREATE_NEW_FILE:
-            {
-                return action.name
-            }
-
         case CHANGE_FILE_NAME:
             {
                 return action.name
@@ -221,7 +227,6 @@ const fileName = (name = "", action) => {
             return name
     }
 }
-
 
 
 
@@ -237,5 +242,5 @@ module.exports = combineReducers({
     centerColumnDir,
     showMask,
     editorState,
-    fileName
+    fileName,
 })

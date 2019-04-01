@@ -1,2 +1,2 @@
-let obj = {a:1}
-console.log('obj',obj.b);
+let d = new Date()
+console.log(typeof d.getDate())

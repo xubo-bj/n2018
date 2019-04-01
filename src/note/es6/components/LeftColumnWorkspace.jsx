@@ -10,7 +10,11 @@ import {
     show_left_menu_three,
     select_dir,
     toggle_dir,
-    fetch_folders
+    fetch_folders,
+    create_new_file_prompt,
+    create_new_file_submit,
+    create_new_file_success,
+    create_new_file_failure
 } from "../actions"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -119,7 +123,7 @@ const LeftColumnWorkspace = (props) => {
                         left: props.leftMenuTwo.clientX + "px",
                         top: props.leftMenuTwo.clientY + "px"
                     }}>
-                    <li className={styles["menu-option"]}>新建文件</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFilePromptInRoot}>新建文件</li>
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
             </div>
@@ -209,6 +213,9 @@ const mapDispatchToProps = dispatch => ({
             let { currentDirId } = getState()
             dispatch(create_new_folder_prompt(currentDirId))
         })
+    },
+    createNewFilePromptInRoot: () => {
+        dispatch(create_new_file_prompt(shinelonId))
     },
     toggleDir: (e, _id) => {
         e.stopPropagation()
