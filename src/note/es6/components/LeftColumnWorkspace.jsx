@@ -224,6 +224,31 @@ const mapDispatchToProps = dispatch => ({
     },
     createNewFilePromptInRoot: () => {
         dispatch(create_new_file_start(shinelonId))
+
+        dispatch((dispatch, getState) => {
+            let currentDirId = getState().currentDirId
+            axios.post("note/create-file/", {
+                name,
+                dirId: currentDirId
+            },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    console.log('res :', res.data);
+
+                    let { parentId, newId, name, time } = res.data
+                    dispatch(create_new_file_success(parentId, newId, name, time))
+                }).catch(err => {
+                    console.log('err', err);
+                    dispatch(create_new_file_failure())
+                })
+        })
+
     },
     toggleDir: (e, _id) => {
         e.stopPropagation()

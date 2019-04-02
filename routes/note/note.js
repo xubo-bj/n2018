@@ -9,11 +9,15 @@ const {
 const reducer = require("../../src/note/es6/reducers")
 const url = 'mongodb://localhost:27017';
 const dbName = 'note';
-const userdirs = 'userdirs'
 const client = new MongoClient(url, {
     useNewUrlParser: true
 });
-const shinelonId = require("../../config").note.mongodb.shinelonId
+const mongodb= require("../../config").note.mongodb
+const shinelonId = mongodb.shinelonId
+const userdirs = mongodb.collections.userdirs
+const  userfiles= mongodb.collections.userfiles
+
+
 const ejsPath = 'note/'
 const router = require('koa-router')()
 router.prefix('/note')
@@ -132,6 +136,67 @@ router.get("/get-folders", async (ctx, next) => {
     ctx.body =partialDirTree 
 })
 
+
+router.post('/create-file', async (ctx, next) => {
+
+    let result = await client.connect()
+    let u = result.db(dbName).collection(userfiles)
+
+    let {
+        dirId,
+        name
+    } = ctx.request.body
+    
+    let d = new Date()
+    let r = await u.insertOne({
+        name,
+        ctime: d,
+        mtime: d,
+        dirs: [],
+        files: []
+    })
+
+
+    if (r.insertedCount === 1) {
+        let r2 = await u.updateOne({
+            _id: new ObjectID(dirId)
+        }, {
+            $push: {
+                dirs: {
+                    _id: r.insertedId,
+                    name,
+                    ctime: d,
+                    mtime: d
+                }
+            }
+        })
+
+        if (r2.modifiedCount === 1) {
+            ctx.body = {
+                success: "ok",
+                parentId: dirId,
+                newId: r.insertedId,
+                name,
+                time: d
+            }
+        } else {
+            await u.deleteOne({
+                _id: r.insertedId
+            })
+            ctx.body = {
+                success: "no",
+                msg: "modify failure"
+            }
+        }
+    } else {
+        ctx.body = {
+            success: "no",
+            msg: "insert failure"
+        }
+    }
+
+
+})
 
 /*
 ** test

@@ -20,9 +20,13 @@ class MyEditor extends React.Component {
     }
 }
 
-const mapStateToProps= state => {
-  return{
-      fileName:state.fileName
+const mapStateToProps = state => {
+    let fileName = ""
+    if (state.fileId != null) {
+        fileName = state.tree[state.centerColumnDir].files.filter(file => file._id == state.fileId)[0].name
+    }
+    return {
+        fileName,
   }
 }
 

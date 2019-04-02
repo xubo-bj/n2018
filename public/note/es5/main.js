@@ -52044,6 +52044,34 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     createNewFilePromptInRoot: function createNewFilePromptInRoot() {
       dispatch((0, _actions.create_new_file_start)(shinelonId));
+      dispatch(function (dispatch, getState) {
+        var currentDirId = getState().currentDirId;
+
+        _axios.default.post("note/create-file/", {
+          name: name,
+          dirId: currentDirId
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            'X-Requested-With': 'axios'
+          },
+          timeout: 1000,
+          // default is `0` (no timeout),
+          responseType: 'json' // default
+
+        }).then(function (res) {
+          console.log('res :', res.data);
+          var _res$data2 = res.data,
+              parentId = _res$data2.parentId,
+              newId = _res$data2.newId,
+              name = _res$data2.name,
+              time = _res$data2.time;
+          dispatch((0, _actions.create_new_file_success)(parentId, newId, name, time));
+        }).catch(function (err) {
+          console.log('err', err);
+          dispatch((0, _actions.create_new_file_failure)());
+        });
+      });
     },
     toggleDir: function toggleDir(e, _id) {
       e.stopPropagation();
@@ -52423,8 +52451,16 @@ function (_React$Component) {
 }(_react.default.Component);
 
 var mapStateToProps = function mapStateToProps(state) {
+  var fileName = "";
+
+  if (state.fileId != null) {
+    fileName = state.tree[state.centerColumnDir].files.filter(function (file) {
+      return file._id == state.fileId;
+    })[0].name;
+  }
+
   return {
-    fileName: state.fileName
+    fileName: fileName
   };
 };
 
@@ -52673,7 +52709,7 @@ var tree = function tree() {
         var _targetDir = treeObj[_id2];
 
         _targetDir.files.push({
-          editable: true,
+          _id: "tempId",
           name: "无标题笔记",
           ctime: new Date(),
           mtime: new Date()
@@ -52772,18 +52808,22 @@ var editorState = function editorState() {
   }
 };
 
-var fileName = function fileName() {
-  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+var fileId = function fileId() {
+  var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case CHANGE_FILE_NAME:
+    // case CHANGE_FILE_NAME:
+    //     {
+    //         return action.name
+    //     }
+    case CREATE_NEW_FILE_START:
       {
-        return action.name;
+        return "tempId";
       }
 
     default:
-      return name;
+      return id;
   }
 };
 
@@ -52799,7 +52839,7 @@ module.exports = combineReducers({
   centerColumnDir: centerColumnDir,
   showMask: showMask,
   editorState: editorState,
-  fileName: fileName
+  fileId: fileId
 });
 
 /***/ }),

@@ -137,7 +137,7 @@ const tree = (treeObj = {
             let _id = action.currentDirId
             let targetDir = treeObj[_id]
             targetDir.files.push({
-                editable: true,
+                _id:"tempId",
                 name: "无标题笔记",
                 ctime:new Date(),
                 mtime:new Date()
@@ -224,14 +224,17 @@ const editorState = (state = null, action) => {
     }
 }
 
-const fileName = (name = "", action) => {
+const fileId = (id= null, action) => {
     switch (action.type) {
-        case CHANGE_FILE_NAME:
-            {
-                return action.name
-            }
+        // case CHANGE_FILE_NAME:
+        //     {
+        //         return action.name
+        //     }
+        case CREATE_NEW_FILE_START:{
+            return "tempId"
+        }
         default:
-            return name
+            return id
     }
 }
 
@@ -249,5 +252,5 @@ module.exports = combineReducers({
     centerColumnDir,
     showMask,
     editorState,
-    fileName,
+    fileId
 })
