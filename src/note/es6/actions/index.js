@@ -113,10 +113,10 @@ export const create_new_file_submit= () => ({
 
 
 export const CREATE_NEW_FILE_SUCCESS = "CREATE_NEW_FILE_SUCCESS"
-export const create_new_file_success= (parentId,newId,name,time) => ({
+export const create_new_file_success= (parentDirId,newFileId,name,time) => ({
     type:CREATE_NEW_FILE_SUCCESS,
-    parentId,
-    newId,
+    parentDirId,
+    newFileId,
     name,
     time
 })

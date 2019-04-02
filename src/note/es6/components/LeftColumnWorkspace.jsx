@@ -226,7 +226,9 @@ const mapDispatchToProps = dispatch => ({
         dispatch(create_new_file_start(shinelonId))
 
         dispatch((dispatch, getState) => {
-            let currentDirId = getState().currentDirId
+        let state = getState()
+        let name = state.tree[shinelonId].files.filter(file=>file._id == "tempId")[0].name
+            let currentDirId = state.currentDirId
             axios.post("note/create-file/", {
                 name,
                 dirId: currentDirId
@@ -241,8 +243,12 @@ const mapDispatchToProps = dispatch => ({
                 }).then(res => {
                     console.log('res :', res.data);
 
-                    let { parentId, newId, name, time } = res.data
-                    dispatch(create_new_file_success(parentId, newId, name, time))
+                    let { success, newFileId, name, time } = res.data
+                    if(success == "ok"){
+                        dispatch(create_new_file_success(currentDirId, newFileId, name, time))
+                    }else{
+                        dispatch(create_new_file_failure())
+                    }
                 }).catch(err => {
                     console.log('err', err);
                     dispatch(create_new_file_failure())

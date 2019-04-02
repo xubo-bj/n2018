@@ -140,7 +140,7 @@ router.get("/get-folders", async (ctx, next) => {
 router.post('/create-file', async (ctx, next) => {
 
     let result = await client.connect()
-    let u = result.db(dbName).collection(userfiles)
+    let userfilesCollection = result.db(dbName).collection(userfiles)
 
     let {
         dirId,
@@ -148,25 +148,25 @@ router.post('/create-file', async (ctx, next) => {
     } = ctx.request.body
     
     let d = new Date()
-    let r = await u.insertOne({
+    let r = await userfilesCollection.insertOne({
         name,
         ctime: d,
         mtime: d,
-        dirs: [],
-        files: []
+        content:""
     })
 
+let userdirsCollection = result.db(dbName).collection(userdirs)
 
     if (r.insertedCount === 1) {
-        let r2 = await u.updateOne({
+        let r2 = await userdirsCollection.updateOne({
             _id: new ObjectID(dirId)
         }, {
             $push: {
-                dirs: {
+                files: {
                     _id: r.insertedId,
                     name,
                     ctime: d,
-                    mtime: d
+                    mtime: d,
                 }
             }
         })
@@ -174,13 +174,12 @@ router.post('/create-file', async (ctx, next) => {
         if (r2.modifiedCount === 1) {
             ctx.body = {
                 success: "ok",
-                parentId: dirId,
-                newId: r.insertedId,
+                newFileId: r.insertedId,
                 name,
                 time: d
             }
         } else {
-            await u.deleteOne({
+            await userfilesCollection.deleteOne({
                 _id: r.insertedId
             })
             ctx.body = {
@@ -194,8 +193,6 @@ router.post('/create-file', async (ctx, next) => {
             msg: "insert failure"
         }
     }
-
-
 })
 
 /*

@@ -28,14 +28,18 @@ const CenterColumnWorkspace = props => {
                 }
             </ul>
             <ul className={styles["ul-files"]}>
-                {props.files && props.files.map(file =>
-                    <li key={file._id} className={styles["li-file"]}>
-                        <svg className={styles["file-icon"]}>
-                            <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
-                        </svg>
-                        <span className={styles["file-name"]}>{file.name}</span>
-                        <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
-                    </li>
+                {props.files && props.files.map(file => {
+                    // console.log("file", file)
+                    return (
+                        <li key={file._id} className={styles["li-file"]}>
+                            <svg className={styles["file-icon"]}>
+                                <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
+                            </svg>
+                            <span className={styles["file-name"]}>{file.name}</span>
+                            <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
+                        </li>
+                    )
+                }
                 )
                 }
             </ul>
@@ -44,6 +48,8 @@ const CenterColumnWorkspace = props => {
 }
 const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
+    console.log('current',current.files);
+    
     return {
         dirs: current.dirs.length > 0 ? current.dirs : null,
         files: current.files.length > 0 ? current.files : null

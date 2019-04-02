@@ -144,6 +144,13 @@ const tree = (treeObj = {
             })
             return Object.assign({}, treeObj)
         }
+        case CREATE_NEW_FILE_SUCCESS:{
+            let targetDir = treeObj[action.parentDirId]
+            let targetFile= targetDir.files.filter(file=>file._id == "tempId")[0]
+            targetFile._id = action.newFileId,
+            targetFile.name = action.name
+            return Object.assign({}, treeObj)
+        }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
                 let {
@@ -226,12 +233,11 @@ const editorState = (state = null, action) => {
 
 const fileId = (id= null, action) => {
     switch (action.type) {
-        // case CHANGE_FILE_NAME:
-        //     {
-        //         return action.name
-        //     }
         case CREATE_NEW_FILE_START:{
             return "tempId"
+        }
+        case CREATE_NEW_FILE_SUCCESS:{
+            return action.newFileId
         }
         default:
             return id
