@@ -10,15 +10,20 @@ const CenterColumnWorkspace = props => {
         <div className={styles.workspace}>
             <ul className={styles["ul-dirs"]}>
                 {props.dirs && props.dirs.map(dir => {
-                    return (
-                        <li key={dir._id} className={styles["li-dir"]}>
-                            <svg className={styles["dir-icon"]}>
-                                <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
-                            </svg>
-                            <span className={styles["dir-name"]}>{dir.name}</span>
-                            <span className={styles["dir-mtime"]}>{convertTimeFormat(dir.mtime)}</span>
-                        </li>
-                    )
+                    if (dir.editable) {
+                        return null
+                    } else {
+                        return (
+                            <li key={dir._id} className={styles["li-dir"]}>
+                                <svg className={styles["dir-icon"]}>
+                                    <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
+                                </svg>
+                                <span className={styles["dir-name"]}>{dir.name}</span>
+                                <span className={styles["dir-mtime"]}>{convertTimeFormat(dir.mtime)}</span>
+                            </li>
+                        )
+
+                    }
                 })
                 }
             </ul>
@@ -38,7 +43,7 @@ const CenterColumnWorkspace = props => {
     )
 }
 const mapStateToProps = state => {
-    let current = state.tree[state.currentDirId]
+    let current = state.tree[state.centerColumnDir]
     return {
         dirs: current.dirs.length > 0 ? current.dirs : null,
         files: current.files.length > 0 ? current.files : null

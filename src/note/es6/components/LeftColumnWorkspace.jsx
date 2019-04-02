@@ -11,7 +11,7 @@ import {
     select_dir,
     toggle_dir,
     fetch_folders,
-    create_new_file_prompt,
+    create_new_file_start,
     create_new_file_submit,
     create_new_file_success,
     create_new_file_failure
@@ -112,8 +112,10 @@ const LeftColumnWorkspace = (props) => {
     const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir } = props
     return (
         <div className={styles.workspace}>
-            <div className={styles["my-dir"]} data-id={shinelonId}
+            <div  data-id={shinelonId}
+                className={props.centerColumnDir == shinelonId ? styles["my-dir-selected"] : styles["my-dir"]}
                 onContextMenu={props.rightClickRootDir}
+                onClick={props.leftClickRootDir}
             >
                 <i className={styles["my-dir-icon"]} />
                 <span className={styles["my-dir-name"]}>我的文件夹</span>
@@ -158,9 +160,15 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
-
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
+            target = target.parentNode
+        }
+        dispatch(select_dir(target.dataset.id))
+    },
+    leftClickRootDir: e => {
+        let target = e.target
+        while (target.tagName.toLowerCase() != "div") {
             target = target.parentNode
         }
         dispatch(select_dir(target.dataset.id))
@@ -215,7 +223,7 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     createNewFilePromptInRoot: () => {
-        dispatch(create_new_file_prompt(shinelonId))
+        dispatch(create_new_file_start(shinelonId))
     },
     toggleDir: (e, _id) => {
         e.stopPropagation()

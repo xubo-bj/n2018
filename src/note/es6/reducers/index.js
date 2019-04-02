@@ -1,6 +1,4 @@
-import {
-    EditorState
-} from 'draft-js';
+import { EditorState } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     SHOW_LEFT_MENU_ONE,
@@ -18,7 +16,7 @@ const {
     FETCH_FOLDERS,
     CHANGE_EDITOR_STATE,
     CHANGE_FILE_NAME,
-    CREATE_NEW_FILE_PROMPT,
+    CREATE_NEW_FILE_START,
     CREATE_NEW_FILE_SUBMIT,
     CREATE_NEW_FILE_SUCCESS,
     CREATE_NEW_FILE_FAILURE
@@ -98,10 +96,17 @@ const currentDirId = (_id = shinelonId, action) => {
             return _id
     }
 }
+
 const centerColumnDir = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
             return action._id
+        case CREATE_NEW_FOLDER_SUCCESS: {
+            return action.newId
+        }
+        case CREATE_NEW_FILE_START:{
+            return action.currentDirId
+        }
         default:
             return _id
     }
@@ -128,12 +133,14 @@ const tree = (treeObj = {
             })
             return Object.assign({}, treeObj)
         }
-        case CREATE_NEW_FILE_PROMPT: {
+        case CREATE_NEW_FILE_START: {
             let _id = action.currentDirId
             let targetDir = treeObj[_id]
             targetDir.files.push({
                 editable: true,
-                name: "无标题笔记"
+                name: "无标题笔记",
+                ctime:new Date(),
+                mtime:new Date()
             })
             return Object.assign({}, treeObj)
         }

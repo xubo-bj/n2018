@@ -50868,7 +50868,7 @@ module.exports = function(originalModule) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.create_new_file_failure = exports.CREATE_NEW_FILE_FAILURE = exports.create_new_file_success = exports.CREATE_NEW_FILE_SUCCESS = exports.create_new_file_submit = exports.CREATE_NEW_FILE_SUBMIT = exports.create_new_file_prompt = exports.CREATE_NEW_FILE_PROMPT = exports.change_file_name = exports.CHANGE_FILE_NAME = exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
+exports.create_new_file_failure = exports.CREATE_NEW_FILE_FAILURE = exports.create_new_file_success = exports.CREATE_NEW_FILE_SUCCESS = exports.create_new_file_submit = exports.CREATE_NEW_FILE_SUBMIT = exports.create_new_file_start = exports.CREATE_NEW_FILE_START = exports.change_file_name = exports.CHANGE_FILE_NAME = exports.change_editor_state = exports.CHANGE_EDITOR_STATE = exports.fetch_folders = exports.FETCH_FOLDERS = exports.toggle_dir = exports.TOGGLE_DIR = exports.select_dir = exports.SELECT_DIR = exports.create_new_folder_failure = exports.CREATE_NEW_FOLDER_FAILURE = exports.create_new_folder_success = exports.CREATE_NEW_FOLDER_SUCCESS = exports.create_new_folder_submit = exports.CREATE_NEW_FOLDER_SUBMIT = exports.create_new_folder_prompt = exports.CREATE_NEW_FOLDER_PROMPT = exports.hide_left_menu_three = exports.HIDE_LEFT_MENU_THREE = exports.show_left_menu_three = exports.SHOW_LEFT_MENU_THREE = exports.hide_left_menu_two = exports.HIDE_LEFT_MENU_TWO = exports.show_left_menu_two = exports.SHOW_LEFT_MENU_TWO = exports.hide_left_menu_one = exports.HIDE_LEFT_MENU_ONE = exports.show_left_menu_one = exports.SHOW_LEFT_MENU_ONE = void 0;
 
 /**
  * pop menu in the toolbar of left-column
@@ -51042,17 +51042,17 @@ var change_file_name = function change_file_name(name) {
 };
 
 exports.change_file_name = change_file_name;
-var CREATE_NEW_FILE_PROMPT = "CREATE_NEW_FILE_PROMPT";
-exports.CREATE_NEW_FILE_PROMPT = CREATE_NEW_FILE_PROMPT;
+var CREATE_NEW_FILE_START = "CREATE_NEW_FILE_START";
+exports.CREATE_NEW_FILE_START = CREATE_NEW_FILE_START;
 
-var create_new_file_prompt = function create_new_file_prompt(currentDirId) {
+var create_new_file_start = function create_new_file_start(currentDirId) {
   return {
-    type: CREATE_NEW_FILE_PROMPT,
+    type: CREATE_NEW_FILE_START,
     currentDirId: currentDirId
   };
 };
 
-exports.create_new_file_prompt = create_new_file_prompt;
+exports.create_new_file_start = create_new_file_start;
 var CREATE_NEW_FILE_SUBMIT = "CREATE_NEW_FILE_SUBMIT";
 exports.CREATE_NEW_FILE_SUBMIT = CREATE_NEW_FILE_SUBMIT;
 
@@ -51319,19 +51319,23 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
   }, _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-dirs"]
   }, props.dirs && props.dirs.map(function (dir) {
-    return _react.default.createElement("li", {
-      key: dir._id,
-      className: _CenterColumnWorkspace.default["li-dir"]
-    }, _react.default.createElement("svg", {
-      className: _CenterColumnWorkspace.default["dir-icon"]
-    }, _react.default.createElement("use", {
-      xlinkHref: "/note/images/centerColumn.svg#folder",
-      transform: "scale(0.5)"
-    })), _react.default.createElement("span", {
-      className: _CenterColumnWorkspace.default["dir-name"]
-    }, dir.name), _react.default.createElement("span", {
-      className: _CenterColumnWorkspace.default["dir-mtime"]
-    }, convertTimeFormat(dir.mtime)));
+    if (dir.editable) {
+      return null;
+    } else {
+      return _react.default.createElement("li", {
+        key: dir._id,
+        className: _CenterColumnWorkspace.default["li-dir"]
+      }, _react.default.createElement("svg", {
+        className: _CenterColumnWorkspace.default["dir-icon"]
+      }, _react.default.createElement("use", {
+        xlinkHref: "/note/images/centerColumn.svg#folder",
+        transform: "scale(0.5)"
+      })), _react.default.createElement("span", {
+        className: _CenterColumnWorkspace.default["dir-name"]
+      }, dir.name), _react.default.createElement("span", {
+        className: _CenterColumnWorkspace.default["dir-mtime"]
+      }, convertTimeFormat(dir.mtime)));
+    }
   })), _react.default.createElement("ul", {
     className: _CenterColumnWorkspace.default["ul-files"]
   }, props.files && props.files.map(function (file) {
@@ -51352,7 +51356,7 @@ var CenterColumnWorkspace = function CenterColumnWorkspace(props) {
 };
 
 var mapStateToProps = function mapStateToProps(state) {
-  var current = state.tree[state.currentDirId];
+  var current = state.tree[state.centerColumnDir];
   return {
     dirs: current.dirs.length > 0 ? current.dirs : null,
     files: current.files.length > 0 ? current.files : null
@@ -51898,9 +51902,10 @@ var LeftColumnWorkspace = function LeftColumnWorkspace(props) {
   return _react.default.createElement("div", {
     className: _LeftColumnWorkspace.default.workspace
   }, _react.default.createElement("div", {
-    className: _LeftColumnWorkspace.default["my-dir"],
     "data-id": shinelonId,
-    onContextMenu: props.rightClickRootDir
+    className: props.centerColumnDir == shinelonId ? _LeftColumnWorkspace.default["my-dir-selected"] : _LeftColumnWorkspace.default["my-dir"],
+    onContextMenu: props.rightClickRootDir,
+    onClick: props.leftClickRootDir
   }, _react.default.createElement("i", {
     className: _LeftColumnWorkspace.default["my-dir-icon"]
   }), _react.default.createElement("span", {
@@ -51970,6 +51975,15 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
       dispatch((0, _actions.select_dir)(target.dataset.id));
     },
+    leftClickRootDir: function leftClickRootDir(e) {
+      var target = e.target;
+
+      while (target.tagName.toLowerCase() != "div") {
+        target = target.parentNode;
+      }
+
+      dispatch((0, _actions.select_dir)(target.dataset.id));
+    },
     rightClickRootDir: function rightClickRootDir(e) {
       e.preventDefault();
       dispatch(function (dispatch, getState) {
@@ -52029,7 +52043,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       });
     },
     createNewFilePromptInRoot: function createNewFilePromptInRoot() {
-      dispatch((0, _actions.create_new_file_prompt)(shinelonId));
+      dispatch((0, _actions.create_new_file_start)(shinelonId));
     },
     toggleDir: function toggleDir(e, _id) {
       e.stopPropagation();
@@ -52502,7 +52516,7 @@ var _require = __webpack_require__(/*! ../actions */ "./src/note/es6/actions/ind
     FETCH_FOLDERS = _require.FETCH_FOLDERS,
     CHANGE_EDITOR_STATE = _require.CHANGE_EDITOR_STATE,
     CHANGE_FILE_NAME = _require.CHANGE_FILE_NAME,
-    CREATE_NEW_FILE_PROMPT = _require.CREATE_NEW_FILE_PROMPT,
+    CREATE_NEW_FILE_START = _require.CREATE_NEW_FILE_START,
     CREATE_NEW_FILE_SUBMIT = _require.CREATE_NEW_FILE_SUBMIT,
     CREATE_NEW_FILE_SUCCESS = _require.CREATE_NEW_FILE_SUCCESS,
     CREATE_NEW_FILE_FAILURE = _require.CREATE_NEW_FILE_FAILURE;
@@ -52614,6 +52628,16 @@ var centerColumnDir = function centerColumnDir() {
     case SELECT_DIR:
       return action._id;
 
+    case CREATE_NEW_FOLDER_SUCCESS:
+      {
+        return action.newId;
+      }
+
+    case CREATE_NEW_FILE_START:
+      {
+        return action.currentDirId;
+      }
+
     default:
       return _id;
   }
@@ -52643,14 +52667,16 @@ var tree = function tree() {
         return Object.assign({}, treeObj);
       }
 
-    case CREATE_NEW_FILE_PROMPT:
+    case CREATE_NEW_FILE_START:
       {
         var _id2 = action.currentDirId;
         var _targetDir = treeObj[_id2];
 
         _targetDir.files.push({
           editable: true,
-          name: "无标题笔记"
+          name: "无标题笔记",
+          ctime: new Date(),
+          mtime: new Date()
         });
 
         return Object.assign({}, treeObj);
@@ -52858,7 +52884,7 @@ module.exports = {"toolbar":"toolbar__oL1_ZBpAf9Xx0_HLJ-rra","container":"contai
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"workspace":"workspace__1zisjNZ8u5HFiiAbtfKlzX","my-dir":"my-dir__2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"my-dir-icon__1apa2FprME5DTPt2kr9xzu","my-dir-name":"my-dir-name__3t_Yy1GA5HXQ0r0O4LutuY","pop-menu":"pop-menu__3_q2o7fA2RIgJs4dqNY7yz","menu-option":"menu-option__1ZWBo8FIl6DKRwT5iKUoOw","ul":"ul__RtrrH9Kt6iZbyLYftY2sm","li":"li__3lPmwPnahBhz7xeKgSjp0m","li-content":"li-content__n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"li-content-selected__3uo_8nWoo3Wh4U4H7wGqDG","arrow":"arrow__3xezzTeOoF8at18l6puiP6","arrow-open":"arrow-open__x0otYSECyU-0_ueYSCpao arrow__3xezzTeOoF8at18l6puiP6","arrow-closed":"arrow-closed__EuyObZDU0G4R5p20DwViJ arrow__3xezzTeOoF8at18l6puiP6","arrow-hidden":"arrow-hidden__18q4TFgQgTy4K_GkKrOF3i arrow__3xezzTeOoF8at18l6puiP6","dir":"dir__3LDijpTdgHXx1toqIfuZOA","dir-icon":"dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-open":"dir-open__3aegqkwhgrINrAnUEv7CbC dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"dir-closed__1ZCqU_9LI9bYZP0ICANgk7 dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dirName":"dirName__37mvSkgKF6T81hJ46ZwPX_"};
+module.exports = {"workspace":"workspace__1zisjNZ8u5HFiiAbtfKlzX","my-dir":"my-dir__2fg9o1LizZNt69J2Cv2gd0","my-dir-icon":"my-dir-icon__1apa2FprME5DTPt2kr9xzu","my-dir-name":"my-dir-name__3t_Yy1GA5HXQ0r0O4LutuY","my-dir-selected":"my-dir-selected__1nEaWYCWsu2BIKeM5H2hLX","pop-menu":"pop-menu__3_q2o7fA2RIgJs4dqNY7yz","menu-option":"menu-option__1ZWBo8FIl6DKRwT5iKUoOw","ul":"ul__RtrrH9Kt6iZbyLYftY2sm","li":"li__3lPmwPnahBhz7xeKgSjp0m","li-content":"li-content__n-VnYYvRd9pubI1Q1VbqN","li-content-selected":"li-content-selected__3uo_8nWoo3Wh4U4H7wGqDG","arrow":"arrow__3xezzTeOoF8at18l6puiP6","arrow-open":"arrow-open__x0otYSECyU-0_ueYSCpao arrow__3xezzTeOoF8at18l6puiP6","arrow-closed":"arrow-closed__EuyObZDU0G4R5p20DwViJ arrow__3xezzTeOoF8at18l6puiP6","arrow-hidden":"arrow-hidden__18q4TFgQgTy4K_GkKrOF3i arrow__3xezzTeOoF8at18l6puiP6","dir":"dir__3LDijpTdgHXx1toqIfuZOA","dir-icon":"dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-open":"dir-open__3aegqkwhgrINrAnUEv7CbC dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dir-closed":"dir-closed__1ZCqU_9LI9bYZP0ICANgk7 dir-icon__3iBMFRcRBVzLL9LT2J0alZ","dirName":"dirName__37mvSkgKF6T81hJ46ZwPX_"};
 
 /***/ }),
 

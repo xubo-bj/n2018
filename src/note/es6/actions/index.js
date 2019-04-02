@@ -101,9 +101,9 @@ export const change_file_name=(name)=>({
 
 
 
-export const CREATE_NEW_FILE_PROMPT = "CREATE_NEW_FILE_PROMPT"
-export const create_new_file_prompt = (currentDirId) => ({
-    type: CREATE_NEW_FILE_PROMPT,
+export const CREATE_NEW_FILE_START = "CREATE_NEW_FILE_START"
+export const create_new_file_start = (currentDirId) => ({
+    type: CREATE_NEW_FILE_START,
     currentDirId
 })
 export const CREATE_NEW_FILE_SUBMIT = "CREATE_NEW_FILE_SUBMIT"

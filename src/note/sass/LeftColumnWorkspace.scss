@@ -28,6 +28,29 @@
     font-size: 12px;
     }
 }
+.my-dir-selected {
+    height: 40px;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+
+    .my-dir-icon {
+        display: inline-block;
+        background: url(/note/images/sprite.svg) no-repeat;
+        background-position: 88.6685552407932% 43.24324324324324%;
+        width: 24px;
+        height: 24px;
+    }
+
+    .my-dir-name {
+        margin-left: 10px;
+        font-size: 12px;
+        color: #fff;
+    }
+        background: #398dee;
+        border: 1px solid #2280ed;
+        border-color: #2280ed transparent;
+    }
 
 .pop-menu {
     list-style-type: none;
@@ -57,7 +80,7 @@
 
 .ul{
     color: #393939;
-    font-size: 14px;
+    // font-size: 14px;
 }
 .li{
     display: flex;
