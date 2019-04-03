@@ -59,7 +59,7 @@ class DirTree extends React.Component {
                         if (dir._id) {
                             let childTargetDir = tree[dir._id]
                             return (
-                                <li key={dir._id} className={styles.li} data-id={dir._id}>
+                                <li Key={dir._id} className={styles.li} data-id={dir._id}>
                                     <div className={centerColumnDir == dir._id ? styles["li-content-selected"] : styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={childTargetDir.dirs.length == 0
@@ -84,7 +84,7 @@ class DirTree extends React.Component {
                             )
                         } else {
                             return (
-                                <li key={"editable"} className={styles.li}>
+                                <li Key={"editable"} className={styles.li}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]} />

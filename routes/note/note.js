@@ -195,6 +195,21 @@ let userdirsCollection = result.db(dbName).collection(userdirs)
     }
 })
 
+router.put('/update-file', async (ctx, next) => {
+    let result = await client.connect()
+    let userfilesCollection = result.db(dbName).collection(userfiles)
+    console.log("body",ctx.request.body)
+    let { name,content,fileId,dirId,mtime } = ctx.request.body
+    // let updateFilesResult = await userfilesCollection.updateOne({
+    //     _id: new ObjectID(fileId),
+    //     $set: {
+    //         name,
+    //         content,
+    //         mtime
+    //     }
+    // })
+    // console.log("res",updateFilesResult.modifiedCount)
+})
 /*
 ** test
 

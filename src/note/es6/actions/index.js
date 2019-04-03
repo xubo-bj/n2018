@@ -124,3 +124,14 @@ export const CREATE_NEW_FILE_FAILURE= "CREATE_NEW_FILE_FAILURE"
 export const create_new_file_failure = ()=>({
     type:CREATE_NEW_FILE_FAILURE
 })
+
+
+export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
+export const update_file_success= ()=>({
+    type:UPDATE_FILE_SUCCESS
+})
+
+export const UPDATE_FILE_FAILURE = "UPDATE_FILE_FAILURE"
+export const update_file_failure= ()=>({
+    type:UPDATE_FILE_FAILURE
+})
