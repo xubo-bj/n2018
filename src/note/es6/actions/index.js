@@ -127,9 +127,11 @@ export const create_new_file_failure = ()=>({
 
 
 export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
-export const update_file_success= (mtime)=>({
+export const update_file_success= (mtime,fileId,centerColumnDir)=>({
     type:UPDATE_FILE_SUCCESS,
-    mtime
+    mtime,
+    fileId,
+    centerColumnDir
 })
 
 export const UPDATE_FILE_FAILURE = "UPDATE_FILE_FAILURE"

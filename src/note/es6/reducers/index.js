@@ -20,7 +20,9 @@ const {
     CREATE_NEW_FILE_SUBMIT,
     CREATE_NEW_FILE_SUCCESS,
     CREATE_NEW_FILE_FAILURE,
-    SELECT_FILE
+    SELECT_FILE,
+    UPDATE_FILE_SUCCESS,
+    UPDATE_FILE_FAILURE
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -152,6 +154,13 @@ const tree = (treeObj = {
             targetFile.name = action.name
             return Object.assign({}, treeObj)
         }
+        case UPDATE_FILE_SUCCESS:{
+            let targetDir = treeObj[action.centerColumnDir]
+            let targetFile= targetDir.files.filter(file=>file._id == action.fileId)[0]
+            targetFile.mtime = action.mtime
+            return Object.assign({}, treeObj)
+        }
+
         case CREATE_NEW_FOLDER_SUCCESS:
             {
                 let {

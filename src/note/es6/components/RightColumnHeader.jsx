@@ -61,7 +61,7 @@ const mapDispatchToProps = dispatch => ({
                     console.log('res :', res.data);
                     let {success,mtime} = res.data
                     if(success){
-                    dispatch(update_file_success(res.data.mtime))
+                        dispatch(update_file_success(mtime, state.fileId, state.centerColumnDir))
                     }
                 }).catch(err => {
                     console.log('err', err);
