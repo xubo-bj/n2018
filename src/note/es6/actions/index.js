@@ -127,11 +127,19 @@ export const create_new_file_failure = ()=>({
 
 
 export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
-export const update_file_success= ()=>({
-    type:UPDATE_FILE_SUCCESS
+export const update_file_success= (mtime)=>({
+    type:UPDATE_FILE_SUCCESS,
+    mtime
 })
 
 export const UPDATE_FILE_FAILURE = "UPDATE_FILE_FAILURE"
 export const update_file_failure= ()=>({
     type:UPDATE_FILE_FAILURE
+})
+
+
+export const SELECT_FILE = "SELECT_FILE"
+export const select_file = (fileId)=>({
+    type:SELECT_FILE,
+    fileId
 })

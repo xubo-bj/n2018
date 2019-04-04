@@ -19,7 +19,8 @@ const {
     CREATE_NEW_FILE_START,
     CREATE_NEW_FILE_SUBMIT,
     CREATE_NEW_FILE_SUCCESS,
-    CREATE_NEW_FILE_FAILURE
+    CREATE_NEW_FILE_FAILURE,
+    SELECT_FILE
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -238,6 +239,9 @@ const fileId = (id= null, action) => {
         }
         case CREATE_NEW_FILE_SUCCESS:{
             return action.newFileId
+        }
+        case SELECT_FILE:{
+            return action.fileId
         }
         default:
             return id

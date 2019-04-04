@@ -89,7 +89,7 @@ router.post('/create-folder', async (ctx, next) => {
         }, {
             $push: {
                 dirs: {
-                    _id: r.insertedId,
+                    _id: new ObjectID(r.insertedId),
                     name,
                     ctime: d,
                     mtime: d
@@ -196,19 +196,54 @@ let userdirsCollection = result.db(dbName).collection(userdirs)
 })
 
 router.put('/update-file', async (ctx, next) => {
-    let result = await client.connect()
-    let userfilesCollection = result.db(dbName).collection(userfiles)
-    console.log("body",ctx.request.body)
-    let { name,content,fileId,dirId,mtime } = ctx.request.body
-    // let updateFilesResult = await userfilesCollection.updateOne({
-    //     _id: new ObjectID(fileId),
-    //     $set: {
-    //         name,
-    //         content,
-    //         mtime
-    //     }
-    // })
-    // console.log("res",updateFilesResult.modifiedCount)
+                let connection = await client.connect()
+    let userfilesCollection = connection.db(dbName).collection(userfiles)
+    console.log("body", ctx.request.body)
+    let mtime = new Date()
+    let {
+        name,
+        content,
+        fileId,
+        dirId,
+    } = ctx.request.body
+    let updateFilesResult = await userfilesCollection.updateOne({
+        _id: new ObjectID(fileId)
+    }, {
+        $set: {
+            name,
+            content,
+            mtime
+        }
+    })
+    if (updateFilesResult.modifiedCount === 1) {
+        let userdirsCollection = connection.db(dbName).collection(userdirs)
+        let updateDirsResult = await userdirsCollection.updateOne({
+            _id: new ObjectID(dirId),
+            "files._id": new ObjectID(fileId)
+        }, {
+            $set: {
+                "files.$.name": name,
+                "files.$.mtime": mtime
+            }
+        })
+
+        if (updateFilesResult.modifiedCount === 1) {
+            ctx.body = {
+                success: "ok",
+                mtime
+            }
+        } else {
+            ctx.body = {
+                success: "no",
+                error:"update folder that file locates in failure"
+            }
+        }
+    }else{
+            ctx.body = {
+                success: "no",
+                error:"update file failure"
+            }
+    }
 })
 /*
 ** test

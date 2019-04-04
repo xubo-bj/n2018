@@ -2,6 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
+import {select_file} from "../actions"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 const CenterColumnWorkspace = props => {
@@ -13,7 +14,7 @@ const CenterColumnWorkspace = props => {
                         return null
                     } else {
                         return (
-                            <li Key={dir._id} className={styles["li-dir"]}>
+                            <li Key={dir._id} className={styles["li-dir"]} data-id={dir._id}>
                                 <svg className={styles["dir-icon"]}>
                                     <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
                                 </svg>
@@ -26,10 +27,11 @@ const CenterColumnWorkspace = props => {
                 })
                 }
             </ul>
-            <ul className={styles["ul-files"]}>
+            <ul className={styles["ul-files"]}
+            onClick={props.selectFile}>
                 {props.files && props.files.map(file => {
                     return (
-                        <li Key={file._id} className={styles["li-file"]}>
+                        <li Key={file._id} className={styles["li-file"]} data-id={file._id}>
                             <svg className={styles["file-icon"]}>
                                 <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
                             </svg>
@@ -52,7 +54,16 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-
+    selectFile:e=>{
+        let target  = e.target
+        while(target.tagName.toLowerCase() != "li"){
+            target = target.parentElement
+        }
+        dispatch((dispatch,getState)=>{
+            let centerColumnDir = getState().centerColumnDir
+            dispatch(select_file(target.dataset.id))
+        })
+    }
 })
 function convertTimeFormat(timeString) {
     let d = new Date(timeString)

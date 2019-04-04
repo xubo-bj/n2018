@@ -48,8 +48,7 @@ const mapDispatchToProps = dispatch => ({
                 name:state.tree[state.centerColumnDir].files.filter(file=>file._id == state.fileId)[0].name,
                 content:convertToRaw(state.editorState.getCurrentContent()),
                 fileId:state.fileId,
-                dirId:state.centerColumnDir,
-                mtime:new Date()
+                dirId:state.centerColumnDir
             },
                 {
                     headers: {
@@ -60,8 +59,10 @@ const mapDispatchToProps = dispatch => ({
                     responseType: 'json' // default
                 }).then(res => {
                     console.log('res :', res.data);
-                    // let {} = res.data
-                    dispatch(update_file_success())
+                    let {success,mtime} = res.data
+                    if(success){
+                    dispatch(update_file_success(res.data.mtime))
+                    }
                 }).catch(err => {
                     console.log('err', err);
                     dispatch(update_file_failure())

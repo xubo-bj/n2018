@@ -162,14 +162,14 @@ const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
-            target = target.parentNode
+            target = target.parentElement
         }
         dispatch(select_dir(target.dataset.id))
     },
     leftClickRootDir: e => {
         let target = e.target
         while (target.tagName.toLowerCase() != "div") {
-            target = target.parentNode
+            target = target.parentElement
         }
         dispatch(select_dir(target.dataset.id))
     },
@@ -183,7 +183,7 @@ const mapDispatchToProps = dispatch => ({
         e.preventDefault()
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
-            target = target.parentNode
+            target = target.parentElement
         }
         dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
     },
