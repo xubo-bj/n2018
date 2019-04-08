@@ -69,9 +69,10 @@ export const create_new_folder_failure = ()=>({
 
 
 export const SELECT_DIR = "SELECT_DIR"
-export const select_dir = (_id)=>({
-    type:SELECT_DIR,
-    _id
+export const select_dir = (dirId, fileId) => ({
+    type: SELECT_DIR,
+    dirId,
+    fileId
 })
 
 export const TOGGLE_DIR = "TOGGLE_DIR"

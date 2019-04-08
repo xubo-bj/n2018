@@ -104,6 +104,12 @@
     border: 1px solid #2280ed;
     border-color: #2280ed transparent;
     color: #fff;
+    .arrow-open{
+            background-position: 52.892561983471076% 98.83381924198251%;
+    }
+    .arrow-closed{
+        background-position: 60.60606060606061% 98.83381924198251%;
+    }
 }
 .arrow{
     background: url(/note/images/sprite.svg) no-repeat;

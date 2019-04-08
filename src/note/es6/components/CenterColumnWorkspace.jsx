@@ -64,26 +64,26 @@ const mapDispatchToProps = dispatch => ({
         let fileId = target.dataset.id
         dispatch((dispatch,getState)=>{
             let centerColumnDir = getState().centerColumnDir
-            dispatch(select_file(target.dataset.id,centerColumnDir))
-                axios.get("note/get-file", {
-                    params: {
-                        fileId
-                    },
-                    headers: {
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    if(res.data.success == "ok"){
-                        dispatch(get_file_success(convertFromRaw(res.data.content)))
-                    }else{
+            dispatch(select_file(target.dataset.id, centerColumnDir))
+            axios.get("note/get-file", {
+                params: {
+                    fileId
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                if (res.data.success == "ok") {
+                    dispatch(get_file_success(convertFromRaw(res.data.content)))
+                } else {
 
-                    }
-                }).catch(err => {
-                    console.log('err1', err);
-                    // dispatch(create_new_folder_failure())
-                })
+                }
+            }).catch(err => {
+                console.log('err1', err);
+                // dispatch(create_new_folder_failure())
+            })
 
         })
     }

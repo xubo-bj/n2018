@@ -91,7 +91,7 @@ const leftMenuThree = (r = {
 const currentDirId = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
-            return action._id
+            return action.dirId
         case SHOW_LEFT_MENU_THREE:
             return action._id
         case SHOW_LEFT_MENU_TWO:
@@ -104,7 +104,7 @@ const currentDirId = (_id = shinelonId, action) => {
 const centerColumnDir = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
-            return action._id
+            return action.dirId
         case CREATE_NEW_FOLDER_SUCCESS: {
             return action.newId
         }
@@ -263,6 +263,9 @@ const fileId = (id= null, action) => {
             return action.newFileId
         }
         case SELECT_FILE:{
+            return action.fileId
+        }
+        case SELECT_DIR:{
             return action.fileId
         }
         default:

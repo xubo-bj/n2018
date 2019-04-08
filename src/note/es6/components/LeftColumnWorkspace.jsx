@@ -1,4 +1,4 @@
-import React, { Fragment } from "react"
+import React from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import {
@@ -14,9 +14,11 @@ import {
     create_new_file_start,
     create_new_file_submit,
     create_new_file_success,
-    create_new_file_failure
+    create_new_file_failure,
+    get_file_success
 } from "../actions"
 import axios from 'axios';
+import { convertFromRaw} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -115,7 +117,7 @@ const LeftColumnWorkspace = (props) => {
             <div  data-id={shinelonId}
                 className={props.centerColumnDir == shinelonId ? styles["my-dir-selected"] : styles["my-dir"]}
                 onContextMenu={props.rightClickRootDir}
-                onClick={props.leftClickRootDir}
+                onClick={props.leftClickDir}
             >
                 <i className={styles["my-dir-icon"]} />
                 <span className={styles["my-dir-name"]}>我的文件夹</span>
@@ -125,7 +127,7 @@ const LeftColumnWorkspace = (props) => {
                         left: props.leftMenuTwo.clientX + "px",
                         top: props.leftMenuTwo.clientY + "px"
                     }}>
-                    <li className={styles["menu-option"]} onClick={props.createNewFilePromptInRoot}>新建文件</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建文件</li>
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
             </div>
@@ -161,17 +163,35 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
+        while (target.dataset.id ==  undefined) {
             target = target.parentElement
         }
-        dispatch(select_dir(target.dataset.id))
-    },
-    leftClickRootDir: e => {
-        let target = e.target
-        while (target.tagName.toLowerCase() != "div") {
-            target = target.parentElement
-        }
-        dispatch(select_dir(target.dataset.id))
+        dispatch((dispatch,getState)=>{
+            let dirId = target.dataset.id
+            let {tree} = getState()
+            let fileId = tree[dirId].files[0]._id
+            dispatch(select_dir(dirId,fileId))
+            axios.get("note/get-file", {
+                params: {
+                    fileId
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                if (res.data.success == "ok") {
+                    dispatch(get_file_success(convertFromRaw(res.data.content)))
+                } else {
+
+                }
+            }).catch(err => {
+                console.log('err1', err);
+                // dispatch(create_new_folder_failure())
+            })
+
+        })
     },
     rightClickRootDir: e => {
         e.preventDefault()
@@ -251,38 +271,6 @@ const mapDispatchToProps = dispatch => ({
                     dispatch(create_new_file_failure())
                 })
         })
-    },
-    createNewFilePromptInRoot: () => {
-        dispatch(create_new_file_start(shinelonId))
-
-        dispatch((dispatch, getState) => {
-        let state = getState()
-        let name = state.tree[shinelonId].files.filter(file=>file._id == "tempId")[0].name
-            let currentDirId = state.currentDirId
-            axios.post("note/create-file/", {
-                name,
-                dirId: currentDirId
-            },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    let { success, newFileId, name, time } = res.data
-                    if(success == "ok"){
-                        dispatch(create_new_file_success(currentDirId, newFileId, name, time))
-                    }else{
-                        dispatch(create_new_file_failure())
-                    }
-                }).catch(err => {
-                    console.log('err', err);
-                    dispatch(create_new_file_failure())
-                })
-        })
-
     },
     toggleDir: (e, _id) => {
         e.stopPropagation()
