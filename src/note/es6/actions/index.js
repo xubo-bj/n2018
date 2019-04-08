@@ -149,8 +149,8 @@ export const select_file = (fileId,centerColumnDir)=>({
     centerColumnDir
 })
 
-export const GET_FILE = "GET_FILE"
-export const get_file = (content)=>({
-    type:GET_FILE,
+export const GET_FILE_SUCCESS = "GET_FILE_SUCCESS"
+export const get_file_success = (content)=>({
+    type:GET_FILE_SUCCESS,
     content
 })

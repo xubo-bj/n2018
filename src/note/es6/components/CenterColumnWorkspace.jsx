@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
-import {select_file,get_file} from "../actions"
+import {select_file,get_file_success} from "../actions"
 import { convertFromRaw} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -75,9 +75,13 @@ const mapDispatchToProps = dispatch => ({
                     timeout: 1000, // default is `0` (no timeout),
                     responseType: 'json' // default
                 }).then(res => {
-                    dispatch(get_file(convertFromRaw(res.content)))
+                    if(res.data.success == "ok"){
+                        dispatch(get_file_success(convertFromRaw(res.data.content)))
+                    }else{
+
+                    }
                 }).catch(err => {
-                    console.log('err', err);
+                    console.log('err1', err);
                     // dispatch(create_new_folder_failure())
                 })
 

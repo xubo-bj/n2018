@@ -139,7 +139,7 @@ const LeftColumnWorkspace = (props) => {
                     left: props.leftMenuThree.clientX + "px",
                     top: props.leftMenuThree.clientY + "px"
                 }}>
-                <li className={styles["menu-option"]}>新建文件</li>
+                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建文件</li>
                 <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
                 <li className={styles["menu-option"]}>重命名</li>
                 <li className={styles["menu-option"]}>移动到</li>
@@ -222,6 +222,36 @@ const mapDispatchToProps = dispatch => ({
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
+    createNewFilePrompt:()=>{
+        dispatch((dispatch, getState) => {
+            let state = getState()
+            let  currentDirId  = state.currentDirId
+            dispatch(create_new_file_start(currentDirId))
+            let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
+            axios.post("note/create-file/", {
+                name,
+                dirId: currentDirId
+            },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    let { success, newFileId, name, time } = res.data
+                    if(success == "ok"){
+                        dispatch(create_new_file_success(currentDirId, newFileId, name, time))
+                    }else{
+                        dispatch(create_new_file_failure())
+                    }
+                }).catch(err => {
+                    console.log('err', err);
+                    dispatch(create_new_file_failure())
+                })
+        })
+    },
     createNewFilePromptInRoot: () => {
         dispatch(create_new_file_start(shinelonId))
 
@@ -241,8 +271,6 @@ const mapDispatchToProps = dispatch => ({
                     timeout: 1000, // default is `0` (no timeout),
                     responseType: 'json' // default
                 }).then(res => {
-                    console.log('res :', res.data);
-
                     let { success, newFileId, name, time } = res.data
                     if(success == "ok"){
                         dispatch(create_new_file_success(currentDirId, newFileId, name, time))

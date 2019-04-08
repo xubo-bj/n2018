@@ -59,7 +59,7 @@ class MyEditor extends React.Component {
 
 const mapStateToPropsOnMyEditor = state => {
   return{
-    editorState:state.editorState == null ?EditorState.createEmpty():stat.editorState
+    editorState:state.editorState == null ?EditorState.createEmpty():state.editorState
   }
 }
 const mapDispatchToPropsOnMyEditor = dispatch => ({

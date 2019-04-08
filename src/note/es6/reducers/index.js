@@ -23,7 +23,7 @@ const {
     SELECT_FILE,
     UPDATE_FILE_SUCCESS,
     UPDATE_FILE_FAILURE,
-    GET_FILE
+    GET_FILE_SUCCESS
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -243,8 +243,11 @@ const editorState = (state = null, action) => {
             {
                 return action.state
             }
-        case GET_FILE:{
+        case GET_FILE_SUCCESS:{
             return EditorState.createWithContent(action.content)
+        }
+        case CREATE_NEW_FILE_SUCCESS:{
+            return EditorState.createEmpty()
         }
         default:
             return state
