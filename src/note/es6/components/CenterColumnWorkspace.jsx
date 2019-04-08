@@ -2,8 +2,10 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
-import {select_file} from "../actions"
+import {select_file,get_file} from "../actions"
+import { convertFromRaw} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
+
 
 const CenterColumnWorkspace = props => {
     return (
@@ -59,9 +61,26 @@ const mapDispatchToProps = dispatch => ({
         while(target.tagName.toLowerCase() != "li"){
             target = target.parentElement
         }
+        let fileId = target.dataset.id
         dispatch((dispatch,getState)=>{
             let centerColumnDir = getState().centerColumnDir
-            dispatch(select_file(target.dataset.id))
+            dispatch(select_file(target.dataset.id,centerColumnDir))
+                axios.get("note/get-file", {
+                    params: {
+                        fileId
+                    },
+                    headers: {
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    dispatch(get_file(convertFromRaw(res.content)))
+                }).catch(err => {
+                    console.log('err', err);
+                    // dispatch(create_new_folder_failure())
+                })
+
         })
     }
 })

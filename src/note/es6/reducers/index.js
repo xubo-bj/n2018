@@ -22,7 +22,8 @@ const {
     CREATE_NEW_FILE_FAILURE,
     SELECT_FILE,
     UPDATE_FILE_SUCCESS,
-    UPDATE_FILE_FAILURE
+    UPDATE_FILE_FAILURE,
+    GET_FILE
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -136,6 +137,12 @@ const tree = (treeObj = {
             })
             return Object.assign({}, treeObj)
         }
+        case CHANGE_FILE_NAME:{
+            let {name,fileId,centerColumnDir} = action
+            let targetFile = treeObj[centerColumnDir].files.filter(file=>file._id == fileId)[0]
+            targetFile.name = name
+            return Object.assign({}, treeObj)
+        }
         case CREATE_NEW_FILE_START: {
             let _id = action.currentDirId
             let targetDir = treeObj[_id]
@@ -236,6 +243,9 @@ const editorState = (state = null, action) => {
             {
                 return action.state
             }
+        case GET_FILE:{
+            return EditorState.createWithContent(action.content)
+        }
         default:
             return state
     }
@@ -256,7 +266,6 @@ const fileId = (id= null, action) => {
             return id
     }
 }
-
 
 
 const {

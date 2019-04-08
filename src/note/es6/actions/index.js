@@ -94,9 +94,11 @@ export const change_editor_state = state=>({
 
 
 export const CHANGE_FILE_NAME = "CHANGE_FILE_NAME"
-export const change_file_name=(name)=>({
+export const change_file_name=(name,fileId,centerColumnDir)=>({
     type:CHANGE_FILE_NAME,
-    name
+    name,
+    fileId,
+    centerColumnDir
 })
 
 
@@ -141,7 +143,14 @@ export const update_file_failure= ()=>({
 
 
 export const SELECT_FILE = "SELECT_FILE"
-export const select_file = (fileId)=>({
+export const select_file = (fileId,centerColumnDir)=>({
     type:SELECT_FILE,
-    fileId
+    fileId,
+    centerColumnDir
+})
+
+export const GET_FILE = "GET_FILE"
+export const get_file = (content)=>({
+    type:GET_FILE,
+    content
 })

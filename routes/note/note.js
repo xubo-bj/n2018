@@ -23,6 +23,7 @@ const router = require('koa-router')()
 router.prefix('/note')
 
 
+const {EditorState,convertToRaw} = require("draft-js")
 
 router.get('/', async (ctx, next) => {
     let dbConn = await client.connect()
@@ -152,7 +153,7 @@ router.post('/create-file', async (ctx, next) => {
         name,
         ctime: d,
         mtime: d,
-        content:""
+        content:convertToRaw(EditorState.createEmpty().getCurrentContent())
     })
 
 let userdirsCollection = result.db(dbName).collection(userdirs)
@@ -227,7 +228,7 @@ router.put('/update-file', async (ctx, next) => {
             }
         })
 
-        if (updateFilesResult.modifiedCount === 1) {
+        if (updateDirsResult.modifiedCount === 1) {
             ctx.body = {
                 success: "ok",
                 mtime
@@ -245,6 +246,25 @@ router.put('/update-file', async (ctx, next) => {
             }
     }
 })
+
+router.get("/get-file",async(ctx,next)=>{
+    let fileId = ctx.query.fileId
+                let connection = await client.connect()
+    let userfilesCollection = connection.db(dbName).collection(userfiles)
+    let file = await userfilesCollection.findOne({_id:new ObjectID(fileId)})
+    if(file != null){
+        ctx.body = {
+            success:"ok",
+            content:file.content
+        }
+    }else{
+        ctx.body ={
+            success:"no",
+            info:"no such file"
+        }
+    }
+})
+
 /*
 ** test
 

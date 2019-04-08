@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import { Editor, EditorState } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import{change_editor_state}from "../actions"
+import { change_editor_state } from "../actions"
 
 class Toolbar extends React.Component {
   render() {
@@ -59,7 +59,7 @@ class MyEditor extends React.Component {
 
 const mapStateToPropsOnMyEditor = state => {
   return{
-    editorState:state.editorState ||EditorState.createEmpty()
+    editorState:state.editorState == null ?EditorState.createEmpty():stat.editorState
   }
 }
 const mapDispatchToPropsOnMyEditor = dispatch => ({
