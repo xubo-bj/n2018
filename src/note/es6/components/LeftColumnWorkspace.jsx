@@ -19,7 +19,7 @@ import {
     no_file_in_folder
 } from "../actions"
 import axios from 'axios';
-import { convertFromRaw} from 'draft-js';
+import { convertFromRaw } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -77,7 +77,7 @@ class DirTree extends React.Component {
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
                                             <span className={styles.dirName}>{childTargetDir.name}</span>
                                         </div>
-                                        <i className={styles["arrow-menu"]} data-mark="arrow-menu"/>
+                                        <i className={styles["arrow-menu"]} data-mark="arrow-menu" />
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={level + 1}
                                         createNewFolderSumbit={createNewFolderSumbit}
@@ -116,7 +116,7 @@ const LeftColumnWorkspace = (props) => {
     const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir } = props
     return (
         <div className={styles.workspace}>
-            <div  data-id={shinelonId}
+            <div data-id={shinelonId}
                 className={props.centerColumnDir == shinelonId ? styles["my-dir-selected"] : styles["my-dir"]}
                 onContextMenu={props.rightClickRootDir}
                 onClick={props.leftClickDir}
@@ -129,7 +129,7 @@ const LeftColumnWorkspace = (props) => {
                         left: props.leftMenuTwo.clientX + "px",
                         top: props.leftMenuTwo.clientY + "px"
                     }}>
-                    <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建文件</li>
+                    <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
             </div>
@@ -143,7 +143,7 @@ const LeftColumnWorkspace = (props) => {
                     left: props.leftMenuThree.clientX + "px",
                     top: props.leftMenuThree.clientY + "px"
                 }}>
-                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建文件</li>
+                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
                 <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
                 <li className={styles["menu-option"]}>重命名</li>
                 <li className={styles["menu-option"]}>移动到</li>
@@ -165,45 +165,49 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let target = e.target
-        if(target.dataset.mark == "arrow-menu"){
+        if (target.dataset.mark == "arrow-menu") {
+            e.stopPropagation()
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+        } else {
+            while (target.dataset.id == undefined) {
+                target = target.parentElement
+            }
+            dispatch((dispatch, getState) => {
 
-        }
-
-        while (target.dataset.id ==  undefined) {
-            target = target.parentElement
-        }
-        dispatch((dispatch,getState)=>{
-
-            let {tree} = getState()
-            let dirId = target.dataset.id
-            let files = tree[dirId].files
-            if(files.length == 0){
-                dispatch(no_file_in_folder())
-            }else{
-            let fileId = tree[dirId].files[0]._id
-            dispatch(select_dir(dirId,fileId))
-            axios.get("note/get-file", {
-                params: {
-                    fileId
-                },
-                headers: {
-                    'X-Requested-With': 'axios'
-                },
-                timeout: 1000, // default is `0` (no timeout),
-                responseType: 'json' // default
-            }).then(res => {
-                if (res.data.success == "ok") {
-                    dispatch(get_file_success(convertFromRaw(res.data.content)))
+                let { tree } = getState()
+                let dirId = target.dataset.id
+                let files = tree[dirId].files
+                if (files.length == 0) {
+                    dispatch(no_file_in_folder(dirId))
                 } else {
+                    let fileId = tree[dirId].files[0]._id
+                    dispatch(select_dir(dirId, fileId))
+                    axios.get("note/get-file", {
+                        params: {
+                            fileId
+                        },
+                        headers: {
+                            'X-Requested-With': 'axios'
+                        },
+                        timeout: 1000, // default is `0` (no timeout),
+                        responseType: 'json' // default
+                    }).then(res => {
+                        if (res.data.success == "ok") {
+                            dispatch(get_file_success(convertFromRaw(res.data.content)))
+                        } else {
+
+                        }
+                    }).catch(err => {
+                        console.log('err1', err);
+                        // dispatch(create_new_folder_failure())
+                    })
 
                 }
-            }).catch(err => {
-                console.log('err1', err);
-                // dispatch(create_new_folder_failure())
             })
-
-            }
-        })
+        }
     },
     rightClickRootDir: e => {
         e.preventDefault()
@@ -254,10 +258,10 @@ const mapDispatchToProps = dispatch => ({
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
-    createNewFilePrompt:()=>{
+    createNewFilePrompt: () => {
         dispatch((dispatch, getState) => {
             let state = getState()
-            let  currentDirId  = state.currentDirId
+            let currentDirId = state.currentDirId
             dispatch(create_new_file_start(currentDirId))
             let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
             axios.post("note/create-file/", {
@@ -273,9 +277,9 @@ const mapDispatchToProps = dispatch => ({
                     responseType: 'json' // default
                 }).then(res => {
                     let { success, newFileId, name, time } = res.data
-                    if(success == "ok"){
+                    if (success == "ok") {
                         dispatch(create_new_file_success(currentDirId, newFileId, name, time))
-                    }else{
+                    } else {
                         dispatch(create_new_file_failure())
                     }
                 }).catch(err => {

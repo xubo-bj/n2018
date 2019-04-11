@@ -1,10 +1,14 @@
 import React from "react"
+import { connect } from 'react-redux'
 import styles from "../../sass/Content.scss"
 import LeftColumn from "./LeftColumn.jsx"
 import CenterColumn from "./CenterColumn.jsx"
 import RightColumn from "./RightColumn.jsx"
 
 class Content extends React.Component {
+    constructor(props){
+        super(props)
+    }
     componentDidMount() {
         let dragLines = document.querySelectorAll('[data-role="dragLine"]')
         for (let i = 0; i < dragLines.length; i++) {
@@ -51,9 +55,16 @@ class Content extends React.Component {
                 </div>
                 <div className={styles["content-right"]}>
                     <RightColumn />
+                    <div className={styles["no-file"]} style={{ display: this.props.fileId == null ? "flex" : "none" }}>
+                        <span className={styles["prompt-text"]}>没有找到文件</span>
+                        <button className={styles["new-file"]}>新建笔记</button>
+                    </div>
                 </div>
             </div>
         )
     }
 }
-export default Content
+const mapStateToProps = state => ({
+    fileId:state.fileId
+})
+export default connect(mapStateToProps)(Content)
