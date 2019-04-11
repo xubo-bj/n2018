@@ -22,8 +22,7 @@ const ejsPath = 'note/'
 const router = require('koa-router')()
 router.prefix('/note')
 
-
-const {EditorState,convertToRaw} = require("draft-js")
+const {EditorState,convertToRaw,convertFromRaw} = require("draft-js")
 
 router.get('/', async (ctx, next) => {
     let dbConn = await client.connect()
@@ -54,10 +53,19 @@ router.get('/', async (ctx, next) => {
 
         }
     }
+    let initialState = {}
+    initialState.tree = treeObj
+    if (d0.files.length > 0) {
+        let fileId = d0.files[0]._id
+        initialState.fileId = fileId
+        // let userfilesCollection = dbConn.db(dbName).collection(userfiles)
+        // let file = await userfilesCollection.findOne({
+        //     _id: new ObjectID(fileId)
+        // })
+        // initialState.editorState = EditorState.createWithContent(convertFromRaw(file.content)) 
+    }
 
-    const store = createStore(reducer, {
-        tree:treeObj 
-    })
+    const store = createStore(reducer, initialState)
     const preloadedState = store.getState()
 
     await ctx.render(path.join(ejsPath, 'index'), {

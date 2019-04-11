@@ -1,8 +1,9 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
-import { Editor, EditorState } from 'draft-js';
+import { Editor, EditorState ,convertFromRaw} from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import { change_editor_state } from "../actions"
+import { change_editor_state ,get_file_success} from "../actions"
+import axios from 'axios';
 
 class Toolbar extends React.Component {
   render() {
@@ -43,6 +44,29 @@ class MyEditor extends React.Component {
       }
     };
   }
+  componentDidMount(){
+    if(this.props.initialRender){
+            axios.get("note/get-file", {
+                params: {
+                   fileId:this.props.fileId
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                if (res.data.success == "ok") {
+                  this.props.fetchInitailFileContent(res)
+                } else {
+
+                }
+            }).catch(err => {
+                console.log('err1', err);
+                // dispatch(create_new_folder_failure())
+            })
+          }
+  }
 
   render() {
     return (
@@ -59,12 +83,17 @@ class MyEditor extends React.Component {
 
 const mapStateToPropsOnMyEditor = state => {
   return{
-    editorState:state.editorState == null ?EditorState.createEmpty():state.editorState
+    editorState:state.editorState == null ?EditorState.createEmpty():state.editorState,
+    fileId:state.fileId,
+    initialRender:state.editorState == null ? true:false,
   }
 }
 const mapDispatchToPropsOnMyEditor = dispatch => ({
   onChangeEditorState:(editorState)=>{
     dispatch(change_editor_state(editorState))
+  },
+  fetchInitailFileContent: (res) => {
+    dispatch(get_file_success(convertFromRaw(res.data.content)))
   }
 })
 const MyEditorBindingRedux = connect(mapStateToPropsOnMyEditor,mapDispatchToPropsOnMyEditor)(MyEditor)

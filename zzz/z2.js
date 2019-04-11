@@ -1,2 +1,3 @@
-let d = new Date()
-console.log(typeof d.getDate())
+let o = {a:1}
+let r  =JSON.parse({b:2})
+console.log("r",r)

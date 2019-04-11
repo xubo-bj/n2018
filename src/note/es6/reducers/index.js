@@ -1,4 +1,4 @@
-import { EditorState } from 'draft-js';
+import { EditorState,convertFromRaw} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
     SHOW_LEFT_MENU_ONE,
@@ -238,7 +238,7 @@ const showMask = (flag = false, action) => {
     }
 }
 
-const editorState = (state = null, action) => {
+const editorState = (state=null, action) => {
     switch (action.type) {
         case CHANGE_EDITOR_STATE:
             {
@@ -250,8 +250,11 @@ const editorState = (state = null, action) => {
         case CREATE_NEW_FILE_SUCCESS:{
             return EditorState.createEmpty()
         }
-        default:
+        default:{
+            // console.log("default ---")
+            // return EditorState.createWithContent(convertFromRaw(state))
             return state
+        }
     }
 }
 
