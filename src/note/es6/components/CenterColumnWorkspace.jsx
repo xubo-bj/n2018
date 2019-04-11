@@ -51,7 +51,8 @@ const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
-        files: current.files.length > 0 ? [...current.files] : null
+        files: current.files.length > 0 ? [...current.files] : null,
+        fileId:state.fileId,
     }
 }
 

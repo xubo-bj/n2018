@@ -95,6 +95,9 @@
     position: relative;
     &:hover{
             background-color: rgba(118, 176, 243, 0.3);
+            .arrow-menu{
+                display: block;
+            }
     }
 }
 .li-content-selected{
@@ -110,7 +113,16 @@
     .arrow-closed{
         background-position: 60.60606060606061% 98.83381924198251%;
     }
-}
+    .arrow-menu{
+            background-position: 52.892561983471076% 98.83381924198251%;
+    }
+
+    &:hover {
+        .arrow-menu {
+            display: block;
+        }
+    }
+    }
 .arrow{
     background: url(/note/images/sprite.svg) no-repeat;
     position: absolute;
@@ -132,6 +144,12 @@
 .arrow-hidden{
     composes:arrow;
     visibility:hidden;
+}
+.arrow-menu{
+    composes:arrow;
+    right: 25px;
+    background-position: 68.31955922865014% 98.83381924198251%;
+    display: none;
 }
 .dir{
     width: 100%;

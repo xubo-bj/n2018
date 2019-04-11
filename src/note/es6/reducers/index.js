@@ -23,7 +23,8 @@ const {
     SELECT_FILE,
     UPDATE_FILE_SUCCESS,
     UPDATE_FILE_FAILURE,
-    GET_FILE_SUCCESS
+    GET_FILE_SUCCESS,
+    NO_FILE_IN_FOLDER
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -267,6 +268,9 @@ const fileId = (id= null, action) => {
         }
         case SELECT_DIR:{
             return action.fileId
+        }
+        case NO_FILE_IN_FOLDER:{
+            return null
         }
         default:
             return id

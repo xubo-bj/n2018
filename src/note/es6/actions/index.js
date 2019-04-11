@@ -155,3 +155,8 @@ export const get_file_success = (content)=>({
     type:GET_FILE_SUCCESS,
     content
 })
+
+export const NO_FILE_IN_FOLDER = "NO_FILE_IN_FOLDER"
+export const no_file_in_folder = ()=>({
+    type:NO_FILE_IN_FOLDER
+})

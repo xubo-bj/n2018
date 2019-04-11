@@ -15,7 +15,8 @@ import {
     create_new_file_submit,
     create_new_file_success,
     create_new_file_failure,
-    get_file_success
+    get_file_success,
+    no_file_in_folder
 } from "../actions"
 import axios from 'axios';
 import { convertFromRaw} from 'draft-js';
@@ -76,6 +77,8 @@ class DirTree extends React.Component {
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
                                             <span className={styles.dirName}>{childTargetDir.name}</span>
                                         </div>
+                                        <i className={styles["arrow-menu"]}
+                                        onClick={this.props.rightClickDir}/>
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={level + 1}
                                         createNewFolderSumbit={createNewFolderSumbit}
@@ -168,6 +171,10 @@ const mapDispatchToProps = dispatch => ({
         }
         dispatch((dispatch,getState)=>{
             let dirId = target.dataset.id
+            let files = tree[dirId].files
+            if(files.length == 0){
+                dispatch(no_file_in_folder())
+            }else{
             let {tree} = getState()
             let fileId = tree[dirId].files[0]._id
             dispatch(select_dir(dirId,fileId))
@@ -191,6 +198,7 @@ const mapDispatchToProps = dispatch => ({
                 // dispatch(create_new_folder_failure())
             })
 
+            }
         })
     },
     rightClickRootDir: e => {

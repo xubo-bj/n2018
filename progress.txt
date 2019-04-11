@@ -1,5 +1,2 @@
-select_file
-
-update_file_success 更新  mtime
-
-关于 tree的构建， 没有必要再构建一个  file tree  了吧？
+１. left arrow　弹出菜单
+２. 没有文件时　中间和　右边显示。
