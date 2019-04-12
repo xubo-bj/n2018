@@ -206,8 +206,10 @@ const mapDispatchToProps = dispatch => ({
                     })
 
                 }
+                getFolders(dispatch,dirId)
             })
         }
+
     },
     rightClickRootDir: e => {
         e.preventDefault()
@@ -291,46 +293,52 @@ const mapDispatchToProps = dispatch => ({
     toggleDir: (e, _id) => {
         e.stopPropagation()
         dispatch(toggle_dir(_id))
-
-        dispatch((dispatch, getState) => {
-            let { tree } = getState()
-            let d0 = tree[_id]
-            let arr = []
-            for (let i = 0; i < d0.dirs.length; i++) {
-                let d1 = tree[d0.dirs[i]._id]
-                if (d1 == undefined) {
-                    arr.push(d0.dirs[i]._id)
-                    continue
-                }
-                for (let j = 0; j < d1.dirs.length; j++) {
-                    let d2 = tree[d1.dirs[j]._id]
-                    if (d2 == undefined) {
-                        arr.push(d1.dirs[j]._id)
-                        continue
-                    }
-                }
-            }
-            if (arr.length > 0) {
-                console.log('fetch-folders');
-                axios.get("note/get-folders", {
-                    params: {
-                        ids: JSON.stringify(arr)
-                    },
-                    headers: {
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    dispatch(fetch_folders(res.data))
-                }).catch(err => {
-                    console.log('err', err);
-                    // dispatch(create_new_folder_failure())
-                })
-            }
-        })
+        getFolders(dispatch,_id)
     }
 })
+
+function getFolders(dispatch, _id) {
+    dispatch((dispatch, getState) => {
+        let { tree } = getState()
+        let d0 = tree[_id]
+        let arr = []
+        for (let i = 0; i < d0.dirs.length; i++) {
+            let d1 = tree[d0.dirs[i]._id]
+            if (d1 == undefined) {
+                arr.push(d0.dirs[i]._id)
+                continue
+            }
+            for (let j = 0; j < d1.dirs.length; j++) {
+                let d2 = tree[d1.dirs[j]._id]
+                if (d2 == undefined) {
+                    arr.push(d1.dirs[j]._id)
+                    continue
+                }
+            }
+        }
+        if (arr.length > 0) {
+            axios.get("note/get-folders", {
+                params: {
+                    ids: JSON.stringify(arr)
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                dispatch(fetch_folders(res.data))
+            }).catch(err => {
+                console.log('err', err);
+                // dispatch(create_new_folder_failure())
+            })
+        }
+    })
+}
+
+
+
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps

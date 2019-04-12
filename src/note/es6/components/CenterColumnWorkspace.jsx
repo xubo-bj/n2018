@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
-import {select_file,get_file_success} from "../actions"
+import {select_file,get_file_success,click_folder_in_center_column} from "../actions"
 import { convertFromRaw} from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -10,7 +10,9 @@ const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const CenterColumnWorkspace = props => {
     return (
         <div className={styles.workspace}>
-            <ul className={styles["ul-dirs"]}>
+            <ul className={styles["ul-dirs"]}
+            onClick={props.openFolder}
+            >
                 {props.dirs && props.dirs.map(dir => {
                     if (dir.editable) {
                         return null
@@ -33,7 +35,7 @@ const CenterColumnWorkspace = props => {
             onClick={props.selectFile}>
                 {props.files && props.files.map(file => {
                     return (
-                        <li Key={file._id} className={styles["li-file"]} data-id={file._id}>
+                        <li Key={file._id} className={file._id !=props.fileId?styles["li-file"]:styles["li-file-selected"]} data-id={file._id}>
                             <svg className={styles["file-icon"]}>
                                 <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
                             </svg>
@@ -87,6 +89,53 @@ const mapDispatchToProps = dispatch => ({
             })
 
         })
+    },
+    openFolder:e=>{
+        let target  = e.target
+        while(target.tagName.toLowerCase() != "li"){
+            target = target.parentElement
+        }
+        let dirId = target.dataset.id
+        dispatch((dispatch,getState)=>{
+            dispatch(click_folder_in_center_column(dirId))
+
+            let { tree } = getState()
+            let d0 = tree[dirId]
+            let arr = []
+            for (let i = 0; i < d0.dirs.length; i++) {
+                let d1 = tree[d0.dirs[i]._id]
+                if (d1 == undefined) {
+                    arr.push(d0.dirs[i]._id)
+                    continue
+                }
+                for (let j = 0; j < d1.dirs.length; j++) {
+                    let d2 = tree[d1.dirs[j]._id]
+                    if (d2 == undefined) {
+                        arr.push(d1.dirs[j]._id)
+                        continue
+                    }
+                }
+            }
+            if (arr.length > 0) {
+                console.log('fetch-folders');
+                axios.get("note/get-folders", {
+                    params: {
+                        ids: JSON.stringify(arr)
+                    },
+                    headers: {
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    dispatch(fetch_folders(res.data))
+                }).catch(err => {
+                    console.log('err', err);
+                    // dispatch(create_new_folder_failure())
+                })
+            }
+        })
+
     }
 })
 function convertTimeFormat(timeString) {

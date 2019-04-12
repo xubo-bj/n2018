@@ -98,6 +98,9 @@ const currentDirId = (_id = shinelonId, action) => {
             return action._id
         case SHOW_LEFT_MENU_TWO:
             return shinelonId
+        case CREATE_NEW_FOLDER_SUCCESS: {
+            return action.newId
+        }
         default:
             return _id
     }
@@ -274,7 +277,9 @@ const fileId = (id= null, action) => {
         case SELECT_DIR:{
             return action.fileId
         }
-        case NO_FILE_IN_FOLDER:{
+        case NO_FILE_IN_FOLDER:
+        case CREATE_NEW_FOLDER_SUCCESS:
+        {
             return null
         }
         default:
