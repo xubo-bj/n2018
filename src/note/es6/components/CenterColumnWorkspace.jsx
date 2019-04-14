@@ -2,8 +2,14 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
-import {select_file,get_file_success,click_folder_in_center_column} from "../actions"
-import { convertFromRaw} from 'draft-js';
+import {
+    select_file,
+    get_file_success,
+    click_folder_in_center_column,
+    no_file_in_folder,
+    fetch_folders
+} from "../actions"
+import { convertFromRaw } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 
@@ -11,7 +17,7 @@ const CenterColumnWorkspace = props => {
     return (
         <div className={styles.workspace}>
             <ul className={styles["ul-dirs"]}
-            onClick={props.openFolder}
+                onClick={props.openFolder}
             >
                 {props.dirs && props.dirs.map(dir => {
                     if (dir.editable) {
@@ -32,10 +38,10 @@ const CenterColumnWorkspace = props => {
                 }
             </ul>
             <ul className={styles["ul-files"]}
-            onClick={props.selectFile}>
+                onClick={props.selectFile}>
                 {props.files && props.files.map(file => {
                     return (
-                        <li Key={file._id} className={file._id !=props.fileId?styles["li-file"]:styles["li-file-selected"]} data-id={file._id}>
+                        <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
                             <svg className={styles["file-icon"]}>
                                 <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
                             </svg>
@@ -54,18 +60,18 @@ const mapStateToProps = state => {
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
-        fileId:state.fileId,
+        fileId: state.fileId,
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    selectFile:e=>{
-        let target  = e.target
-        while(target.tagName.toLowerCase() != "li"){
+    selectFile: e => {
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
         let fileId = target.dataset.id
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             let centerColumnDir = getState().centerColumnDir
             dispatch(select_file(target.dataset.id, centerColumnDir))
             axios.get("note/get-file", {
@@ -90,16 +96,43 @@ const mapDispatchToProps = dispatch => ({
 
         })
     },
-    openFolder:e=>{
-        let target  = e.target
-        while(target.tagName.toLowerCase() != "li"){
+    openFolder: e => {
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
         let dirId = target.dataset.id
-        dispatch((dispatch,getState)=>{
-            dispatch(click_folder_in_center_column(dirId))
+        dispatch((dispatch, getState) => {
 
             let { tree } = getState()
+            let files = tree[dirId].files
+            if (files.length == 0) {
+                dispatch(no_file_in_folder(dirId))
+            } else {
+                let fileId = tree[dirId].files[0]._id
+                dispatch(click_folder_in_center_column(dirId, fileId))
+                axios.get("note/get-file", {
+                    params: {
+                        fileId
+                    },
+                    headers: {
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    if (res.data.success == "ok") {
+                        dispatch(get_file_success(convertFromRaw(res.data.content)))
+                    } else {
+
+                    }
+                }).catch(err => {
+                    console.log('err1', err);
+                    // dispatch(create_new_folder_failure())
+                })
+
+            }
+
             let d0 = tree[dirId]
             let arr = []
             for (let i = 0; i < d0.dirs.length; i++) {
@@ -117,7 +150,6 @@ const mapDispatchToProps = dispatch => ({
                 }
             }
             if (arr.length > 0) {
-                console.log('fetch-folders');
                 axios.get("note/get-folders", {
                     params: {
                         ids: JSON.stringify(arr)
@@ -134,6 +166,7 @@ const mapDispatchToProps = dispatch => ({
                     // dispatch(create_new_folder_failure())
                 })
             }
+
         })
 
     }

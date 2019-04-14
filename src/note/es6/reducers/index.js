@@ -24,7 +24,9 @@ const {
     UPDATE_FILE_SUCCESS,
     UPDATE_FILE_FAILURE,
     GET_FILE_SUCCESS,
-    NO_FILE_IN_FOLDER
+    NO_FILE_IN_FOLDER,
+    CLICK_FOLDER_IN_CENTER_COLUMN,
+    
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -92,6 +94,7 @@ const leftMenuThree = (r = {
 const currentDirId = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
+        case CLICK_FOLDER_IN_CENTER_COLUMN:
         case NO_FILE_IN_FOLDER:
             return action.dirId
         case SHOW_LEFT_MENU_THREE:
@@ -109,6 +112,7 @@ const currentDirId = (_id = shinelonId, action) => {
 const centerColumnDir = (_id = shinelonId, action) => {
     switch (action.type) {
         case SELECT_DIR:
+        case CLICK_FOLDER_IN_CENTER_COLUMN:
         case NO_FILE_IN_FOLDER:
             return action.dirId
         case CREATE_NEW_FOLDER_SUCCESS: {
@@ -213,10 +217,16 @@ const tree = (treeObj = {
                 }
                 return Object.assign({}, treeObj)
             }
-        case FETCH_FOLDERS:
-            {
+        case FETCH_FOLDERS: {
                 return Object.assign({}, treeObj, action.folders)
+        }
+        case CLICK_FOLDER_IN_CENTER_COLUMN: {
+            let targetDir = treeObj[action.dirId]
+            if(targetDir.folded == true){
+                targetDir.folded = false
             }
+            return Object.assign({},treeObj)
+        }
         default:
             return treeObj
     }
@@ -274,6 +284,7 @@ const fileId = (id= null, action) => {
         case SELECT_FILE:{
             return action.fileId
         }
+        case CLICK_FOLDER_IN_CENTER_COLUMN:
         case SELECT_DIR:{
             return action.fileId
         }

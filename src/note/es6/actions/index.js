@@ -231,10 +231,11 @@ export const no_file_in_folder = (dirId) => {
 }
 
 export const CLICK_FOLDER_IN_CENTER_COLUMN = "CLICK_FOLDER_IN_CENTER_COLUMN"
-export const click_folder_in_center_column = (dirId) => {
+export const click_folder_in_center_column = (dirId,fileId) => {
     console.log(CLICK_FOLDER_IN_CENTER_COLUMN)
     return {
         type: CLICK_FOLDER_IN_CENTER_COLUMN,
-        dirId
+        dirId,
+        fileId
     }
 }
