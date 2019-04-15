@@ -1,9 +1,10 @@
 import React from "react"
 import styles from "../../sass/CenterColumnToolbar.scss"
 import { connect } from 'react-redux'
+const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const CenterColumnToolbar = (props) =>
     <div className={styles.toolbar}>
-        <i className={styles["return-btn"]} />
+        <i className={shinelonId == props.centerColumnDir?styles["return-btn-root"]:styles["return-btn"]} />
         <div className={styles["search-container"]}>
             <i className={styles["search-icon"]} />
             <input type="text" placeholder={"搜索"} className={styles["input-box"]} />
@@ -11,6 +12,7 @@ const CenterColumnToolbar = (props) =>
         <i className={styles["sort-btn"]}/>
     </div>
 const mapStateToProps = state => ({
+    centerColumnDir:state.centerColumnDir
 })
 const mapDispatchToProps = dispatch => ({
 })

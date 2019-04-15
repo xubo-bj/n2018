@@ -88,7 +88,8 @@ router.post('/create-folder', async (ctx, next) => {
         ctime: d,
         mtime: d,
         dirs: [],
-        files: []
+        files: [],
+        parentId:dirId
     })
 
 
@@ -161,7 +162,8 @@ router.post('/create-file', async (ctx, next) => {
         name,
         ctime: d,
         mtime: d,
-        content:convertToRaw(EditorState.createEmpty().getCurrentContent())
+        content:convertToRaw(EditorState.createEmpty().getCurrentContent()),
+        ownerFolderId:dirId
     })
 
 let userdirsCollection = result.db(dbName).collection(userdirs)
@@ -221,7 +223,7 @@ router.put('/update-file', async (ctx, next) => {
         $set: {
             name,
             content,
-            mtime
+            mtime,
         }
     })
     if (updateFilesResult.modifiedCount === 1) {
@@ -273,21 +275,27 @@ router.get("/get-file",async(ctx,next)=>{
     }
 })
 
-/*
-** test
 
-let i = 0
 router.get('/test', async (ctx, next) => {
     let r = await client.connect()
-    let test = r.db(dbName).collection("userdirs")
-    console.log("test", test);
+    let userdirs = r.db(dbName).collection("userdirs")
+    let x = await userdirs.drop()
+    // console.log("drop collection", x);
+    let z = await userdirs.insertOne({
+                _id: new ObjectID(shinelonId),
+        desc: "rootDir",
+        ctime: new Date(),
+        mtime: new Date(),
+        parentId: null,
+        dirs: [],
+        files: []
+    })
+    // console.log("create new root",z)
+    let userfiles = r.db(dbName).collection("userfiles")
+    let y = await userfiles.drop()
+    // console.log("drop userfiles",y)
 
-    let x = await test.find({})
-    console.log("x", x);
-
-
-    ctx.body = "success"
+    ctx.body = {"drop collection":x,"create new root ":z,"drop userfiles":y}
 })
-*/
 
 module.exports = router

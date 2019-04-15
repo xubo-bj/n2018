@@ -165,6 +165,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let target = e.target
+        if(target.textContent == "新建文件夹"){
+            return
+        }
         if (target.dataset.mark == "arrow-menu") {
             e.stopPropagation()
             while (target.tagName.toLowerCase() != "li") {
@@ -302,6 +305,7 @@ function getFolders(dispatch, _id) {
     dispatch((dispatch, getState) => {
         let { tree } = getState()
         let d0 = tree[_id]
+        console.log("getFolders",d0)
         let arr = []
         for (let i = 0; i < d0.dirs.length; i++) {
             let d1 = tree[d0.dirs[i]._id]
@@ -317,6 +321,7 @@ function getFolders(dispatch, _id) {
                 }
             }
         }
+        console.log("arr ids",arr)
         if (arr.length > 0) {
             axios.get("note/get-folders", {
                 params: {

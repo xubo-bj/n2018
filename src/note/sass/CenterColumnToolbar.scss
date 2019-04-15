@@ -6,7 +6,6 @@
 }
 
 .return-btn {
-    // flex-basis: 34px;
     flex-shrink: 0;
     width: 34px;
     height: 24px;
@@ -15,9 +14,17 @@
     margin: 0 6px;
 
     &:hover {
-        // x:141,y:163
         background-position: -131.5px -159px;
     }
+}
+.return-btn-root {
+    flex-shrink: 0;
+    width: 34px;
+    height: 24px;
+    background: url(/note/images/sprite.svg) no-repeat;
+    background-position: 66.1807580174927% 20.42042042042042%;
+    margin: 0 6px;
+    opacity:.3;
 }
 
 .search-container {
