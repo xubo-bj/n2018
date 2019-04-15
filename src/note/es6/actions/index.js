@@ -277,3 +277,22 @@ export const hide_center_file_menu = () => {
         type: HIDE_CENTER_FILE_MENU,
     }
 }
+
+export const RETURN_TO_PARENT_FOLDER = "RETURN_TO_PARENT_FOLDER"
+export const return_to_parent_folder =(parentDirId)=>{
+    console.log(RETURN_TO_PARENT_FOLDER)
+    return{
+        type:RETURN_TO_PARENT_FOLDER,
+        parentDirId
+    }
+}
+
+export const DELETE_FILE = "DELETE_FILE"
+export const delete_file = (dirId,fileId)=>{
+    console.log(DELETE_FILE)
+    return{
+        type:DELETE_FILE,
+        dirId,
+        fileId
+    }
+}

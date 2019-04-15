@@ -1,1 +1,1 @@
-1。　　点击中间的文件夹
+centerColumn   deleteFile

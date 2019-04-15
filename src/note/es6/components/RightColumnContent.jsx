@@ -113,4 +113,3 @@ export default class RightColumnCotent extends React.Component {
     )
   }
 }
-

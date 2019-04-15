@@ -9,7 +9,8 @@ import {
     no_file_in_folder,
     fetch_folders,
     show_center_dir_menu,
-    show_center_file_menu
+    show_center_file_menu,
+    delete_file,
 } from "../actions"
 import { convertFromRaw } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -76,7 +77,7 @@ const CenterColumnWorkspace = props => {
                 <li className={styles["menu-option"]}>重命名</li>
                 <li className={styles["menu-option"]}>移动到</li>
                 <li className={styles["menu-option"]}>复制</li>
-                <li className={styles["menu-option"]}>删除</li>
+                <li className={styles["menu-option"]} onClick={this.props.deleleFile}>删除</li>
             </ul>
         </div>
     )
@@ -213,6 +214,9 @@ const mapDispatchToProps = dispatch => ({
             target = target.parentElement
         }
         dispatch(show_center_file_menu(e.clientX, e.clientY, target.dataset.id))
+    },
+    deleleFile:e=>{
+
     }
 })
 function convertTimeFormat(timeString) {

@@ -4,6 +4,8 @@ import styles from "../../sass/Content.scss"
 import LeftColumn from "./LeftColumn.jsx"
 import CenterColumn from "./CenterColumn.jsx"
 import RightColumn from "./RightColumn.jsx"
+import axios from "axios"
+import { create_new_file_start, create_new_file_success, create_new_file_failure } from "../actions"
 
 class Content extends React.Component {
     constructor(props){
@@ -56,8 +58,8 @@ class Content extends React.Component {
                 <div className={styles["content-right"]}>
                     <RightColumn />
                     <div className={styles["no-file"]} style={{ display: this.props.fileId == null ? "flex" : "none" }}>
-                        <span className={styles["prompt-text"]}>没有找到文件</span>
-                        <button className={styles["new-file"]}>新建笔记</button>
+                        <span className={styles["prompt-text"]} >没有找到文件</span>
+                        <button className={styles["new-file"]} onClick={this.props.createNewFile}>新建笔记</button>
                     </div>
                 </div>
             </div>
@@ -67,4 +69,38 @@ class Content extends React.Component {
 const mapStateToProps = state => ({
     fileId:state.fileId
 })
-export default connect(mapStateToProps)(Content)
+
+const mapDispatchToProps = dispatch=>({
+    createNewFile: () => {
+        dispatch((dispatch, getState) => {
+            let state = getState()
+            let currentDirId = state.currentDirId
+            dispatch(create_new_file_start(currentDirId))
+            let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
+            axios.post("note/create-file/", {
+                name,
+                dirId: currentDirId
+            },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-Requested-With': 'axios'
+                    },
+                    timeout: 1000, // default is `0` (no timeout),
+                    responseType: 'json' // default
+                }).then(res => {
+                    let { success, newFileId, name, time } = res.data
+                    if (success == "ok") {
+                        dispatch(create_new_file_success(currentDirId, newFileId, name, time))
+                    } else {
+                        dispatch(create_new_file_failure())
+                    }
+                }).catch(err => {
+                    console.log('err', err);
+                    dispatch(create_new_file_failure())
+                })
+        })
+    },
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(Content)
