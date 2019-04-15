@@ -26,6 +26,10 @@ const {
     GET_FILE_SUCCESS,
     NO_FILE_IN_FOLDER,
     CLICK_FOLDER_IN_CENTER_COLUMN,
+    SHOW_CENTER_DIR_MENU,
+    HIDE_CENTER_DIR_MENU,
+    SHOW_CENTER_FILE_MENU,
+    HIDE_CENTER_FILE_MENU,
     
 } = require("../actions")
 
@@ -36,6 +40,8 @@ const leftMenuOneDisplay = (display = "none", action) => {
         case HIDE_LEFT_MENU_ONE:
         case SHOW_LEFT_MENU_TWO:
         case SHOW_LEFT_MENU_THREE:
+        case SHOW_CENTER_DIR_MENU:
+        case SHOW_CENTER_FILE_MENU:
             return "none"
         default:
             return display
@@ -56,6 +62,8 @@ const leftMenuTwo = (r = {
         case HIDE_LEFT_MENU_TWO:
         case SHOW_LEFT_MENU_ONE:
         case SHOW_LEFT_MENU_THREE:
+        case SHOW_CENTER_DIR_MENU:
+        case SHOW_CENTER_FILE_MENU:
             return {
                 display: "none",
                 clientX: r.clientX,
@@ -81,6 +89,8 @@ const leftMenuThree = (r = {
         case HIDE_LEFT_MENU_THREE:
         case SHOW_LEFT_MENU_ONE:
         case SHOW_LEFT_MENU_TWO:
+        case SHOW_CENTER_DIR_MENU:
+        case SHOW_CENTER_FILE_MENU:
             return {
                 display: "none",
                 clientX: r.clientX,
@@ -96,6 +106,7 @@ const currentDirId = (_id = shinelonId, action) => {
         case SELECT_DIR:
         case CLICK_FOLDER_IN_CENTER_COLUMN:
         case NO_FILE_IN_FOLDER:
+        case SHOW_CENTER_DIR_MENU:
             return action.dirId
         case SHOW_LEFT_MENU_THREE:
             return action._id
@@ -220,6 +231,7 @@ const tree = (treeObj = {
         case FETCH_FOLDERS: {
                 return Object.assign({}, treeObj, action.folders)
         }
+        case NO_FILE_IN_FOLDER:
         case CLICK_FOLDER_IN_CENTER_COLUMN: {
             let targetDir = treeObj[action.dirId]
             if(targetDir.folded == true){
@@ -298,6 +310,54 @@ const fileId = (id= null, action) => {
     }
 }
 
+const centerFileMenu = (state={display:"none",clientX:0,clientY:0},action)=>{
+    switch (action.type) {
+        case SHOW_CENTER_FILE_MENU:{
+            return {
+                display: "block",
+                clientX: action.clientX,
+                clientY: action.clientY,
+            }
+        }
+        case HIDE_CENTER_FILE_MENU:
+        case SHOW_LEFT_MENU_ONE:
+        case SHOW_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_THREE:
+        case SHOW_CENTER_DIR_MENU:
+            return {
+                display: "none",
+                clientX: state.clientX,
+                clientY: state.clientY
+            }
+        default:
+            return state
+    }
+}
+
+const centerDirMenu = (state={display:"none",clientX:0,clientY:0},action)=>{
+    switch (action.type) {
+        case SHOW_CENTER_DIR_MENU:{
+            return {
+                display: "block",
+                clientX: action.clientX,
+                clientY: action.clientY,
+            }
+        }
+        case HIDE_CENTER_DIR_MENU:
+        case SHOW_LEFT_MENU_ONE:
+        case SHOW_LEFT_MENU_TWO:
+        case SHOW_LEFT_MENU_THREE:
+        case SHOW_CENTER_FILE_MENU:
+            return {
+                display: "none",
+                clientX: state.clientX,
+                clientY: state.clientY
+            }
+        default:
+            return state
+    }
+}
+
 
 const {
     combineReducers
@@ -311,5 +371,7 @@ module.exports = combineReducers({
     centerColumnDir,
     showMask,
     editorState,
-    fileId
+    fileId,
+    centerDirMenu,
+    centerFileMenu,
 })

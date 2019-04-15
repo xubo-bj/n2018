@@ -61,3 +61,29 @@
     position: relative;
     top: 1px;
 }
+
+.pop-menu {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+    background-color: #fff;
+    position: fixed;
+    z-index: 9;
+    width: 100px;
+    font-size: 12px;
+        border-radius: 2px;
+    box-shadow: 0px 1px 16px 0 rgba(90, 109, 122, 0.41);
+}
+
+.menu-option {
+    line-height: 30px;
+    height: 30px;
+    color: #999999;
+    padding-left: 15px;
+
+    &:hover {
+        background: rgba(118, 176, 243, 0.1);
+        color: rgba(118, 176, 243, 1);
+        cursor: pointer;
+    }
+}

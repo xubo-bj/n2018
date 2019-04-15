@@ -231,11 +231,49 @@ export const no_file_in_folder = (dirId) => {
 }
 
 export const CLICK_FOLDER_IN_CENTER_COLUMN = "CLICK_FOLDER_IN_CENTER_COLUMN"
-export const click_folder_in_center_column = (dirId,fileId) => {
+export const click_folder_in_center_column = (dirId, fileId) => {
     console.log(CLICK_FOLDER_IN_CENTER_COLUMN)
     return {
         type: CLICK_FOLDER_IN_CENTER_COLUMN,
         dirId,
         fileId
+    }
+}
+
+export const SHOW_CENTER_DIR_MENU = "SHOW_CENTER_DIR_MENU"
+export const show_center_dir_menu = (clientX, clientY, dirId) => {
+    console.log(SHOW_CENTER_DIR_MENU)
+    return {
+        type: SHOW_CENTER_DIR_MENU,
+        clientX,
+        clientY,
+        dirId
+    }
+}
+
+export const HIDE_CENTER_DIR_MENU = "HIDE_CENTER_DIR_MENU"
+export const hide_center_dir_menu = () => {
+    console.log(HIDE_CENTER_DIR_MENU)
+    return {
+        type: HIDE_CENTER_DIR_MENU,
+    }
+}
+
+export const SHOW_CENTER_FILE_MENU = "SHOW_CENTER_FILE_MENU"
+export const show_center_file_menu = (clientX, clientY, fileId) => {
+    console.log(SHOW_CENTER_FILE_MENU)
+    return {
+        type: SHOW_CENTER_FILE_MENU,
+        clientX,
+        clientY,
+        fileId
+    }
+}
+
+export const HIDE_CENTER_FILE_MENU = "HIDE_CENTER_FILE_MENU"
+export const hide_center_file_menu = () => {
+    console.log(HIDE_CENTER_FILE_MENU)
+    return {
+        type: HIDE_CENTER_FILE_MENU,
     }
 }

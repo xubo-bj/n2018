@@ -7,7 +7,9 @@ import {
     get_file_success,
     click_folder_in_center_column,
     no_file_in_folder,
-    fetch_folders
+    fetch_folders,
+    show_center_dir_menu,
+    show_center_file_menu
 } from "../actions"
 import { convertFromRaw } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -18,6 +20,7 @@ const CenterColumnWorkspace = props => {
         <div className={styles.workspace}>
             <ul className={styles["ul-dirs"]}
                 onClick={props.openFolder}
+                onContextMenu={props.showDirMenu}
             >
                 {props.dirs && props.dirs.map(dir => {
                     if (dir.editable) {
@@ -37,8 +40,20 @@ const CenterColumnWorkspace = props => {
                 })
                 }
             </ul>
+            <ul className={styles["pop-menu"]}
+                style={{
+                    display: props.centerDirMenu.display,
+                    left: props.centerDirMenu.clientX + "px",
+                    top: props.centerDirMenu.clientY + "px"
+                }} >
+                <li className={styles["menu-option"]}>重命名</li>
+                <li className={styles["menu-option"]}>移动到</li>
+                <li className={styles["menu-option"]}>复制</li>
+                <li className={styles["menu-option"]}>删除</li>
+            </ul>
             <ul className={styles["ul-files"]}
-                onClick={props.selectFile}>
+                onClick={props.selectFile}
+                onContextMenu={props.showFileMenu}>
                 {props.files && props.files.map(file => {
                     return (
                         <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
@@ -52,6 +67,17 @@ const CenterColumnWorkspace = props => {
                 })
                 }
             </ul>
+            <ul className={styles["pop-menu"]}
+                style={{
+                    display: props.centerFileMenu.display,
+                    left: props.centerFileMenu.clientX + "px",
+                    top: props.centerFileMenu.clientY + "px"
+                }} >
+                <li className={styles["menu-option"]}>重命名</li>
+                <li className={styles["menu-option"]}>移动到</li>
+                <li className={styles["menu-option"]}>复制</li>
+                <li className={styles["menu-option"]}>删除</li>
+            </ul>
         </div>
     )
 }
@@ -61,6 +87,8 @@ const mapStateToProps = state => {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
         fileId: state.fileId,
+        centerDirMenu: state.centerDirMenu,
+        centerFileMenu: state.centerFileMenu
     }
 }
 
@@ -169,6 +197,22 @@ const mapDispatchToProps = dispatch => ({
 
         })
 
+    },
+    showDirMenu: e => {
+        e.preventDefault()
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
+            target = target.parentElement
+        }
+        dispatch(show_center_dir_menu(e.clientX, e.clientY, target.dataset.id))
+    },
+    showFileMenu: e => {
+        e.preventDefault()
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
+            target = target.parentElement
+        }
+        dispatch(show_center_file_menu(e.clientX, e.clientY, target.dataset.id))
     }
 })
 function convertTimeFormat(timeString) {
