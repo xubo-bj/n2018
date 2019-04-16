@@ -77,7 +77,7 @@ const CenterColumnWorkspace = props => {
                 <li className={styles["menu-option"]}>重命名</li>
                 <li className={styles["menu-option"]}>移动到</li>
                 <li className={styles["menu-option"]}>复制</li>
-                <li className={styles["menu-option"]} onClick={this.props.deleleFile}>删除</li>
+                <li className={styles["menu-option"]} onClick={props.deleleFile}>删除</li>
             </ul>
         </div>
     )
@@ -215,8 +215,27 @@ const mapDispatchToProps = dispatch => ({
         }
         dispatch(show_center_file_menu(e.clientX, e.clientY, target.dataset.id))
     },
-    deleleFile:e=>{
+    deleleFile: e => {
+        dispatch((dispatch, getState) => {
+            let { fileIdInProcessing, centerColumnDir } = getState()
+            axios.delete("note/delete-file/", {
+                params: {
+                    dirId: centerColumnDir,
+                    fileId: fileIdInProcessing
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                console.log("res.data",res.data)
 
+            }).catch(err => {
+                console.log('err', err);
+                // dispatch(create_new_folder_failure())
+            })
+        })
     }
 })
 function convertTimeFormat(timeString) {

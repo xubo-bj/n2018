@@ -275,6 +275,36 @@ router.get("/get-file",async(ctx,next)=>{
     }
 })
 
+router.delete("/delete-file", async (ctx, next) => {
+    let {
+        fileId,
+        dirId
+    } = ctx.query
+    let dbConn = await client.connect()
+    let userdirsCol = dbConn.db(dbName).collection(userdirs)
+    let updateDirsResult = await userdirsCol.updateOne({
+        _id: new ObjectID(dirId),
+        $pull: {
+            files: {
+                _id: new ObjectID(fileId)
+            }
+        }
+    })
+
+    if (updateDirsResult.modifiedCount === 1) {
+        let deleteFileResult = await userfiles.deleteOne({_id:new ObjectID(fileId)})
+        console.log("deleteFileResult",deleteFileResult)
+
+        ctx.body = {
+            success: "ok",
+        }
+    } else {
+        ctx.body = {
+            success: "no",
+            error: "delete file in folder fail"
+        }
+    }
+})
 
 router.get('/test', async (ctx, next) => {
     let r = await client.connect()
