@@ -12,17 +12,21 @@ const dbName = 'note';
 const client = new MongoClient(url, {
     useNewUrlParser: true
 });
-const mongodb= require("../../config").note.mongodb
+const mongodb = require("../../config").note.mongodb
 const shinelonId = mongodb.shinelonId
 const userdirs = mongodb.collections.userdirs
-const  userfiles= mongodb.collections.userfiles
+const userfiles = mongodb.collections.userfiles
 
 
 const ejsPath = 'note/'
 const router = require('koa-router')()
 router.prefix('/note')
 
-const {EditorState,convertToRaw,convertFromRaw} = require("draft-js")
+const {
+    EditorState,
+    convertToRaw,
+    convertFromRaw
+} = require("draft-js")
 
 router.get('/', async (ctx, next) => {
     let dbConn = await client.connect()
@@ -81,7 +85,7 @@ router.post('/create-folder', async (ctx, next) => {
         dirId,
         name
     } = ctx.request.body
-    
+
     let d = new Date()
     let r = await u.insertOne({
         name,
@@ -89,7 +93,7 @@ router.post('/create-folder', async (ctx, next) => {
         mtime: d,
         dirs: [],
         files: [],
-        parentId:dirId
+        parentId: dirId
     })
 
 
@@ -143,7 +147,7 @@ router.get("/get-folders", async (ctx, next) => {
         dir.folded = true
         partialDirTree[ids[i]] = dir
     }
-    ctx.body =partialDirTree 
+    ctx.body = partialDirTree
 })
 
 
@@ -156,17 +160,17 @@ router.post('/create-file', async (ctx, next) => {
         dirId,
         name
     } = ctx.request.body
-    
+
     let d = new Date()
     let r = await userfilesCollection.insertOne({
         name,
         ctime: d,
         mtime: d,
-        content:convertToRaw(EditorState.createEmpty().getCurrentContent()),
-        ownerFolderId:dirId
+        content: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+        ownerFolderId: dirId
     })
 
-let userdirsCollection = result.db(dbName).collection(userdirs)
+    let userdirsCollection = result.db(dbName).collection(userdirs)
 
     if (r.insertedCount === 1) {
         let r2 = await userdirsCollection.updateOne({
@@ -207,7 +211,7 @@ let userdirsCollection = result.db(dbName).collection(userdirs)
 })
 
 router.put('/update-file', async (ctx, next) => {
-                let connection = await client.connect()
+    let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
     console.log("body", ctx.request.body)
     let mtime = new Date()
@@ -246,57 +250,72 @@ router.put('/update-file', async (ctx, next) => {
         } else {
             ctx.body = {
                 success: "no",
-                error:"update folder that file locates in failure"
+                error: "update folder that file locates in failure"
             }
         }
-    }else{
-            ctx.body = {
-                success: "no",
-                error:"update file failure"
-            }
+    } else {
+        ctx.body = {
+            success: "no",
+            error: "update file failure"
+        }
     }
 })
 
-router.get("/get-file",async(ctx,next)=>{
+router.get("/get-file", async (ctx, next) => {
     let fileId = ctx.query.fileId
-                let connection = await client.connect()
+    let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
-    let file = await userfilesCollection.findOne({_id:new ObjectID(fileId)})
-    if(file != null){
+    let file = await userfilesCollection.findOne({
+        _id: new ObjectID(fileId)
+    })
+    if (file != null) {
         ctx.body = {
-            success:"ok",
-            content:file.content
+            success: "ok",
+            content: file.content
         }
-    }else{
-        ctx.body ={
-            success:"no",
-            info:"no such file"
+    } else {
+        ctx.body = {
+            success: "no",
+            info: "no such file"
         }
     }
 })
 
 router.delete("/delete-file", async (ctx, next) => {
     let {
-        fileId,
-        dirId
+        deletedFileId,
+        dirId,
+        newDisplayFileId
     } = ctx.query
+
     let dbConn = await client.connect()
     let userdirsCol = dbConn.db(dbName).collection(userdirs)
     let updateDirsResult = await userdirsCol.updateOne({
-        _id: new ObjectID(dirId),
+        _id: new ObjectID(dirId)
+    }, {
         $pull: {
             files: {
-                _id: new ObjectID(fileId)
+                _id: new ObjectID(deletedFileId)
             }
         }
     })
 
     if (updateDirsResult.modifiedCount === 1) {
-        let deleteFileResult = await userfiles.deleteOne({_id:new ObjectID(fileId)})
-        console.log("deleteFileResult",deleteFileResult)
-
+        let userfilesCol = dbConn.db(dbName).collection(userfiles)
+        let deleteFileResult = await userfilesCol.deleteOne({
+            _id: new ObjectID(deletedFileId)
+        })
+        //  如果删除userfiles中的document失败了也不影响使用，以后每隔一段时间清理一下userfiles就可以了。
+        let content = null
+        if(newDisplayFileId != null){
+           let file = await userfilesCol.findOne({
+                _id: new ObjectID(newDisplayFileId)
+            })
+            content = file.content
+        }
         ctx.body = {
-            success: "ok",
+            success:"ok",
+            content
         }
     } else {
         ctx.body = {
@@ -312,7 +331,7 @@ router.get('/test', async (ctx, next) => {
     let x = await userdirs.drop()
     // console.log("drop collection", x);
     let z = await userdirs.insertOne({
-                _id: new ObjectID(shinelonId),
+        _id: new ObjectID(shinelonId),
         desc: "rootDir",
         ctime: new Date(),
         mtime: new Date(),
@@ -325,7 +344,11 @@ router.get('/test', async (ctx, next) => {
     let y = await userfiles.drop()
     // console.log("drop userfiles",y)
 
-    ctx.body = {"drop collection":x,"create new root ":z,"drop userfiles":y}
+    ctx.body = {
+        "drop collection": x,
+        "create new root ": z,
+        "drop userfiles": y
+    }
 })
 
 module.exports = router

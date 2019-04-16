@@ -1,3 +1,4 @@
-let o = {a:1}
-let r  =JSON.parse({b:2})
-console.log("r",r)
+let arr = [1,2,3]
+let r = arr.filter(elem=>elem%2==0)
+console.log(r)
+console.log(arr)

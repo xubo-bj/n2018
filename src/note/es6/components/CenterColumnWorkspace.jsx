@@ -10,7 +10,7 @@ import {
     fetch_folders,
     show_center_dir_menu,
     show_center_file_menu,
-    delete_file,
+    delete_file_success,
 } from "../actions"
 import { convertFromRaw } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -217,11 +217,20 @@ const mapDispatchToProps = dispatch => ({
     },
     deleleFile: e => {
         dispatch((dispatch, getState) => {
-            let { fileIdInProcessing, centerColumnDir } = getState()
+            let { fileIdInProcessing, centerColumnDir, tree, fileId } = getState()
+                let newDisplayFileId = null
+            if (fileId == fileIdInProcessing) {
+                let files = tree[centerColumnDir].files
+                let afterDeleteFiles = files.filter(file => file._id != fileIdInProcessing)
+                if (afterDeleteFiles.length != 0) {
+                    newDisplayFileId = afterDeleteFiles[0]._id
+                }
+            }
             axios.delete("note/delete-file/", {
                 params: {
                     dirId: centerColumnDir,
-                    fileId: fileIdInProcessing
+                    deletedFileId: fileIdInProcessing,
+                    newDisplayFileId
                 },
                 headers: {
                     'X-Requested-With': 'axios'
@@ -229,12 +238,14 @@ const mapDispatchToProps = dispatch => ({
                 timeout: 1000, // default is `0` (no timeout),
                 responseType: 'json' // default
             }).then(res => {
-                console.log("res.data",res.data)
-
+                if (res.data.success === "ok") {
+                    dispatch( delete_file_success( centerColumnDir, fileIdInProcessing, newDisplayFileId, convertFromRaw(res.data.content)))
+                }
             }).catch(err => {
                 console.log('err', err);
-                // dispatch(create_new_folder_failure())
             })
+
+
         })
     }
 })

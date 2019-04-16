@@ -287,12 +287,14 @@ export const return_to_parent_folder =(parentDirId)=>{
     }
 }
 
-export const DELETE_FILE = "DELETE_FILE"
-export const delete_file = (dirId,fileId)=>{
-    console.log(DELETE_FILE)
+export const DELETE_FILE_SUCCESS = "DELETE_FILE_SUCCESS"
+export const delete_file_success = (dirId,fileId,newDisplayFileId,contentState)=>{
+    console.log(DELETE_FILE_SUCCESS)
     return{
-        type:DELETE_FILE,
+        type:DELETE_FILE_SUCCESS,
         dirId,
-        fileId
+        fileId,
+        newDisplayFileId,
+        contentState
     }
 }

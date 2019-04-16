@@ -34,6 +34,7 @@ const {
     SHOW_CENTER_FILE_MENU,
     HIDE_CENTER_FILE_MENU,
     RETURN_TO_PARENT_FOLDER,
+    DELETE_FILE_SUCCESS,
 
 } = require("../actions")
 
@@ -160,70 +161,70 @@ let defaultV = {
     folded: false
 }
 const tree = (treeObj = {
-        [shinelonId]: defaultV
-    }, action) => {
-        switch (action.type) {
-            case CREATE_NEW_FOLDER_PROMPT:
-                {
-                    let _id = action.currentDirId
-                    let targetDir = treeObj[_id]
-                    targetDir.folded = false
-                    targetDir.dirs.push({
-                        editable: true,
-                        name: "新建文件夹"
-                    })
-                    return Object.assign({}, treeObj)
-                }
-            case CHANGE_FILE_NAME:
-                {
-                    let {
-                        name,
-                        fileId,
-                        centerColumnDir
-                    } = action
-                    let targetFile = treeObj[centerColumnDir].files.filter(file => file._id == fileId)[0]
-                    targetFile.name = name
-                    return Object.assign({}, treeObj)
-                }
-            case CREATE_NEW_FILE_START:
-                {
-                    let _id = action.currentDirId
-                    let targetDir = treeObj[_id]
-                    targetDir.files.push({
-                        _id: "tempId",
-                        name: "无标题笔记",
-                        ctime: new Date(),
-                        mtime: new Date()
-                    })
-                    return Object.assign({}, treeObj)
-                }
-            case CREATE_NEW_FILE_SUCCESS:
-                {
-                    let targetDir = treeObj[action.parentDirId]
-                    let targetFile = targetDir.files.filter(file => file._id == "tempId")[0]
-                    targetFile._id = action.newFileId,
-                    targetFile.name = action.name
-                    return Object.assign({}, treeObj)
-                }
-            case UPDATE_FILE_SUCCESS:
-                {
-                    let targetDir = treeObj[action.centerColumnDir]
-                    let targetFile = targetDir.files.filter(file => file._id == action.fileId)[0]
-                    targetFile.mtime = action.mtime
-                    return Object.assign({}, treeObj)
-                }
-            case CREATE_NEW_FOLDER_SUCCESS:
-                {
-                    let {
-                        parentId,
-                        newId,
-                        name,
-                        time
-                    } = action
-                    let newDir = {
-                            _id: newId,
-                            name: name,
-                            ctime: time,
+    [shinelonId]: defaultV
+}, action) => {
+    switch (action.type) {
+        case CREATE_NEW_FOLDER_PROMPT:
+            {
+                let _id = action.currentDirId
+                let targetDir = treeObj[_id]
+                targetDir.folded = false
+                targetDir.dirs.push({
+                    editable: true,
+                    name: "新建文件夹"
+                })
+                return Object.assign({}, treeObj)
+            }
+        case CHANGE_FILE_NAME:
+            {
+                let {
+                    name,
+                    fileId,
+                    centerColumnDir
+                } = action
+                let targetFile = treeObj[centerColumnDir].files.filter(file => file._id == fileId)[0]
+                targetFile.name = name
+                return Object.assign({}, treeObj)
+            }
+        case CREATE_NEW_FILE_START:
+            {
+                let _id = action.currentDirId
+                let targetDir = treeObj[_id]
+                targetDir.files.push({
+                    _id: "tempId",
+                    name: "无标题笔记",
+                    ctime: new Date(),
+                    mtime: new Date()
+                })
+                return Object.assign({}, treeObj)
+            }
+        case CREATE_NEW_FILE_SUCCESS:
+            {
+                let targetDir = treeObj[action.parentDirId]
+                let targetFile = targetDir.files.filter(file => file._id == "tempId")[0]
+                targetFile._id = action.newFileId,
+                targetFile.name = action.name
+                return Object.assign({}, treeObj)
+            }
+        case UPDATE_FILE_SUCCESS:
+            {
+                let targetDir = treeObj[action.centerColumnDir]
+                let targetFile = targetDir.files.filter(file => file._id == action.fileId)[0]
+                targetFile.mtime = action.mtime
+                return Object.assign({}, treeObj)
+            }
+        case CREATE_NEW_FOLDER_SUCCESS:
+            {
+                let {
+                    parentId,
+                    newId,
+                    name,
+                    time
+                } = action
+                let newDir = {
+                    _id: newId,
+                    name: name,
+                    ctime: time,
                     mtime: time,
                     folded: true,
                     dirs: [],
@@ -265,10 +266,18 @@ const tree = (treeObj = {
                 }
                 return Object.assign({}, treeObj)
             }
+        case DELETE_FILE_SUCCESS:
+            {
+                let files = treeObj[action.dirId].files
+                let filteredFiles = files.filter(elem => elem._id != action.fileId)
+                treeObj[action.dirId].files = filteredFiles
+                return Object.assign({}, treeObj)
+            }
         default:
             return treeObj
     }
 }
+
 function descendantDirsTraversal(targetDir, treeArray) {
     targetDir.folded = true
     for (let i = 0; i < targetDir.dirs.length; i++) {
@@ -402,9 +411,10 @@ const centerDirMenu = (state = {
 
 const fileIdInProcessing = (fileId = null, action) => {
     switch (action.type) {
-        case SHOW_CENTER_FILE_MENU:{
-            return action.fileId
-        }
+        case SHOW_CENTER_FILE_MENU:
+            {
+                return action.fileId
+            }
         default:
             return fileId
     }
