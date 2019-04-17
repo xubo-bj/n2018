@@ -46,9 +46,10 @@ class MyEditor extends React.Component {
   }
   componentDidMount(){
     if(this.props.initialRender){
+      console.log("-----------------Mount Mount ---------------------")
             axios.get("note/get-file", {
                 params: {
-                   fileId:this.props.fileId
+                   selectedFileId:this.props.fileId
                 },
                 headers: {
                     'X-Requested-With': 'axios'

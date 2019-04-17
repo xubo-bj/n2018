@@ -268,6 +268,8 @@ router.get("/get-file", async (ctx, next) => {
     let file = await userfilesCollection.findOne({
         _id: new ObjectID(fileId)
     })
+    console.log("fileId",fileId)
+    console.log("file",file)
     if (file != null) {
         ctx.body = {
             success: "ok",

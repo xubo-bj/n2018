@@ -2,6 +2,7 @@ import React from "react"
 import styles from "../../sass/CenterColumnToolbar.scss"
 import { connect } from 'react-redux'
 import { return_to_parent_folder } from "../actions"
+import axios from "axios"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const CenterColumnToolbar = (props) =>
     <div className={styles.toolbar}>
@@ -33,6 +34,7 @@ const mapDispatchToProps = dispatch => ({
                 if (filesObj[fileId] != undefined) {
                     dispatch(return_to_parent_folder(parentDirId, fileId, filesObj[fileId]))
                 } else {
+                    dispatch(return_to_parent_folder(parentDirId, fileId, filesObj[fileId]))
                     axios.get("note/get-file", {
                         params: {
                             fileId

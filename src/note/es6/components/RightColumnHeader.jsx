@@ -1,9 +1,9 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/RightColumnHeader.scss"
-import { change_file_name} from "../actions"
-import { updateFile } from "./utility"
-
+import { change_file_name } from "../actions"
+import { updateFileInBackground } from "./utility"
+import { convertToRaw } from "draft-js"
 class MyEditor extends React.Component {
     render() {
         return (
@@ -43,7 +43,14 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     updateFile: () => {
-        dispatch(updateFile)
+        // dispatch(updateFile)
+        dispatch((dispatch, getState) => {
+            let { fileId, centerColumnDir, tree, editorState } = getState()
+            let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
+            let content = convertToRaw(editorState.getCurrentContent())
+            console.log("content --------",content)
+            updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
+        })
     }
 })
 

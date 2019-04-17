@@ -183,13 +183,13 @@ export const create_new_file_failure = () => {
 
 
 export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
-export const update_file_success = (mtime, fileId, centerColumnDir,rawContentState) => {
+export const update_file_success = (mtime, fileId, dirId,rawContentState) => {
     console.log(UPDATE_FILE_SUCCESS)
     return {
         type: UPDATE_FILE_SUCCESS,
         mtime,
         fileId,
-        centerColumnDir,
+         dirId,
         rawContentState
     }
 }

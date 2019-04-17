@@ -208,7 +208,7 @@ const tree = (treeObj = {
             }
         case UPDATE_FILE_SUCCESS:
             {
-                let targetDir = treeObj[action.centerColumnDir]
+                let targetDir = treeObj[action.dirId]
                 let targetFile = targetDir.files.filter(file => file._id == action.fileId)[0]
                 targetFile.mtime = action.mtime
                 return Object.assign({}, treeObj)

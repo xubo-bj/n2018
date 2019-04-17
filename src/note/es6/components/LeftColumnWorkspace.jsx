@@ -305,7 +305,6 @@ function getFolders(dispatch, _id) {
     dispatch((dispatch, getState) => {
         let { tree } = getState()
         let d0 = tree[_id]
-        console.log("getFolders",d0)
         let arr = []
         for (let i = 0; i < d0.dirs.length; i++) {
             let d1 = tree[d0.dirs[i]._id]
@@ -321,7 +320,6 @@ function getFolders(dispatch, _id) {
                 }
             }
         }
-        console.log("arr ids",arr)
         if (arr.length > 0) {
             axios.get("note/get-folders", {
                 params: {

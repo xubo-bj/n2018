@@ -12,7 +12,8 @@ import {
     show_center_file_menu,
     delete_file_success,
 } from "../actions"
-import { convertFromRaw } from 'draft-js';
+import { convertToRaw } from 'draft-js';
+import {updateFileInBackground} from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 
@@ -102,7 +103,9 @@ const mapDispatchToProps = dispatch => ({
         let selectedFileId = target.dataset.id
 
         dispatch((dispatch, getState) => {
-            let { filesObj, fileId } = getState()
+            let {filesObj ,fileId, centerColumnDir, tree, editorState } = getState()
+            let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
+            let content = convertToRaw(editorState.getCurrentContent())
             if (selectedFileId == fileId) {
                 return
             } else {
@@ -129,9 +132,8 @@ const mapDispatchToProps = dispatch => ({
                         // dispatch(create_new_folder_failure())
                     })
                 }
+                updateFileInBackground(dispatch,fileId,centerColumnDir,name,content)
             }
-
-
         })
     },
     openFolder: e => {
