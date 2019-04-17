@@ -183,13 +183,14 @@ export const create_new_file_failure = () => {
 
 
 export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
-export const update_file_success = (mtime, fileId, centerColumnDir) => {
+export const update_file_success = (mtime, fileId, centerColumnDir,rawContentState) => {
     console.log(UPDATE_FILE_SUCCESS)
     return {
         type: UPDATE_FILE_SUCCESS,
         mtime,
         fileId,
-        centerColumnDir
+        centerColumnDir,
+        rawContentState
     }
 }
 
@@ -203,21 +204,21 @@ export const update_file_failure = () => {
 
 
 export const SELECT_FILE = "SELECT_FILE"
-export const select_file = (fileId, centerColumnDir) => {
+export const select_file = (fileId) => {
     console.log(SELECT_FILE)
     return {
         type: SELECT_FILE,
         fileId,
-        centerColumnDir
     }
 }
 
 export const GET_FILE_SUCCESS = "GET_FILE_SUCCESS"
-export const get_file_success = (content) => {
+export const get_file_success = (content,fileId) => {
     console.log(GET_FILE_SUCCESS)
     return {
         type: GET_FILE_SUCCESS,
-        content
+        content,
+        fileId
     }
 }
 
@@ -231,12 +232,11 @@ export const no_file_in_folder = (dirId) => {
 }
 
 export const CLICK_FOLDER_IN_CENTER_COLUMN = "CLICK_FOLDER_IN_CENTER_COLUMN"
-export const click_folder_in_center_column = (dirId, fileId) => {
+export const click_folder_in_center_column = (dirId) => {
     console.log(CLICK_FOLDER_IN_CENTER_COLUMN)
     return {
         type: CLICK_FOLDER_IN_CENTER_COLUMN,
         dirId,
-        fileId
     }
 }
 

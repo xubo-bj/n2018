@@ -123,6 +123,7 @@ const LeftColumnWorkspace = (props) => {
             >
                 <i className={styles["my-dir-icon"]} />
                 <span className={styles["my-dir-name"]}>我的文件夹</span>
+            </div>
                 <ul className={styles["pop-menu"]}
                     style={{
                         display: props.leftMenuTwo.display,
@@ -132,7 +133,6 @@ const LeftColumnWorkspace = (props) => {
                     <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
-            </div>
             <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
                 createNewFolderSumbit={createNewFolderSumbit} toggleDir={toggleDir}
                 centerColumnDir={centerColumnDir}
@@ -199,7 +199,7 @@ const mapDispatchToProps = dispatch => ({
                         responseType: 'json' // default
                     }).then(res => {
                         if (res.data.success == "ok") {
-                            dispatch(get_file_success(convertFromRaw(res.data.content)))
+                            dispatch(get_file_success(res.data.content,fileId))
                         } else {
 
                         }

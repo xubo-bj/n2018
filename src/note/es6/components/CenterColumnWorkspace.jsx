@@ -101,45 +101,11 @@ const mapDispatchToProps = dispatch => ({
         }
         let fileId = target.dataset.id
         dispatch((dispatch, getState) => {
-            let centerColumnDir = getState().centerColumnDir
-            dispatch(select_file(target.dataset.id, centerColumnDir))
-            axios.get("note/get-file", {
-                params: {
-                    fileId
-                },
-                headers: {
-                    'X-Requested-With': 'axios'
-                },
-                timeout: 1000, // default is `0` (no timeout),
-                responseType: 'json' // default
-            }).then(res => {
-                if (res.data.success == "ok") {
-                    dispatch(get_file_success(convertFromRaw(res.data.content)))
-                } else {
+            let { filesObj } = getState()
 
-                }
-            }).catch(err => {
-                console.log('err1', err);
-                // dispatch(create_new_folder_failure())
-            })
-
-        })
-    },
-    openFolder: e => {
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-        let dirId = target.dataset.id
-        dispatch((dispatch, getState) => {
-
-            let { tree } = getState()
-            let files = tree[dirId].files
-            if (files.length == 0) {
-                dispatch(no_file_in_folder(dirId))
+            if (filesObj[fileId] != undefined) {
+                dispatch(get_file_success(filesObj[fileId], fileId))
             } else {
-                let fileId = tree[dirId].files[0]._id
-                dispatch(click_folder_in_center_column(dirId, fileId))
                 axios.get("note/get-file", {
                     params: {
                         fileId
@@ -151,7 +117,7 @@ const mapDispatchToProps = dispatch => ({
                     responseType: 'json' // default
                 }).then(res => {
                     if (res.data.success == "ok") {
-                        dispatch(get_file_success(convertFromRaw(res.data.content)))
+                        dispatch(get_file_success(res.data.content, fileId))
                     } else {
 
                     }
@@ -159,7 +125,48 @@ const mapDispatchToProps = dispatch => ({
                     console.log('err1', err);
                     // dispatch(create_new_folder_failure())
                 })
+            }
 
+        })
+    },
+    openFolder: e => {
+        let target = e.target
+        while (target.tagName.toLowerCase() != "li") {
+            target = target.parentElement
+        }
+        let dirId = target.dataset.id
+        dispatch((dispatch, getState) => {
+
+            let { tree, filesObj } = getState()
+            let files = tree[dirId].files
+            if (files.length == 0) {
+                dispatch(no_file_in_folder(dirId))
+            } else {
+                let fileId = tree[dirId].files[0]._id
+                dispatch(click_folder_in_center_column(dirId))
+                if (filesObj[fileId] != undefined) {
+                    dispatch(get_file_success(filesObj[fileId], fileId))
+                } else {
+                    axios.get("note/get-file", {
+                        params: {
+                            fileId
+                        },
+                        headers: {
+                            'X-Requested-With': 'axios'
+                        },
+                        timeout: 1000, // default is `0` (no timeout),
+                        responseType: 'json' // default
+                    }).then(res => {
+                        if (res.data.success == "ok") {
+                            dispatch(get_file_success(res.data.content, fileId))
+                        } else {
+
+                        }
+                    }).catch(err => {
+                        console.log('err1', err);
+                        // dispatch(create_new_folder_failure())
+                    })
+                }
             }
 
             let d0 = tree[dirId]
@@ -218,12 +225,14 @@ const mapDispatchToProps = dispatch => ({
     deleleFile: e => {
         dispatch((dispatch, getState) => {
             let { fileIdInProcessing, centerColumnDir, tree, fileId } = getState()
-                let newDisplayFileId = null
+            let newDisplayFileId = fileId
             if (fileId == fileIdInProcessing) {
                 let files = tree[centerColumnDir].files
                 let afterDeleteFiles = files.filter(file => file._id != fileIdInProcessing)
                 if (afterDeleteFiles.length != 0) {
                     newDisplayFileId = afterDeleteFiles[0]._id
+                } else {
+                    newDisplayFileId = null
                 }
             }
             axios.delete("note/delete-file/", {
@@ -239,7 +248,12 @@ const mapDispatchToProps = dispatch => ({
                 responseType: 'json' // default
             }).then(res => {
                 if (res.data.success === "ok") {
-                    dispatch( delete_file_success( centerColumnDir, fileIdInProcessing, newDisplayFileId, convertFromRaw(res.data.content)))
+                    if (res.data.content == null) {
+                        dispatch(delete_file_success(centerColumnDir, fileIdInProcessing, newDisplayFileId, res.data.content))
+                    } else {
+                        dispatch(delete_file_success(centerColumnDir, fileIdInProcessing, newDisplayFileId, convertFromRaw(res.data.content)))
+
+                    }
                 }
             }).catch(err => {
                 console.log('err', err);

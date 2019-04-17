@@ -57,7 +57,7 @@ class MyEditor extends React.Component {
                 responseType: 'json' // default
             }).then(res => {
                 if (res.data.success == "ok") {
-                  this.props.fetchInitailFileContent(res)
+                  this.props.fetchInitailFileContent(res.data.content,this.props.fileId)
                 } else {
 
                 }
@@ -92,8 +92,8 @@ const mapDispatchToPropsOnMyEditor = dispatch => ({
   onChangeEditorState:(editorState)=>{
     dispatch(change_editor_state(editorState))
   },
-  fetchInitailFileContent: (res) => {
-    dispatch(get_file_success(convertFromRaw(res.data.content)))
+  fetchInitailFileContent: (content,fileId) => {
+    dispatch(get_file_success(content,fileId))
   }
 })
 const MyEditorBindingRedux = connect(mapStateToPropsOnMyEditor,mapDispatchToPropsOnMyEditor)(MyEditor)

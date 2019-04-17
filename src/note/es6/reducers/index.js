@@ -23,7 +23,6 @@ const {
     CREATE_NEW_FILE_SUBMIT,
     CREATE_NEW_FILE_SUCCESS,
     CREATE_NEW_FILE_FAILURE,
-    SELECT_FILE,
     UPDATE_FILE_SUCCESS,
     UPDATE_FILE_FAILURE,
     GET_FILE_SUCCESS,
@@ -307,11 +306,21 @@ const editorState = (state = null, action) => {
             }
         case GET_FILE_SUCCESS:
             {
-                return EditorState.createWithContent(action.content)
+                return EditorState.createWithContent(convertFromRaw(action.content))
             }
         case CREATE_NEW_FILE_SUCCESS:
             {
                 return EditorState.createEmpty()
+            }
+        case DELETE_FILE_SUCCESS:
+            {
+                let contentState = action.contentState
+                if (contentState == null) {
+                    console.log("null ==========")
+                    return state
+                } else {
+                    return EditorState.createWithContent(contentState)
+                }
             }
         default:
             {
@@ -332,22 +341,20 @@ const fileId = (id = null, action) => {
             {
                 return action.newFileId
             }
-        case SELECT_FILE:
-            {
-                return action.fileId
-            }
-        case CLICK_FOLDER_IN_CENTER_COLUMN:
+        case GET_FILE_SUCCESS:
         case SELECT_DIR:
             {
                 return action.fileId
             }
         case NO_FILE_IN_FOLDER:
-        case CREATE_NEW_FOLDER_SUCCESS:
-            {
+        case CREATE_NEW_FOLDER_SUCCESS: {
                 return null
-            }
+        }
+        case DELETE_FILE_SUCCESS: {
+            return action.newDisplayFileId
+        }
         default:
-            return id
+        return id
     }
 }
 
@@ -415,8 +422,27 @@ const fileIdInProcessing = (fileId = null, action) => {
             {
                 return action.fileId
             }
+        case DELETE_FILE_SUCCESS:
+            {
+                return null
+            }
         default:
             return fileId
+    }
+}
+
+const filesObj = (obj = {}, action) => {
+    switch (action.type) {
+        case UPDATE_FILE_SUCCESS:{
+            obj[action.fileId] = action.rawContentState
+            return Object.assign({},obj)
+        }
+        case GET_FILE_SUCCESS:{
+            obj[action.fileId] = action.content
+            return Object.assign({},obj)
+        }
+        default:
+            return obj
     }
 }
 
@@ -429,6 +455,7 @@ module.exports = combineReducers({
     leftMenuTwo,
     leftMenuThree,
     tree,
+    filesObj,
     currentDirId,
     centerColumnDir,
     showMask,
