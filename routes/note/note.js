@@ -262,7 +262,7 @@ router.put('/update-file', async (ctx, next) => {
 })
 
 router.get("/get-file", async (ctx, next) => {
-    let fileId = ctx.query.fileId
+    let fileId = ctx.query.selectedFileId
     let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
     let file = await userfilesCollection.findOne({

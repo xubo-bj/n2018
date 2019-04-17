@@ -145,7 +145,8 @@ const centerColumnDir = (_id = shinelonId, action) => {
             }
         case RETURN_TO_PARENT_FOLDER:
             {
-                return action.parentDirId == null ? shinelonId : action.parentDirId
+                // return action.parentDirId == null ? shinelonId : action.parentDirId
+                return action.parentDirId
             }
         default:
             return _id
@@ -313,13 +314,13 @@ const editorState = (state = null, action) => {
                 return EditorState.createEmpty()
             }
         case DELETE_FILE_SUCCESS:
+        case RETURN_TO_PARENT_FOLDER:
             {
-                let contentState = action.contentState
-                if (contentState == null) {
-                    console.log("null ==========")
-                    return state
+                let rawContentState = action.rawContentState
+                if (rawContentState == null) {
+                    return null 
                 } else {
-                    return EditorState.createWithContent(contentState)
+                    return EditorState.createWithContent(convertFromRaw(rawContentState))
                 }
             }
         default:
@@ -343,6 +344,7 @@ const fileId = (id = null, action) => {
             }
         case GET_FILE_SUCCESS:
         case SELECT_DIR:
+        case RETURN_TO_PARENT_FOLDER:
             {
                 return action.fileId
             }

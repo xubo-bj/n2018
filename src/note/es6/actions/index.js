@@ -279,22 +279,24 @@ export const hide_center_file_menu = () => {
 }
 
 export const RETURN_TO_PARENT_FOLDER = "RETURN_TO_PARENT_FOLDER"
-export const return_to_parent_folder =(parentDirId)=>{
+export const return_to_parent_folder =(parentDirId,fileId,rawContentState)=>{
     console.log(RETURN_TO_PARENT_FOLDER)
     return{
         type:RETURN_TO_PARENT_FOLDER,
-        parentDirId
+        parentDirId,
+        fileId,
+        rawContentState
     }
 }
 
 export const DELETE_FILE_SUCCESS = "DELETE_FILE_SUCCESS"
-export const delete_file_success = (dirId,fileId,newDisplayFileId,contentState)=>{
+export const delete_file_success = (dirId,fileId,newDisplayFileId,rawContentState)=>{
     console.log(DELETE_FILE_SUCCESS)
     return{
         type:DELETE_FILE_SUCCESS,
         dirId,
         fileId,
         newDisplayFileId,
-        contentState
+        rawContentState
     }
 }

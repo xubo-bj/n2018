@@ -99,33 +99,38 @@ const mapDispatchToProps = dispatch => ({
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
-        let fileId = target.dataset.id
+        let selectedFileId = target.dataset.id
+
         dispatch((dispatch, getState) => {
-            let { filesObj } = getState()
-
-            if (filesObj[fileId] != undefined) {
-                dispatch(get_file_success(filesObj[fileId], fileId))
+            let { filesObj, fileId } = getState()
+            if (selectedFileId == fileId) {
+                return
             } else {
-                axios.get("note/get-file", {
-                    params: {
-                        fileId
-                    },
-                    headers: {
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    if (res.data.success == "ok") {
-                        dispatch(get_file_success(res.data.content, fileId))
-                    } else {
-
-                    }
-                }).catch(err => {
-                    console.log('err1', err);
-                    // dispatch(create_new_folder_failure())
-                })
+                if (filesObj[selectedFileId] != undefined) {
+                    dispatch(get_file_success(filesObj[selectedFileId], selectedFileId))
+                } else {
+                    axios.get("note/get-file", {
+                        params: {
+                            selectedFileId
+                        },
+                        headers: {
+                            'X-Requested-With': 'axios'
+                        },
+                        timeout: 1000, // default is `0` (no timeout),
+                        responseType: 'json' // default
+                    }).then(res => {
+                        if (res.data.success == "ok") {
+                            dispatch(get_file_success(res.data.content, selectedFileId))
+                        } else {
+                            console.log("success no",res.data)
+                        }
+                    }).catch(err => {
+                        console.log('err1', err);
+                        // dispatch(create_new_folder_failure())
+                    })
+                }
             }
+
 
         })
     },
@@ -248,12 +253,7 @@ const mapDispatchToProps = dispatch => ({
                 responseType: 'json' // default
             }).then(res => {
                 if (res.data.success === "ok") {
-                    if (res.data.content == null) {
-                        dispatch(delete_file_success(centerColumnDir, fileIdInProcessing, newDisplayFileId, res.data.content))
-                    } else {
-                        dispatch(delete_file_success(centerColumnDir, fileIdInProcessing, newDisplayFileId, convertFromRaw(res.data.content)))
-
-                    }
+                    dispatch(delete_file_success(centerColumnDir, fileIdInProcessing, newDisplayFileId, res.data.content))
                 }
             }).catch(err => {
                 console.log('err', err);
