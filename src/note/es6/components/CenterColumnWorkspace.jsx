@@ -104,7 +104,7 @@ const mapDispatchToProps = dispatch => ({
 
         dispatch((dispatch, getState) => {
             let {filesObj ,fileId, centerColumnDir, tree, editorState } = getState()
-            let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
+            let name = tree[centerColumnDir].files.filter(file => file._id == selectedFileId)[0].name
             let content = convertToRaw(editorState.getCurrentContent())
             if (selectedFileId == fileId) {
                 return
@@ -156,7 +156,7 @@ const mapDispatchToProps = dispatch => ({
                 } else {
                     axios.get("note/get-file", {
                         params: {
-                            fileId
+                            selectedFileId:fileId
                         },
                         headers: {
                             'X-Requested-With': 'axios'

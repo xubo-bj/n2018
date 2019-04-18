@@ -122,7 +122,8 @@ const currentDirId = (_id = shinelonId, action) => {
             }
         case RETURN_TO_PARENT_FOLDER:
             {
-                return action.parentDirId == null ? shinelonId : action.parentDirId
+                // return action.parentDirId == null ? shinelonId : action.parentDirId
+                return action.parentDirId
             }
         default:
             return _id
@@ -460,10 +461,10 @@ module.exports = combineReducers({
     filesObj,
     currentDirId,
     centerColumnDir,
-    showMask,
+    fileIdInProcessing,
     editorState,
     fileId,
     centerDirMenu,
     centerFileMenu,
-    fileIdInProcessing
+    showMask,
 })

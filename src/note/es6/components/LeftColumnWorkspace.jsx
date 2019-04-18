@@ -190,7 +190,7 @@ const mapDispatchToProps = dispatch => ({
                     dispatch(select_dir(dirId, fileId))
                     axios.get("note/get-file", {
                         params: {
-                            fileId
+                            selectedFileId:fileId
                         },
                         headers: {
                             'X-Requested-With': 'axios'

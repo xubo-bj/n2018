@@ -213,7 +213,6 @@ router.post('/create-file', async (ctx, next) => {
 router.put('/update-file', async (ctx, next) => {
     let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
-    console.log("body", ctx.request.body)
     let mtime = new Date()
     let {
         name,
