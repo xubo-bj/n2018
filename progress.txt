@@ -1,1 +1,1 @@
-centerColumn   deleteFile
+1.  文件名不能为空

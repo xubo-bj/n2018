@@ -143,10 +143,19 @@ const mapDispatchToProps = dispatch => ({
         }
         let dirId = target.dataset.id
         dispatch((dispatch, getState) => {
+            let { tree, filesObj, centerColumnDir, fileId, editorState } = getState(),
+                currentFiles = [...tree[centerColumnDir].files],
+                currentName = null,
+                currentContent = null
 
-            let { tree, filesObj } = getState()
-            let files = tree[dirId].files
-            if (files.length == 0) {
+            if (fileId != null) {
+                currentName = currentFiles.filter(file => file._id == fileId)[0].name
+                currentContent = convertToRaw(editorState.getCurrentContent())
+            }
+
+
+            let nextFiles = tree[dirId].files
+            if (nextFiles.length == 0) {
                 dispatch(no_file_in_folder(dirId))
             } else {
                 let fileId = tree[dirId].files[0]._id
@@ -175,6 +184,7 @@ const mapDispatchToProps = dispatch => ({
                     })
                 }
             }
+
 
             let d0 = tree[dirId]
             let arr = []
@@ -208,6 +218,12 @@ const mapDispatchToProps = dispatch => ({
                     console.log('err', err);
                     // dispatch(create_new_folder_failure())
                 })
+            }
+
+
+
+            if (fileId != null) {
+                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)
             }
 
         })

@@ -1,12 +1,13 @@
 import React from "react"
 import styles from "../../sass/CenterColumnToolbar.scss"
 import { connect } from 'react-redux'
-import { return_to_parent_folder ,
+import {
+    return_to_parent_folder,
     get_file_success,
 } from "../actions"
 import axios from "axios"
-import {updateFileInBackground} from "./utility"
-import {convertToRaw} from "draft-js"
+import { updateFileInBackground } from "./utility"
+import { convertToRaw } from "draft-js"
 
 
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -29,14 +30,19 @@ const mapDispatchToProps = dispatch => ({
         dispatch((dispatch, getState) => {
             let { tree, filesObj, centerColumnDir, fileId: currentFileId, editorState } = getState(),
                 parentDirId = tree[centerColumnDir].parentId,
-                name = tree[centerColumnDir].files.filter(file => file._id == currentFileId)[0].name,
-                content = convertToRaw(editorState.getCurrentContent())
-
-
+                currentfiles = [...tree[centerColumnDir].files],
+                files = tree[parentDirId].files
             if (parentDirId == null) {
                 return
             }
-            let files = tree[parentDirId].files
+            let currentName = null,
+                currentContent = null
+
+            if (currentfiles.length != 0) {
+                currentName = currentfiles.filter(file => file._id == currentFileId)[0].name,
+                currentContent = convertToRaw(editorState.getCurrentContent())
+            }
+
             if (files.length == 0) {
                 dispatch(return_to_parent_folder(parentDirId, null, null))
             } else {
@@ -57,7 +63,7 @@ const mapDispatchToProps = dispatch => ({
                     }).then(res => {
                         if (res.data.success == "ok") {
                             // dispatch(return_to_parent_folder(parentDirId, fileId, res.data.content))
-                            dispatch(get_file_success(res.data.content,nextFileId))
+                            dispatch(get_file_success(res.data.content, nextFileId))
                         } else {
 
                         }
@@ -67,14 +73,9 @@ const mapDispatchToProps = dispatch => ({
                     })
                 }
             }
-
-            updateFileInBackground(dispatch,currentFileId,centerColumnDir,name,content)
-
-// export const updateFileInBackground = (dispatch,fileId,dirId,name,content)=>{
-
-
-
-
+            if (currentfiles.length != 0) {
+                updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
+            }
         })
     }
 })
