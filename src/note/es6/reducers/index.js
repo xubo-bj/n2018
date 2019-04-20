@@ -257,7 +257,6 @@ const tree = (treeObj = {
             {
                 return Object.assign({}, treeObj, action.folders)
             }
-        case NO_FILE_IN_FOLDER:
         case CLICK_FOLDER_IN_CENTER_COLUMN:
             {
                 let targetDir = treeObj[action.dirId]

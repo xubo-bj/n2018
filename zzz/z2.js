@@ -1,4 +1,10 @@
-let o = {a:1,b:3}
-// let {a:"bx",b} = o
-let {a:ax,b} = o
-console.log(ax,b)
+let exec= function(arg){
+
+    if(typeof arg == "string"){
+
+    }
+    if(typeof arg == "function"){
+        arg(exec,getState)
+    }
+
+}
