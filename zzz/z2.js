@@ -1,10 +1,8 @@
-let exec= function(arg){
-
-    if(typeof arg == "string"){
-
-    }
-    if(typeof arg == "function"){
-        arg(exec,getState)
-    }
-
-}
+Promise.resolve(3).then(function(r){
+    console.log(r)
+})
+console.log("1")
+Promise.resolve(4).then(function(r){
+    console.log(r)
+})
+console.log("2")

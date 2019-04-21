@@ -3,17 +3,15 @@ import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
 import {
-    select_file,
     get_file_success,
     click_folder_in_center_column,
     no_file_in_folder,
-    fetch_folders,
     show_center_dir_menu,
     show_center_file_menu,
     delete_file_success,
 } from "../actions"
 import { convertToRaw } from 'draft-js';
-import {updateFileInBackground} from "./utility"
+import { updateFileInBackground, getFolders } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 
@@ -103,7 +101,7 @@ const mapDispatchToProps = dispatch => ({
         let selectedFileId = target.dataset.id
 
         dispatch((dispatch, getState) => {
-            let {filesObj ,fileId, centerColumnDir, tree, editorState } = getState()
+            let { filesObj, fileId, centerColumnDir, tree, editorState } = getState()
             let name = tree[centerColumnDir].files.filter(file => file._id == selectedFileId)[0].name
             let content = convertToRaw(editorState.getCurrentContent())
             if (selectedFileId == fileId) {
@@ -125,14 +123,14 @@ const mapDispatchToProps = dispatch => ({
                         if (res.data.success == "ok") {
                             dispatch(get_file_success(res.data.content, selectedFileId))
                         } else {
-                            console.log("success no",res.data)
+                            console.log("success no", res.data)
                         }
                     }).catch(err => {
                         console.log('err1', err);
                         // dispatch(create_new_folder_failure())
                     })
                 }
-                updateFileInBackground(dispatch,fileId,centerColumnDir,name,content)
+                updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
             }
         })
     },
@@ -165,7 +163,7 @@ const mapDispatchToProps = dispatch => ({
                 } else {
                     axios.get("note/get-file", {
                         params: {
-                            selectedFileId:fileId
+                            selectedFileId: fileId
                         },
                         headers: {
                             'X-Requested-With': 'axios'
@@ -185,42 +183,7 @@ const mapDispatchToProps = dispatch => ({
                 }
             }
 
-
-            let d0 = tree[dirId]
-            let arr = []
-            for (let i = 0; i < d0.dirs.length; i++) {
-                let d1 = tree[d0.dirs[i]._id]
-                if (d1 == undefined) {
-                    arr.push(d0.dirs[i]._id)
-                    continue
-                }
-                for (let j = 0; j < d1.dirs.length; j++) {
-                    let d2 = tree[d1.dirs[j]._id]
-                    if (d2 == undefined) {
-                        arr.push(d1.dirs[j]._id)
-                        continue
-                    }
-                }
-            }
-            if (arr.length > 0) {
-                axios.get("note/get-folders", {
-                    params: {
-                        ids: JSON.stringify(arr)
-                    },
-                    headers: {
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    dispatch(fetch_folders(res.data))
-                }).catch(err => {
-                    console.log('err', err);
-                    // dispatch(create_new_folder_failure())
-                })
-            }
-
-
+            getFolders(dispatch, dirId)
 
             if (fileId != null) {
                 updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)

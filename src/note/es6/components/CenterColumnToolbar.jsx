@@ -8,6 +8,7 @@ import {
 import axios from "axios"
 import { updateFileInBackground } from "./utility"
 import { convertToRaw } from "draft-js"
+import {isEqual} from "lodash"
 
 
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
@@ -35,12 +36,12 @@ const mapDispatchToProps = dispatch => ({
             if (parentDirId == null) {
                 return
             }
-            let currentName = null,
-                currentContent = null
+            let currentName = null
+            let currentContent = null
 
             if (currentfiles.length != 0) {
-                currentName = currentfiles.filter(file => file._id == currentFileId)[0].name,
-                currentContent = convertToRaw(editorState.getCurrentContent())
+                currentName = currentfiles.filter(file => file._id == currentFileId)[0].name
+               currentContent = convertToRaw(editorState.getCurrentContent())
             }
 
             if (files.length == 0) {
@@ -73,7 +74,9 @@ const mapDispatchToProps = dispatch => ({
                     })
                 }
             }
-            if (currentfiles.length != 0) {
+
+            let needUpdate= !isEqual(currentContent, filesObj[currentFileId])
+            if (currentfiles.length != 0 && needUpdate) {
                 updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
             }
         })

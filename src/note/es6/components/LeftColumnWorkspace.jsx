@@ -181,8 +181,11 @@ const mapDispatchToProps = dispatch => ({
             }
             dispatch((dispatch, getState) => {
 
-                let { tree } = getState()
+                let { tree,centerColumnDir } = getState()
                 let dirId = target.dataset.id
+                if(centerColumnDir == dirId){
+                    return
+                }
                 let files = tree[dirId].files
                 if (files.length == 0) {
                     dispatch(no_file_in_folder(dirId))
