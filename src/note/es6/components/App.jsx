@@ -2,15 +2,43 @@ import React from "react"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
 import { connect } from "react-redux"
-import { hide_left_menu_one, hide_left_menu_two, hide_left_menu_three ,
-hide_center_dir_menu,hide_center_file_menu} from "../actions"
+import　axios  from "axios"
+import {
+    hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
+    hide_center_dir_menu, hide_center_file_menu
+} from "../actions"
 import styles from "../../sass/App.scss"
-const App = ({ hideLeftMenu }) => (
-    <div onClick={hideLeftMenu} className={styles.container}>
-        <Header />
-        <Content />
-    </div>
-)
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    componentDidMount() {
+      window.addEventListener('beforeunload', function(event) {
+            axios.get("note/unload", {
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+            }).catch(err => {
+                console.log('err1', err);
+                // dispatch(create_new_folder_failure())
+            })
+          })
+    }
+    render() {
+        let { hideLeftMenu } = this.props
+        return (
+            <div onClick={hideLeftMenu} className={styles.container}>
+                <Header />
+                <Content />
+            </div>
+        )
+    }
+}
+
+
 const mapDispatchToProps = dispatch => ({
     hideLeftMenu: () => dispatch(
         (dispatch, getState) => {
@@ -32,10 +60,10 @@ const mapDispatchToProps = dispatch => ({
             if (leftMenuThree.display == "block") {
                 dispatch(hide_left_menu_three())
             }
-            if(centerDirMenu.display == "block"){
+            if (centerDirMenu.display == "block") {
                 dispatch(hide_center_dir_menu())
             }
-            if(centerFileMenu.display == "block"){
+            if (centerFileMenu.display == "block") {
                 dispatch(hide_center_file_menu())
             }
         })

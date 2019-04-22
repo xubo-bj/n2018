@@ -352,4 +352,7 @@ router.get('/test', async (ctx, next) => {
     }
 })
 
+router.get('/unload', async (ctx, next) => {
+    console.log("unload =========================================>")
+})
 module.exports = router

@@ -9,6 +9,10 @@
       window.addEventListener('unload', function(event) {
         console.log('I am the 4th and last one…');
       });
+      document.addEventListener("visibilitychange",function(e){
+        // console.log("document hidden",document.hidden)
+        console.log("document visibility",document.visibilityState)
+      })
     </script>
   </head>
   <body>

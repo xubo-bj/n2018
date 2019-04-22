@@ -46,7 +46,7 @@ class MyEditor extends React.Component {
   }
   componentDidMount(){
     if(this.props.initialRender){
-      console.log("-----------------Mount Mount ---------------------")
+      console.log("=================-=======Mount Mount ==============-======")
             axios.get("note/get-file", {
                 params: {
                    selectedFileId:this.props.fileId
