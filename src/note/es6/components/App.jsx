@@ -2,7 +2,11 @@ import React from "react"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
 import { connect } from "react-redux"
-import　axios  from "axios"
+import axios from "axios"
+import { isEqual } from "lodash"
+import { updateFileInBackground } from "./utility"
+import { convertToRaw } from "draft-js"
+
 import {
     hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
     hide_center_dir_menu, hide_center_file_menu
@@ -13,19 +17,9 @@ class App extends React.Component {
         super(props)
     }
     componentDidMount() {
-      window.addEventListener('beforeunload', function(event) {
-            axios.get("note/unload", {
-                headers: {
-                    'X-Requested-With': 'axios'
-                },
-                timeout: 1000, // default is `0` (no timeout),
-                responseType: 'json' // default
-            }).then(res => {
-            }).catch(err => {
-                console.log('err1', err);
-                // dispatch(create_new_folder_failure())
-            })
-          })
+        console.log("window :",window)
+        window.addEventListener('beforeunload', this.props.updateFile)
+        window.addEventListener("blur", this.props.updateFile)
     }
     render() {
         let { hideLeftMenu } = this.props
@@ -59,13 +53,35 @@ const mapDispatchToProps = dispatch => ({
             }
             if (leftMenuThree.display == "block") {
                 dispatch(hide_left_menu_three())
+                return
             }
             if (centerDirMenu.display == "block") {
                 dispatch(hide_center_dir_menu())
+                return
             }
             if (centerFileMenu.display == "block") {
                 dispatch(hide_center_file_menu())
             }
-        })
+        }),
+    updateFile: () => {
+        console.log("--------------------updatefile ===================")
+        dispatch((dispatch, getState) => {
+            let { fileId, centerColumnDir, editorState, filesObj, tree } = getState(),
+                currentfiles = [...tree[centerColumnDir].files],
+                currentName = null,
+                currentContent = null
+
+            if (fileId != null) {
+                currentName = currentfiles.filter(file => file._id == fileId)[0].name
+                currentContent = convertToRaw(editorState.getCurrentContent())
+            }
+            let needUpdate = !isEqual(currentContent, filesObj[fileId])
+            if (fileId != null && needUpdate) {
+                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)
+            }
+        }
+        )
+    }
+
 })
 export default connect(null, mapDispatchToProps)(App)

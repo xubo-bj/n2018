@@ -9,9 +9,8 @@ import axios from "axios"
 import { updateFileInBackground } from "./utility"
 import { convertToRaw } from "draft-js"
 import {isEqual} from "lodash"
-
-
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
+
 const CenterColumnToolbar = (props) =>
     <div className={styles.toolbar}>
         <i className={shinelonId == props.centerColumnDir ? styles["return-btn-root"] : styles["return-btn"]}
