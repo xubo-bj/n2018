@@ -229,9 +229,9 @@ const tree = (treeObj = {
                     mtime: time,
                     folded: true,
                     dirs: [],
-                    files: []
+                    files: [],
+                    parentId
                 }
-
                 let parentDir = treeObj[parentId]
                 let dirs = parentDir.dirs.filter(dir => dir.editable == null)
 
@@ -442,6 +442,10 @@ const filesObj = (obj = {}, action) => {
         case GET_FILE_SUCCESS:{
             obj[action.fileId] = action.content
             return Object.assign({},obj)
+        }
+        case DELETE_FILE_SUCCESS:{
+            delete filesObj[action.fileId]
+            return Object.assign({}, obj)
         }
         default:
             return obj

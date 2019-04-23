@@ -17,7 +17,6 @@ class App extends React.Component {
         super(props)
     }
     componentDidMount() {
-        console.log("window :",window)
         window.addEventListener('beforeunload', this.props.updateFile)
         window.addEventListener("blur", this.props.updateFile)
     }
@@ -64,7 +63,7 @@ const mapDispatchToProps = dispatch => ({
             }
         }),
     updateFile: () => {
-        console.log("--------------------updatefile ===================")
+        console.log("-------------------- lose focus ===================")
         dispatch((dispatch, getState) => {
             let { fileId, centerColumnDir, editorState, filesObj, tree } = getState(),
                 currentfiles = [...tree[centerColumnDir].files],

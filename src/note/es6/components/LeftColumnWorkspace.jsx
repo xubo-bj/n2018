@@ -10,7 +10,6 @@ import {
     show_left_menu_three,
     select_dir,
     toggle_dir,
-    fetch_folders,
     create_new_file_start,
     create_new_file_submit,
     create_new_file_success,
@@ -19,8 +18,9 @@ import {
     no_file_in_folder
 } from "../actions"
 import axios from 'axios';
-import { convertFromRaw } from 'draft-js';
-import {getFolders} from "./utility"
+import { convertToRaw } from 'draft-js';
+import { getFolders, updateFileInBackground } from "./utility"
+import { isEqual } from "lodash"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -125,15 +125,15 @@ const LeftColumnWorkspace = (props) => {
                 <i className={styles["my-dir-icon"]} />
                 <span className={styles["my-dir-name"]}>我的文件夹</span>
             </div>
-                <ul className={styles["pop-menu"]}
-                    style={{
-                        display: props.leftMenuTwo.display,
-                        left: props.leftMenuTwo.clientX + "px",
-                        top: props.leftMenuTwo.clientY + "px"
-                    }}>
-                    <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
-                    <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
-                </ul>
+            <ul className={styles["pop-menu"]}
+                style={{
+                    display: props.leftMenuTwo.display,
+                    left: props.leftMenuTwo.clientX + "px",
+                    top: props.leftMenuTwo.clientY + "px"
+                }}>
+                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
+                <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
+            </ul>
             <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
                 createNewFolderSumbit={createNewFolderSumbit} toggleDir={toggleDir}
                 centerColumnDir={centerColumnDir}
@@ -166,7 +166,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let target = e.target
-        if(target.textContent == "新建文件夹"){
+        if (target.textContent == "新建文件夹") {
             return
         }
         if (target.dataset.mark == "arrow-menu") {
@@ -181,9 +181,18 @@ const mapDispatchToProps = dispatch => ({
             }
             dispatch((dispatch, getState) => {
 
-                let { tree,centerColumnDir } = getState()
+                let { tree, centerColumnDir, fileId: currentFileId, editorState, filesObj } = getState(),
+                    currentfiles = [...tree[centerColumnDir].files],
+                    currentName = null,
+                    currentContent = null
+
+                if (currentfiles.length != 0) {
+                    currentName = currentfiles.filter(file => file._id == currentFileId)[0].name
+                    currentContent = convertToRaw(editorState.getCurrentContent())
+                }
+
                 let dirId = target.dataset.id
-                if(centerColumnDir == dirId){
+                if (centerColumnDir == dirId) {
                     return
                 }
                 let files = tree[dirId].files
@@ -194,7 +203,7 @@ const mapDispatchToProps = dispatch => ({
                     dispatch(select_dir(dirId, fileId))
                     axios.get("note/get-file", {
                         params: {
-                            selectedFileId:fileId
+                            selectedFileId: fileId
                         },
                         headers: {
                             'X-Requested-With': 'axios'
@@ -203,7 +212,7 @@ const mapDispatchToProps = dispatch => ({
                         responseType: 'json' // default
                     }).then(res => {
                         if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content,fileId))
+                            dispatch(get_file_success(res.data.content, fileId))
                         } else {
 
                         }
@@ -213,7 +222,13 @@ const mapDispatchToProps = dispatch => ({
                     })
 
                 }
-                getFolders(dispatch,dirId)
+                getFolders(dispatch, dirId)
+
+                let needUpdate = !isEqual(currentContent, filesObj[currentFileId])
+                    console.log("okok----------",needUpdate,currentFileId)
+                if (currentFileId != null && needUpdate) {
+                    updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
+                }
             })
         }
 
@@ -300,7 +315,7 @@ const mapDispatchToProps = dispatch => ({
     toggleDir: (e, _id) => {
         e.stopPropagation()
         dispatch(toggle_dir(_id))
-        getFolders(dispatch,_id)
+        getFolders(dispatch, _id)
     }
 })
 

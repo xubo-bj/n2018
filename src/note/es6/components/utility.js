@@ -59,7 +59,6 @@ export const updateFileInBackground = (dispatch,fileId,dirId,name,content)=>{
         timeout: 1000, // default is `0` (no timeout),
         responseType: 'json' // default
     }).then(res => {
-        console.log("4")
         let {
             success,
             mtime

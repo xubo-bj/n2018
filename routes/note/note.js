@@ -211,6 +211,7 @@ router.post('/create-file', async (ctx, next) => {
 })
 
 router.put('/update-file', async (ctx, next) => {
+    console.log("update----------file-----------------")
     let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
     let mtime = new Date()
@@ -267,8 +268,6 @@ router.get("/get-file", async (ctx, next) => {
     let file = await userfilesCollection.findOne({
         _id: new ObjectID(fileId)
     })
-    console.log("fileId",fileId)
-    console.log("file",file)
     if (file != null) {
         ctx.body = {
             success: "ok",
@@ -281,6 +280,7 @@ router.get("/get-file", async (ctx, next) => {
         }
     }
 })
+
 
 router.delete("/delete-file", async (ctx, next) => {
     let {
@@ -330,7 +330,6 @@ router.get('/test', async (ctx, next) => {
     let r = await client.connect()
     let userdirs = r.db(dbName).collection("userdirs")
     let x = await userdirs.drop()
-    // console.log("drop collection", x);
     let z = await userdirs.insertOne({
         _id: new ObjectID(shinelonId),
         desc: "rootDir",
@@ -340,10 +339,8 @@ router.get('/test', async (ctx, next) => {
         dirs: [],
         files: []
     })
-    // console.log("create new root",z)
     let userfiles = r.db(dbName).collection("userfiles")
     let y = await userfiles.drop()
-    // console.log("drop userfiles",y)
 
     ctx.body = {
         "drop collection": x,
@@ -352,7 +349,4 @@ router.get('/test', async (ctx, next) => {
     }
 })
 
-router.get('/unload', async (ctx, next) => {
-    console.log("unload =========================================>")
-})
 module.exports = router

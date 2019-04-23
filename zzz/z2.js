@@ -1,8 +1,3 @@
-Promise.resolve(3).then(function(r){
-    console.log(r)
-})
-console.log("1")
-Promise.resolve(4).then(function(r){
-    console.log(r)
-})
-console.log("2")
+let o = {a:1,b:2}
+delete o.a
+console.log(o)
