@@ -56,6 +56,17 @@ export const hide_left_menu_three = () => {
 /**
  * create new folder
  */
+export const EDIT_NEW_FOLDER_NAME = "EDIT_NEW_FOLDER_NAME"
+export const edit_new_folder_name = (name,currentDirId)=>{
+    console.log(EDIT_NEW_FOLDER_NAME)
+    return{
+        type:EDIT_NEW_FOLDER_NAME,
+        name,
+        currentDirId
+    }
+}
+
+
 export const CREATE_NEW_FOLDER_PROMPT = "CREATE_NEW_FOLDER_PROMPT"
 export const create_new_folder_prompt = (currentDirId) => {
     console.log(CREATE_NEW_FOLDER_PROMPT)
@@ -300,3 +311,4 @@ export const delete_file_success = (dirId,fileId,newDisplayFileId,rawContentStat
         rawContentState
     }
 }
+

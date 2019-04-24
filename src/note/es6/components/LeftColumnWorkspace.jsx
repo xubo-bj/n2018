@@ -6,6 +6,7 @@ import {
     create_new_folder_submit,
     create_new_folder_success,
     create_new_folder_failure,
+    edit_new_folder_name,
     show_left_menu_two,
     show_left_menu_three,
     select_dir,
@@ -26,7 +27,7 @@ const shinelonId = require("../../../../config").note.mongodb.shinelonId
 class DirTree extends React.Component {
     constructor(props) {
         super(props)
-        this.keydown = this.keydown.bind(this)
+        // this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
         if (this.editableElem != null) {
@@ -37,11 +38,14 @@ class DirTree extends React.Component {
             s.addRange(range);
         }
     }
-    keydown(e) {
-        if (e.keyCode == 13) {
-            e.preventDefault()
-            this.props.createNewFolderSumbit(this.editableElem.textContent.trim())
-        }
+    // keydown(e) {
+    //     if (e.keyCode == 13) {
+    //         e.preventDefault()
+    //         this.props.createNewFolderSumbit(this.editableElem.textContent.trim())
+    //     }
+    // }
+    clickInEditingFolder(e){
+        e.stopPropagation()
     }
     render() {
         let { _id, tree, centerColumnDir, level, createNewFolderSumbit, toggleDir } = this.props
@@ -96,7 +100,9 @@ class DirTree extends React.Component {
                                         <div className={styles.dir}>
                                             <i className={styles["dir-closed"]} />
                                             <span className={styles.dirName}
-                                                onKeyDown={this.keydown}
+                                                // onKeyDown={this.props.editFolderName}
+                                                onClick={this.clickInEditingFolder}
+                                                onInput={this.props.editFolderName}
                                                 ref={elem => this.editableElem = elem}
                                                 contentEditable={dir.editable}
                                             >{dir.name}</span>
@@ -114,7 +120,7 @@ class DirTree extends React.Component {
 }
 
 const LeftColumnWorkspace = (props) => {
-    const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir } = props
+    const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir,editFolderName } = props
     return (
         <div className={styles.workspace}>
             <div data-id={shinelonId}
@@ -137,7 +143,9 @@ const LeftColumnWorkspace = (props) => {
             <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
                 createNewFolderSumbit={createNewFolderSumbit} toggleDir={toggleDir}
                 centerColumnDir={centerColumnDir}
-                leftClickDir={leftClickDir} />
+                leftClickDir={leftClickDir}
+                editFolderName={editFolderName}
+                 />
             <ul className={styles["pop-menu"]}
                 style={{
                     display: props.leftMenuThree.display,
@@ -164,11 +172,54 @@ const mapStateToProps = state => {
     }
 }
 const mapDispatchToProps = dispatch => ({
+    editFolderName: e => {
+        console.log("e:::===",e.dataTransfer)
+        if (e.keyCode == 13) {
+            console.log("13")
+            e.preventDefault()
+            dispatch(create_new_folder_submit())
+            dispatch((dispatch, getState) => {
+                let currentDirId = getState().currentDirId
+                axios.post("note/create-folder/", {
+                    name: e.target.textContent,
+                    dirId: currentDirId
+                },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            'X-Requested-With': 'axios'
+                        },
+                        timeout: 1000, // default is `0` (no timeout),
+                        responseType: 'json' // default
+                    }).then(res => {
+                        console.log('res :', res.data);
+
+                        let { parentId, newId, name, time } = res.data
+                        dispatch(create_new_folder_success(parentId, newId, name, time))
+                    }).catch(err => {
+                        console.log('err', err);
+                        dispatch(create_new_folder_failure())
+                    })
+            })
+        } else {
+            console.log("input  else")
+            dispatch((dispatch, getState) => {
+                let { currentDirId } = getState()
+                dispatch(edit_new_folder_name(e.target.textContent, currentDirId))
+            })
+        }
+    },
     leftClickDir: e => {
-        let target = e.target
-        if (target.textContent == "新建文件夹") {
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().isTypingFolderName
+        })
+        if(editingFolderFlag){
             return
         }
+        console.log("stop ================")
+
+        let target = e.target
         if (target.dataset.mark == "arrow-menu") {
             e.stopPropagation()
             while (target.tagName.toLowerCase() != "li") {
@@ -225,7 +276,6 @@ const mapDispatchToProps = dispatch => ({
                 getFolders(dispatch, dirId)
 
                 let needUpdate = !isEqual(currentContent, filesObj[currentFileId])
-                    console.log("okok----------",needUpdate,currentFileId)
                 if (currentFileId != null && needUpdate) {
                     updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
                 }

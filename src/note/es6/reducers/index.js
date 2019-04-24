@@ -34,6 +34,7 @@ const {
     HIDE_CENTER_FILE_MENU,
     RETURN_TO_PARENT_FOLDER,
     DELETE_FILE_SUCCESS,
+    EDIT_NEW_FOLDER_NAME,
 
 } = require("../actions")
 
@@ -165,19 +166,25 @@ const tree = (treeObj = {
     [shinelonId]: defaultV
 }, action) => {
     switch (action.type) {
-        case CREATE_NEW_FOLDER_PROMPT:
-            {
-                let _id = action.currentDirId
-                let targetDir = treeObj[_id]
-                targetDir.folded = false
-                targetDir.dirs.push({
-                    editable: true,
-                    name: "新建文件夹"
-                })
-                return Object.assign({}, treeObj)
-            }
-        case CHANGE_FILE_NAME:
-            {
+        case CREATE_NEW_FOLDER_PROMPT: {
+            let _id = action.currentDirId
+            let targetDir = treeObj[_id]
+            targetDir.folded = false
+            targetDir.dirs.push({
+                editable: true,
+                name: "新建文件夹"
+            })
+            return Object.assign({}, treeObj)
+        }
+        case EDIT_NEW_FOLDER_NAME: {
+            let dirs = treeObj[action.currentDirId].dirs,
+                dir = dirs.filter(dir => dir.editable === true)[0]
+            console.log("action dirs :", dir)
+            dir.name = action.name
+            return Object.assign({}, treeObj)
+        }
+
+        case CHANGE_FILE_NAME: {
                 let {
                     name,
                     fileId,
@@ -456,6 +463,9 @@ const isTypingFolderName = (flag=false,action)=>{
     switch(action.type){
         case CREATE_NEW_FOLDER_PROMPT:{
             return true
+        }
+        case CREATE_NEW_FOLDER_SUCCESS:{
+            return false
         }
         default:
         return flag
