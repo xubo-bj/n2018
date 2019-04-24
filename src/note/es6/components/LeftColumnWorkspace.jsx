@@ -279,11 +279,15 @@ const mapDispatchToProps = dispatch => ({
     createNewFolderPrompt: () => {
         dispatch((dispatch, getState) => {
             let { currentDirId } = getState()
+
+
+
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
     createNewFilePrompt: () => {
         dispatch((dispatch, getState) => {
+
             let state = getState()
             let currentDirId = state.currentDirId
             dispatch(create_new_file_start(currentDirId))

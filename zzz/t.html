@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Child Frame</title>
-    <script>
-      window.addEventListener('beforeunload', function(event) {
-        console.log('I am the 2nd one.');
-      });
-      window.addEventListener('unload', function(event) {
-        console.log('I am the 4th and last one…');
-      });
-      document.addEventListener("visibilitychange",function(e){
-        // console.log("document hidden",document.hidden)
-        console.log("document visibility",document.visibilityState)
-      })
-    </script>
-  </head>
-  <body>
-      ☻
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <p>123</p>
+  </div>
+  <script>
+    let div = document.querySelector("div"),
+    p =document.querySelector("p")
+    div.onclick = function(){
+      console.log("div")
+    }
+    p.onclick = function(e){
+      // e.stopPropagation()
+      console.log("p")
+    }
+  </script>
+</body>
 </html>

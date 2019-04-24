@@ -452,6 +452,16 @@ const filesObj = (obj = {}, action) => {
     }
 }
 
+const isTypingFolderName = (flag=false,action)=>{
+    switch(action.type){
+        case CREATE_NEW_FOLDER_PROMPT:{
+            return true
+        }
+        default:
+        return flag
+    }
+}
+
 
 const {
     combineReducers
@@ -470,4 +480,5 @@ module.exports = combineReducers({
     centerDirMenu,
     centerFileMenu,
     showMask,
+    isTypingFolderName,
 })
