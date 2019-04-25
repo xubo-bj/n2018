@@ -15,10 +15,6 @@ store.subscribe(() => {
   console.log('store :', store.getState())
 })
 console.log('initial store',store.getState());
-window.onload = function(){
-  
-}
-
 
 ReactDOM.render(
   <Provider store={store}>

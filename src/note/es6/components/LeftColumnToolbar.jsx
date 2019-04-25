@@ -33,6 +33,13 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     displayLeftMenuOne: e => {
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
         e.stopPropagation()
         dispatch(show_left_menu_one())
     },

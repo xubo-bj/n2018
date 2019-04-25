@@ -74,6 +74,9 @@ const mapDispatchToProps = dispatch=>({
     createNewFile: () => {
         dispatch((dispatch, getState) => {
             let state = getState()
+            if(state.createNewFolder.isTypingFolderName){
+                return
+            }
             let currentDirId = state.currentDirId
             dispatch(create_new_file_start(currentDirId))
             let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name

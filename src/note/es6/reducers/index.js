@@ -1,3 +1,4 @@
+import React from "react"
 import {
     EditorState,
     convertFromRaw
@@ -459,18 +460,27 @@ const filesObj = (obj = {}, action) => {
     }
 }
 
-const isTypingFolderName = (flag=false,action)=>{
+
+const createNewFolder = (obj = {
+        newFolderRef: null,
+        isTypingFolderName: false
+    }, action) => {
     switch(action.type){
         case CREATE_NEW_FOLDER_PROMPT:{
-            return true
+            obj.newFolderRef = React.createRef();
+            obj.isTypingFolderName = true
+            return Object.assign({},obj)
         }
         case CREATE_NEW_FOLDER_SUCCESS:{
-            return false
+            obj.newFolderRef = null
+            obj.isTypingFolderName = false
+            return Object.assign({},obj)
         }
         default:
-        return flag
+        return obj
     }
 }
+
 
 
 const {
@@ -490,5 +500,5 @@ module.exports = combineReducers({
     centerDirMenu,
     centerFileMenu,
     showMask,
-    isTypingFolderName,
+    createNewFolder
 })

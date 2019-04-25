@@ -20,35 +20,37 @@ import {
 } from "../actions"
 import axios from 'axios';
 import { convertToRaw } from 'draft-js';
-import { getFolders, updateFileInBackground } from "./utility"
+import { getFolders, updateFileInBackground,submitCreateNewFolder } from "./utility"
 import { isEqual } from "lodash"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
     constructor(props) {
         super(props)
-        // this.keydown = this.keydown.bind(this)
+        this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
-        if (this.editableElem != null) {
+        if (this.props.newFolderRef != null && this.$li != null) {
             let s = window.getSelection();
             if (s.rangeCount > 0) s.removeAllRanges();
             let range = document.createRange();
-            range.selectNodeContents(this.editableElem);
+            range.selectNodeContents(this.props.newFolderRef.current);
             s.addRange(range);
         }
     }
-    // keydown(e) {
-    //     if (e.keyCode == 13) {
-    //         e.preventDefault()
-    //         this.props.createNewFolderSumbit(this.editableElem.textContent.trim())
-    //     }
-    // }
+    keydown(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault()
+            // this.props.createNewFolderSumbit(this.props.newFolderRef.current.textContent.trim())
+            this.props.createNewFolderSubmit()
+
+        }
+    }
     clickInEditingFolder(e){
         e.stopPropagation()
     }
     render() {
-        let { _id, tree, centerColumnDir, level, createNewFolderSumbit, toggleDir } = this.props
+        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir,newFolderRef } = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -85,25 +87,25 @@ class DirTree extends React.Component {
                                         <i className={styles["arrow-menu"]} data-mark="arrow-menu" />
                                     </div>
                                     <DirTree tree={tree} _id={dir._id} level={level + 1}
-                                        createNewFolderSumbit={createNewFolderSumbit}
+                                        createNewFolderSubmit={createNewFolderSubmit}
                                         toggleDir={toggleDir}
                                         centerColumnDir={centerColumnDir}
+                                        newFolderRef={newFolderRef}
                                     />
                                 </li>
                             )
                         } else {
                             return (
-                                <li Key={"editable"} className={styles.li}>
+                                <li Key={"editable"} className={styles.li} ref={elem=>this.$li=elem}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]} />
                                         <div className={styles.dir}>
                                             <i className={styles["dir-closed"]} />
                                             <span className={styles.dirName}
-                                                // onKeyDown={this.props.editFolderName}
+                                                onKeyDown={this.keydown}
                                                 onClick={this.clickInEditingFolder}
-                                                onInput={this.props.editFolderName}
-                                                ref={elem => this.editableElem = elem}
+                                                ref={newFolderRef}
                                                 contentEditable={dir.editable}
                                             >{dir.name}</span>
                                         </div>
@@ -120,7 +122,8 @@ class DirTree extends React.Component {
 }
 
 const LeftColumnWorkspace = (props) => {
-    const { tree, rightClickDir, createNewFolderSumbit, toggleDir, leftClickDir, centerColumnDir,editFolderName } = props
+    const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
+         centerColumnDir,newFolderRef} = props
     return (
         <div className={styles.workspace}>
             <div data-id={shinelonId}
@@ -141,10 +144,10 @@ const LeftColumnWorkspace = (props) => {
                 <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
             </ul>
             <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
-                createNewFolderSumbit={createNewFolderSumbit} toggleDir={toggleDir}
+                createNewFolderSubmit={createNewFolderSubmit} toggleDir={toggleDir}
                 centerColumnDir={centerColumnDir}
                 leftClickDir={leftClickDir}
-                editFolderName={editFolderName}
+                newFolderRef={newFolderRef}
                  />
             <ul className={styles["pop-menu"]}
                 style={{
@@ -168,56 +171,19 @@ const mapStateToProps = state => {
         centerColumnDir: state.centerColumnDir,
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
-        tree: state.tree
+        tree: state.tree,
+        newFolderRef:state.createNewFolder.newFolderRef
     }
 }
 const mapDispatchToProps = dispatch => ({
-    editFolderName: e => {
-        console.log("e:::===",e.dataTransfer)
-        if (e.keyCode == 13) {
-            console.log("13")
-            e.preventDefault()
-            dispatch(create_new_folder_submit())
-            dispatch((dispatch, getState) => {
-                let currentDirId = getState().currentDirId
-                axios.post("note/create-folder/", {
-                    name: e.target.textContent,
-                    dirId: currentDirId
-                },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            'X-Requested-With': 'axios'
-                        },
-                        timeout: 1000, // default is `0` (no timeout),
-                        responseType: 'json' // default
-                    }).then(res => {
-                        console.log('res :', res.data);
-
-                        let { parentId, newId, name, time } = res.data
-                        dispatch(create_new_folder_success(parentId, newId, name, time))
-                    }).catch(err => {
-                        console.log('err', err);
-                        dispatch(create_new_folder_failure())
-                    })
-            })
-        } else {
-            console.log("input  else")
-            dispatch((dispatch, getState) => {
-                let { currentDirId } = getState()
-                dispatch(edit_new_folder_name(e.target.textContent, currentDirId))
-            })
-        }
-    },
     leftClickDir: e => {
         let editingFolderFlag = false
         dispatch((dispatch,getState)=>{
-            editingFolderFlag = getState().isTypingFolderName
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
         if(editingFolderFlag){
             return
         }
-        console.log("stop ================")
 
         let target = e.target
         if (target.dataset.mark == "arrow-menu") {
@@ -285,43 +251,35 @@ const mapDispatchToProps = dispatch => ({
     },
     rightClickRootDir: e => {
         e.preventDefault()
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
         dispatch((dispatch, getState) => {
             dispatch(show_left_menu_two(e.clientX, e.clientY))
         })
     },
     rightClickDir: e => {
         e.preventDefault()
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
         dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
     },
-    createNewFolderSumbit: (name) => {
-        dispatch(create_new_folder_submit())
-        dispatch((dispatch, getState) => {
-            let currentDirId = getState().currentDirId
-            axios.post("note/create-folder/", {
-                name,
-                dirId: currentDirId
-            },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    console.log('res :', res.data);
-
-                    let { parentId, newId, name, time } = res.data
-                    dispatch(create_new_folder_success(parentId, newId, name, time))
-                }).catch(err => {
-                    console.log('err', err);
-                    dispatch(create_new_folder_failure())
-                })
-        })
+    createNewFolderSubmit: () => {
+        submitCreateNewFolder(dispatch)
     },
     createNewFolderPromptInRoot: () => {
         dispatch(create_new_folder_prompt(shinelonId))
@@ -367,6 +325,13 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     toggleDir: (e, _id) => {
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
         e.stopPropagation()
         dispatch(toggle_dir(_id))
         getFolders(dispatch, _id)
