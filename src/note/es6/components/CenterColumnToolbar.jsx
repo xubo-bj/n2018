@@ -8,7 +8,7 @@ import {
 import axios from "axios"
 import { updateFileInBackground } from "./utility"
 import { convertToRaw } from "draft-js"
-import {isEqual} from "lodash"
+import { isEqual } from "lodash"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 const CenterColumnToolbar = (props) =>
@@ -26,12 +26,15 @@ const mapStateToProps = state => ({
     centerColumnDir: state.centerColumnDir
 })
 const mapDispatchToProps = dispatch => ({
-    returnToParentDir: e => {
+    returnToParentDir: e =>
         dispatch((dispatch, getState) => {
-            let { tree, filesObj, centerColumnDir, fileId: currentFileId, editorState } = getState(),
+            let { createNewFolder, tree, filesObj, centerColumnDir, fileId: currentFileId, editorState } = getState(),
                 parentDirId = tree[centerColumnDir].parentId,
                 currentfiles = [...tree[centerColumnDir].files],
                 files = tree[parentDirId].files
+            if (createNewFolder.isTypingFolderName) {
+                return
+            }
             if (parentDirId == null) {
                 return
             }
@@ -40,7 +43,7 @@ const mapDispatchToProps = dispatch => ({
 
             if (currentfiles.length != 0) {
                 currentName = currentfiles.filter(file => file._id == currentFileId)[0].name
-               currentContent = convertToRaw(editorState.getCurrentContent())
+                currentContent = convertToRaw(editorState.getCurrentContent())
             }
 
             if (files.length == 0) {
@@ -74,12 +77,11 @@ const mapDispatchToProps = dispatch => ({
                 }
             }
 
-            let needUpdate= !isEqual(currentContent, filesObj[currentFileId])
+            let needUpdate = !isEqual(currentContent, filesObj[currentFileId])
             if (currentfiles.length != 0 && needUpdate) {
                 updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
             }
         })
-    }
 })
 export default connect(
     mapStateToProps,

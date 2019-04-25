@@ -45,10 +45,12 @@ const mapDispatchToProps = dispatch => ({
     updateFile: () => {
         // dispatch(updateFile)
         dispatch((dispatch, getState) => {
-            let { fileId, centerColumnDir, tree, editorState } = getState()
+            let { fileId,createNewFolder, centerColumnDir, tree, editorState } = getState()
+            if(createNewFolder.isTypingFolderName){
+                return
+            }
             let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
             let content = convertToRaw(editorState.getCurrentContent())
-            console.log("content --------",content)
             updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
         })
     }

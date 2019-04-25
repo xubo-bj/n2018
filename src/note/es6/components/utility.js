@@ -1,13 +1,19 @@
-import { update_file_success,
+import {
+    update_file_success,
     update_file_failure,
-    fetch_folders
+    fetch_folders,
+    create_new_folder_submit,
+    create_new_folder_success,
+    create_new_folder_failure
 } from "../actions"
 
 import axios from "axios"
 
 export const getFolders = (dispatch, dirId) => {
     dispatch((dispatch, getState) => {
-        let { tree } = getState()
+        let {
+            tree
+        } = getState()
         let d0 = tree[dirId]
         let arr = []
         for (let i = 0; i < d0.dirs.length; i++) {
@@ -45,7 +51,7 @@ export const getFolders = (dispatch, dirId) => {
 }
 
 
-export const updateFileInBackground = (dispatch,fileId,dirId,name,content)=>{
+export const updateFileInBackground = (dispatch, fileId, dirId, name, content) => {
     axios.put("note/update-file", {
         name,
         content,
@@ -69,5 +75,37 @@ export const updateFileInBackground = (dispatch,fileId,dirId,name,content)=>{
     }).catch(err => {
         console.log('err', err);
         dispatch(update_file_failure())
+    })
+}
+export const submitCreateNewFolder = (dispatch) => {
+    dispatch(create_new_folder_submit())
+    dispatch((dispatch, getState) => {
+        let {
+            createNewFolder,
+            currentDirId
+        } = getState()
+        let name = createNewFolder.newFolderRef.current.textContent.trim()
+        axios.post("note/create-folder/", {
+            name,
+            dirId: currentDirId
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                'X-Requested-With': 'axios'
+            },
+            timeout: 1000, // default is `0` (no timeout),
+            responseType: 'json' // default
+        }).then(res => {
+            let {
+                parentId,
+                newId,
+                name,
+                time
+            } = res.data
+            dispatch(create_new_folder_success(parentId, newId, name, time))
+        }).catch(err => {
+            console.log('err', err);
+            dispatch(create_new_folder_failure())
+        })
     })
 }

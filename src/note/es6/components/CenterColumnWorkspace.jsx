@@ -88,12 +88,22 @@ const mapStateToProps = state => {
         files: current.files.length > 0 ? [...current.files] : null,
         fileId: state.fileId,
         centerDirMenu: state.centerDirMenu,
-        centerFileMenu: state.centerFileMenu
+        centerFileMenu: state.centerFileMenu,
     }
 }
 
 const mapDispatchToProps = dispatch => ({
     selectFile: e => {
+
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
+
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
@@ -135,6 +145,15 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     openFolder: e => {
+
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
+        
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
@@ -194,6 +213,15 @@ const mapDispatchToProps = dispatch => ({
     },
     showDirMenu: e => {
         e.preventDefault()
+
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
@@ -202,6 +230,15 @@ const mapDispatchToProps = dispatch => ({
     },
     showFileMenu: e => {
         e.preventDefault()
+
+        let editingFolderFlag = false
+        dispatch((dispatch,getState)=>{
+            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        })
+        if(editingFolderFlag){
+            return
+        }
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
