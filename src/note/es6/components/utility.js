@@ -70,7 +70,7 @@ export const updateFileInBackground = (dispatch, fileId, dirId, name, content) =
             mtime
         } = res.data
         if (success) {
-            dispatch(update_file_success(mtime, fileId, dirId, content))
+            dispatch(update_file_success(mtime, fileId, dirId, content,name))
         }
     }).catch(err => {
         console.log('err', err);

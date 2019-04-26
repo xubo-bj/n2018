@@ -194,14 +194,15 @@ export const create_new_file_failure = () => {
 
 
 export const UPDATE_FILE_SUCCESS = "UPDATE_FILE_SUCCESS"
-export const update_file_success = (mtime, fileId, dirId,rawContentState) => {
+export const update_file_success = (mtime, fileId, dirId,rawContentState,name) => {
     console.log(UPDATE_FILE_SUCCESS)
     return {
         type: UPDATE_FILE_SUCCESS,
         mtime,
         fileId,
          dirId,
-        rawContentState
+        rawContentState,
+        name
     }
 }
 
@@ -224,12 +225,13 @@ export const select_file = (fileId) => {
 }
 
 export const GET_FILE_SUCCESS = "GET_FILE_SUCCESS"
-export const get_file_success = (content,fileId) => {
+export const get_file_success = (content,fileId,name) => {
     console.log(GET_FILE_SUCCESS)
     return {
         type: GET_FILE_SUCCESS,
         content,
-        fileId
+        fileId,
+        name
     }
 }
 

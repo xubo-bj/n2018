@@ -49,9 +49,10 @@ const mapDispatchToProps = dispatch => ({
             if (files.length == 0) {
                 dispatch(return_to_parent_folder(parentDirId, null, null))
             } else {
-                let nextFileId = files[0]._id
+                let nextFileId = files[0]._id,
+                    nextFileName = files[0].name
                 if (filesObj[nextFileId] != undefined) {
-                    dispatch(return_to_parent_folder(parentDirId, nextFileId, filesObj[nextFileId]))
+                    dispatch(return_to_parent_folder(parentDirId, nextFileId, filesObj[nextFileId].content))
                 } else {
                     dispatch(return_to_parent_folder(parentDirId, nextFileId, null))
                     axios.get("note/get-file", {
@@ -66,7 +67,7 @@ const mapDispatchToProps = dispatch => ({
                     }).then(res => {
                         if (res.data.success == "ok") {
                             // dispatch(return_to_parent_folder(parentDirId, fileId, res.data.content))
-                            dispatch(get_file_success(res.data.content, nextFileId))
+                            dispatch(get_file_success(res.data.content, nextFileId, nextFileName))
                         } else {
 
                         }
@@ -77,7 +78,7 @@ const mapDispatchToProps = dispatch => ({
                 }
             }
 
-            let needUpdate = !isEqual(currentContent, filesObj[currentFileId])
+            let needUpdate = !isEqual(currentContent, filesObj[currentFileId].content)
             if (currentfiles.length != 0 && needUpdate) {
                 updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
             }

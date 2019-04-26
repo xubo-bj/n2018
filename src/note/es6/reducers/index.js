@@ -444,7 +444,10 @@ const fileIdInProcessing = (fileId = null, action) => {
 const filesObj = (obj = {}, action) => {
     switch (action.type) {
         case UPDATE_FILE_SUCCESS:{
-            obj[action.fileId] = action.rawContentState
+            obj[action.fileId] = {
+                name: action.name,
+                content: action.rawContentState
+            }
             return Object.assign({},obj)
         }
         case GET_FILE_SUCCESS:{

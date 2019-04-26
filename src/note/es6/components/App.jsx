@@ -90,7 +90,7 @@ const mapDispatchToProps = dispatch => ({
                 currentName = currentfiles.filter(file => file._id == fileId)[0].name
                 currentContent = convertToRaw(editorState.getCurrentContent())
             }
-            let needUpdate = !isEqual(currentContent, filesObj[fileId])
+            let needUpdate= !isEqual(currentContent, filesObj[fileId].content)
             if (fileId != null && needUpdate) {
                 updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)
             }

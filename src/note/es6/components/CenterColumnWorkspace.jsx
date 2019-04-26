@@ -118,7 +118,7 @@ const mapDispatchToProps = dispatch => ({
                 return
             } else {
                 if (filesObj[selectedFileId] != undefined) {
-                    dispatch(get_file_success(filesObj[selectedFileId], selectedFileId))
+                    dispatch(get_file_success(filesObj[selectedFileId].content, selectedFileId, filesObj[selectedFileId].name))
                 } else {
                     axios.get("note/get-file", {
                         params: {
@@ -131,7 +131,7 @@ const mapDispatchToProps = dispatch => ({
                         responseType: 'json' // default
                     }).then(res => {
                         if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, selectedFileId))
+                            dispatch(get_file_success(res.data.content, selectedFileId,name))
                         } else {
                             console.log("success no", res.data)
                         }
@@ -175,10 +175,11 @@ const mapDispatchToProps = dispatch => ({
             if (nextFiles.length == 0) {
                 dispatch(no_file_in_folder(dirId))
             } else {
-                let fileId = tree[dirId].files[0]._id
+                let fileId = tree[dirId].files[0]._id,
+                name = tree[dirId].files[0].name
                 dispatch(click_folder_in_center_column(dirId))
                 if (filesObj[fileId] != undefined) {
-                    dispatch(get_file_success(filesObj[fileId], fileId))
+                    dispatch(get_file_success(filesObj[fileId].content, fileId, filesObj[fileId].name))
                 } else {
                     axios.get("note/get-file", {
                         params: {
@@ -191,7 +192,7 @@ const mapDispatchToProps = dispatch => ({
                         responseType: 'json' // default
                     }).then(res => {
                         if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, fileId))
+                            dispatch(get_file_success(res.data.content, fileId,name))
                         } else {
 
                         }

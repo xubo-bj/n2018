@@ -216,32 +216,38 @@ const mapDispatchToProps = dispatch => ({
                 if (files.length == 0) {
                     dispatch(no_file_in_folder(dirId))
                 } else {
-                    let fileId = tree[dirId].files[0]._id
+                    let fileId = tree[dirId].files[0]._id,
+                        name = tree[dirId].files[0].name
                     dispatch(select_dir(dirId, fileId))
-                    axios.get("note/get-file", {
-                        params: {
-                            selectedFileId: fileId
-                        },
-                        headers: {
-                            'X-Requested-With': 'axios'
-                        },
-                        timeout: 1000, // default is `0` (no timeout),
-                        responseType: 'json' // default
-                    }).then(res => {
-                        if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, fileId))
-                        } else {
+                    if (filesObj[fileId] != undefined) {
+                        dispatch(get_file_success(filesObj[fileId].content, fileId, filesObj[fileId].name))
+                    } else {
 
-                        }
-                    }).catch(err => {
-                        console.log('err1', err);
-                        // dispatch(create_new_folder_failure())
-                    })
+                        axios.get("note/get-file", {
+                            params: {
+                                selectedFileId: fileId
+                            },
+                            headers: {
+                                'X-Requested-With': 'axios'
+                            },
+                            timeout: 1000, // default is `0` (no timeout),
+                            responseType: 'json' // default
+                        }).then(res => {
+                            if (res.data.success == "ok") {
+                                dispatch(get_file_success(res.data.content, fileId, name))
+                            } else {
 
+                            }
+                        }).catch(err => {
+                            console.log('err1', err);
+                            // dispatch(create_new_folder_failure())
+                        })
+
+                    }
                 }
                 getFolders(dispatch, dirId)
 
-                let needUpdate = !isEqual(currentContent, filesObj[currentFileId])
+                let needUpdate = !isEqual(currentContent, filesObj[currentFileId].content)
                 if (currentFileId != null && needUpdate) {
                     updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
                 }

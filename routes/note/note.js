@@ -60,13 +60,7 @@ router.get('/', async (ctx, next) => {
     let initialState = {}
     initialState.tree = treeObj
     if (d0.files.length > 0) {
-        let fileId = d0.files[0]._id
-        initialState.fileId = fileId
-        // let userfilesCollection = dbConn.db(dbName).collection(userfiles)
-        // let file = await userfilesCollection.findOne({
-        //     _id: new ObjectID(fileId)
-        // })
-        // initialState.editorState = EditorState.createWithContent(convertFromRaw(file.content)) 
+        initialState.fileId = d0.files[0]._id
     }
 
     const store = createStore(reducer, initialState)

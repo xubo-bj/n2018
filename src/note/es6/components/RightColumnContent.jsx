@@ -1,9 +1,10 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
-import { Editor, EditorState ,convertFromRaw} from 'draft-js';
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import { change_editor_state ,get_file_success} from "../actions"
+import { change_editor_state, get_file_success } from "../actions"
 import axios from 'axios';
+const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class Toolbar extends React.Component {
   render() {
@@ -16,7 +17,7 @@ class Toolbar extends React.Component {
 }
 
 const mapStateToPropsOnToolbar = state => {
-  return{
+  return {
   }
 }
 
@@ -44,29 +45,33 @@ class MyEditor extends React.Component {
       }
     };
   }
-  componentDidMount(){
-    if(this.props.initialRender){
-      console.log("=================-=======Mount Mount ==============-======")
-            axios.get("note/get-file", {
-                params: {
-                   selectedFileId:this.props.fileId
-                },
-                headers: {
-                    'X-Requested-With': 'axios'
-                },
-                timeout: 1000, // default is `0` (no timeout),
-                responseType: 'json' // default
-            }).then(res => {
-                if (res.data.success == "ok") {
-                  this.props.fetchInitailFileContent(res.data.content,this.props.fileId)
-                } else {
+  componentDidMount() {
+    if (this.props.initialRender) {
+      if (this.props.fileId != null) {
+        let tree = this.props.tree,
+          fileName = tree[shinelonId].files.filter(file => file._id == this.props.fileId)[0].name
 
-                }
-            }).catch(err => {
-                console.log('err1', err);
-                // dispatch(create_new_folder_failure())
-            })
+        axios.get("note/get-file", {
+          params: {
+            selectedFileId: this.props.fileId
+          },
+          headers: {
+            'X-Requested-With': 'axios'
+          },
+          timeout: 1000, // default is `0` (no timeout),
+          responseType: 'json' // default
+        }).then(res => {
+          if (res.data.success == "ok") {
+            this.props.fetchInitailFileContent(res.data.content, this.props.fileId, fileName)
+          } else {
+
           }
+        }).catch(err => {
+          console.log('err1', err);
+          // dispatch(create_new_folder_failure())
+        })
+      }
+    }
   }
 
   render() {
@@ -83,21 +88,22 @@ class MyEditor extends React.Component {
 }
 
 const mapStateToPropsOnMyEditor = state => {
-  return{
-    editorState:state.editorState == null ?EditorState.createEmpty():state.editorState,
-    fileId:state.fileId,
-    initialRender:state.editorState == null ? true:false,
+  return {
+    editorState: state.editorState == null ? EditorState.createEmpty() : state.editorState,
+    fileId: state.fileId,
+    initialRender: state.editorState == null ? true : false,
+    tree:state.tree
   }
 }
 const mapDispatchToPropsOnMyEditor = dispatch => ({
-  onChangeEditorState:(editorState)=>{
+  onChangeEditorState: (editorState) => {
     dispatch(change_editor_state(editorState))
   },
-  fetchInitailFileContent: (content,fileId) => {
-    dispatch(get_file_success(content,fileId))
+  fetchInitailFileContent: (content, fileId, name) => {
+    dispatch(get_file_success(content, fileId, name))
   }
 })
-const MyEditorBindingRedux = connect(mapStateToPropsOnMyEditor,mapDispatchToPropsOnMyEditor)(MyEditor)
+const MyEditorBindingRedux = connect(mapStateToPropsOnMyEditor, mapDispatchToPropsOnMyEditor)(MyEditor)
 
 
 
