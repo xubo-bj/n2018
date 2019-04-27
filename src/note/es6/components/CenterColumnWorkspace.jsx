@@ -13,97 +13,132 @@ import {
     rename_file_prompt,
 } from "../actions"
 import { convertToRaw } from 'draft-js';
-import { updateFileInBackground, getFolders,switchFile } from "./utility"
+import { updateFileInBackground,confirmNewFileName, getFolders, switchFile } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
+class CenterColumnWorkspace extends React.Component {
+    constructor(props){
+        super(props)
+        this.confirmFileName = this.confirmFileName.bind(this)
+    }
+    componentDidUpdate() {
+        let fileRef = this.props.renameFileState.fileRef
+        if (fileRef!= null) {
+            let s = window.getSelection();
+            if (s.rangeCount > 0) s.removeAllRanges();
+            let range = document.createRange();
+            range.selectNodeContents(fileRef.current);
+            s.addRange(range);
+        }
+    }
+    confirmFileName(e){
+        console.log("keydown ------------")
+        if (e.keyCode == 13) {
+            e.preventDefault()
+        this.props.confirmFileName()
+        }
+    }
+    clickInEditingFolder(e){
+        e.stopPropagation()
+    }
+    render() {
+        let {openFolder,showDirMenu,dirs,centerDirMenu,selectFile,
+            renameFileState,
+            deleleFile,renameFile,fileId,showFileMenu,files,centerFileMenu} = this.props
+        return (
+            <div className={styles.workspace}>
+                <ul className={styles["ul-dirs"]}
+                    onClick={openFolder}
+                    onContextMenu={showDirMenu}
+                >
+                    {dirs && dirs.map(dir => {
+                        if (dir.editable) {
+                            return null
+                        } else {
+                            return (
+                                <li Key={dir._id} className={styles["li-dir"]} data-id={dir._id}>
+                                    <svg className={styles["dir-icon"]}>
+                                        <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
+                                    </svg>
+                                    <span className={styles["dir-name"]}>{dir.name}</span>
+                                    <span className={styles["dir-mtime"]}>{convertTimeFormat(dir.mtime)}</span>
+                                </li>
+                            )
 
-const CenterColumnWorkspace = props => {
-    return (
-        <div className={styles.workspace}>
-            <ul className={styles["ul-dirs"]}
-                onClick={props.openFolder}
-                onContextMenu={props.showDirMenu}
-            >
-                {props.dirs && props.dirs.map(dir => {
-                    if (dir.editable) {
-                        return null
-                    } else {
-                        return (
-                            <li Key={dir._id} className={styles["li-dir"]} data-id={dir._id}>
-                                <svg className={styles["dir-icon"]}>
-                                    <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
-                                </svg>
-                                <span className={styles["dir-name"]}>{dir.name}</span>
-                                <span className={styles["dir-mtime"]}>{convertTimeFormat(dir.mtime)}</span>
-                            </li>
-                        )
-
+                        }
+                    })
                     }
-                })
-                }
-            </ul>
-            <ul className={styles["pop-menu"]}
-                style={{
-                    display: props.centerDirMenu.display,
-                    left: props.centerDirMenu.clientX + "px",
-                    top: props.centerDirMenu.clientY + "px"
-                }} >
-                <li className={styles["menu-option"]}>重命名</li>
-                <li className={styles["menu-option"]}>移动到</li>
-                <li className={styles["menu-option"]}>复制</li>
-                <li className={styles["menu-option"]}>删除</li>
-            </ul>
-            <ul className={styles["ul-files"]}
-                onClick={props.selectFile}
-                onContextMenu={props.showFileMenu}>
-                {props.files && props.files.map(file => {
-                    if(file.editable != true){
-                    return (
-                        <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
-                            <svg className={styles["file-icon"]}>
-                                <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
-                            </svg>
-                            <span className={styles["file-name"]}>{file.name}</span>
-                            <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
-                        </li>
-                    )
+                </ul>
+                <ul className={styles["pop-menu"]}
+                    style={{
+                        display: centerDirMenu.display,
+                        left: centerDirMenu.clientX + "px",
+                        top: centerDirMenu.clientY + "px"
+                    }} >
+                    <li className={styles["menu-option"]}>重命名</li>
+                    <li className={styles["menu-option"]}>移动到</li>
+                    <li className={styles["menu-option"]}>复制</li>
+                    <li className={styles["menu-option"]}>删除</li>
+                </ul>
+                <ul className={styles["ul-files"]}
+                    onClick={selectFile}
+                    onContextMenu={showFileMenu}>
+                    {files && files.map(file => {
+                        if (file.editable != true) {
+                            return (
+                                <li Key={file._id} className={file._id != fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
+                                    <svg className={styles["file-icon"]}>
+                                        <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
+                                    </svg>
+                                    <span className={styles["file-name"]}>{file.name}</span>
+                                    <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
+                                </li>
+                            )
 
-                    }else{
-                        return(
-                        <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
-                            <svg className={styles["file-icon"]}>
-                                <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
-                            </svg>
-                            <span className={styles["file-name"]} contentEditable={true}>{file.name}</span>
-                            <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
-                        </li>
-                        )
+                        } else {
+                            return (
+                                <li Key={file._id} className={file._id != fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
+                                    <svg className={styles["file-icon"]}>
+                                        <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
+                                    </svg>
+                                    <span className={styles["file-name"]}
+                                        onClick={this.clickInEditingFolder}
+                                        ref={renameFileState.fileRef}
+                                        onKeyDown={this.confirmFileName}
+                                     contentEditable={true}>{file.name}</span>
+                                    <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
+                                </li>
+                            )
+                        }
+                    })
                     }
-                })
-                }
-            </ul>
-            <ul className={styles["pop-menu"]}
-                style={{
-                    display: props.centerFileMenu.display,
-                    left: props.centerFileMenu.clientX + "px",
-                    top: props.centerFileMenu.clientY + "px"
-                }} >
-                <li className={styles["menu-option"]} onClick={props.renameFile}>重命名</li>
-                <li className={styles["menu-option"]}>移动到</li>
-                <li className={styles["menu-option"]}>复制</li>
-                <li className={styles["menu-option"]} onClick={props.deleleFile}>删除</li>
-            </ul>
-        </div>
-    )
+                </ul>
+                <ul className={styles["pop-menu"]}
+                    style={{
+                        display: centerFileMenu.display,
+                        left: centerFileMenu.clientX + "px",
+                        top: centerFileMenu.clientY + "px"
+                    }} >
+                    <li className={styles["menu-option"]} onClick={renameFile}>重命名</li>
+                    <li className={styles["menu-option"]}>移动到</li>
+                    <li className={styles["menu-option"]}>复制</li>
+                    <li className={styles["menu-option"]} onClick={deleleFile}>删除</li>
+                </ul>
+            </div>
+        )
+    }
 }
+
 const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
+    let {renameFileState} = state
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
         fileId: state.fileId,
         centerDirMenu: state.centerDirMenu,
         centerFileMenu: state.centerFileMenu,
+        renameFileState
     }
 }
 
@@ -111,10 +146,10 @@ const mapDispatchToProps = dispatch => ({
     selectFile: e => {
 
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
 
@@ -128,13 +163,13 @@ const mapDispatchToProps = dispatch => ({
     openFolder: e => {
 
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
-        
+
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
@@ -157,7 +192,7 @@ const mapDispatchToProps = dispatch => ({
                 dispatch(no_file_in_folder(dirId))
             } else {
                 let fileId = tree[dirId].files[0]._id,
-                name = tree[dirId].files[0].name
+                    name = tree[dirId].files[0].name
                 dispatch(click_folder_in_center_column(dirId))
                 if (filesObj[fileId] != undefined) {
                     dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
@@ -173,7 +208,7 @@ const mapDispatchToProps = dispatch => ({
                         responseType: 'json' // default
                     }).then(res => {
                         if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, fileId,name))
+                            dispatch(get_file_success(res.data.content, fileId, name))
                         } else {
 
                         }
@@ -197,10 +232,10 @@ const mapDispatchToProps = dispatch => ({
         e.preventDefault()
 
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
 
@@ -213,10 +248,10 @@ const mapDispatchToProps = dispatch => ({
     showFileMenu: e => {
         e.preventDefault()
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
 
@@ -270,6 +305,9 @@ const mapDispatchToProps = dispatch => ({
             let { centerColumnDir, fileIdInProcessing } = getState()
             dispatch(rename_file_prompt(centerColumnDir, fileIdInProcessing))
         })
+    },
+    confirmFileName:()=>{
+        confirmNewFileName(dispatch)
     }
 })
 function convertTimeFormat(timeString) {

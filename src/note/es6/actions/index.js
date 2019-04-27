@@ -336,3 +336,13 @@ export const rename_file_prompt = (dirId,fileId)=>{
     }
 }
 
+export const RENAME_FILE_CONFIRM = "RENAME_FILE_CONFIRM"
+export const rename_file_confirm = (dirId,fileId,name)=>{
+    console.log(RENAME_FILE_CONFIRM)
+    return{
+        type:RENAME_FILE_CONFIRM,
+        dirId,
+        fileId,
+        name
+    }
+}

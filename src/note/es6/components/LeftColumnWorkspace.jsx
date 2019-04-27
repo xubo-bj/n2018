@@ -3,16 +3,12 @@ import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import {
     create_new_folder_prompt,
-    create_new_folder_submit,
-    create_new_folder_success,
-    create_new_folder_failure,
     edit_new_folder_name,
     show_left_menu_two,
     show_left_menu_three,
     select_dir,
     toggle_dir,
     create_new_file_start,
-    create_new_file_submit,
     create_new_file_success,
     create_new_file_failure,
     get_file_success,
@@ -42,7 +38,6 @@ class DirTree extends React.Component {
     keydown(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            // this.props.createNewFolderSumbit(this.props.newFolderRef.current.textContent.trim())
             this.props.createNewFolderSubmit()
 
         }
@@ -294,9 +289,6 @@ const mapDispatchToProps = dispatch => ({
     createNewFolderPrompt: () => {
         dispatch((dispatch, getState) => {
             let { currentDirId } = getState()
-
-
-
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },

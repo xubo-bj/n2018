@@ -38,6 +38,7 @@ const {
     DELETE_FILE_SUCCESS,
     EDIT_NEW_FOLDER_NAME,
     RENAME_FILE_PROMPT,
+    RENAME_FILE_CONFIRM
 
 } = require("../actions")
 
@@ -285,13 +286,19 @@ const tree = (treeObj = {
                 treeObj[action.dirId].files = filteredFiles
                 return Object.assign({}, treeObj)
             }
-        case RENAME_FILE_PROMPT:
-            {
-                let files = treeObj[action.dirId].files,
-                    file = files.filter(file => file._id === action.fileId)
-                file.editable = true
-                return Object.assign({}, treeObj)
-            }
+        case RENAME_FILE_PROMPT: {
+            let files = treeObj[action.dirId].files,
+                file = files.filter(file => file._id === action.fileId)[0]
+            file.editable = true
+            return Object.assign({}, treeObj)
+        }
+        case RENAME_FILE_CONFIRM: {
+            let files = treeObj[action.dirId].files,
+                file = files.filter(file => file._id === action.fileId)[0]
+            delete file.editable
+            file.name = action.name
+            return Object.assign({}, treeObj)
+        }
         default:
             return treeObj
     }
@@ -516,6 +523,12 @@ const renameFileState = (obj = {
             {
                 obj.fileRef = React.createRef();
                 obj.isEditingFileName = true
+                return Object.assign({}, obj)
+            }
+        case RENAME_FILE_CONFIRM:
+            {
+                obj.fileRef = null
+                obj.isEditingFileName = false
                 return Object.assign({}, obj)
             }
         default:

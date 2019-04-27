@@ -7,6 +7,7 @@ import {
     create_new_folder_failure,
     get_file_from_local,
     get_file_success,
+    rename_file_confirm,
 } from "../actions"
 import {convertToRaw} from "draft-js"
 import axios from "axios"
@@ -122,7 +123,7 @@ export const switchFile = (dispatch, selectedFileId) => {
             tree,
             editorState
         } = getState()
-        let name = tree[centerColumnDir].files.filter(file => file._id == selectedFileId)[0].name
+        let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
         let content = convertToRaw(editorState.getCurrentContent())
         if (selectedFileId == fileId) {
             return
@@ -152,5 +153,17 @@ export const switchFile = (dispatch, selectedFileId) => {
             }
             updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
         }
+    })
+}
+
+export const confirmNewFileName = dispatch => {
+    dispatch((dispatch, getState) => {
+        let {
+            renameFileState,
+            centerColumnDir,
+            fileId
+        } = getState(),
+            name = renameFileState.fileRef.current.textContent.trim()
+        dispatch(rename_file_confirm(centerColumnDir, fileId, name))
     })
 }
