@@ -11,6 +11,7 @@ import {
 } from "../actions"
 import {convertToRaw} from "draft-js"
 import axios from "axios"
+import {isEqual} from "lodash"
 
 export const getFolders = (dispatch, dirId) => {
     dispatch((dispatch, getState) => {
@@ -49,6 +50,30 @@ export const getFolders = (dispatch, dirId) => {
                 console.log('err', err);
                 // dispatch(create_new_folder_failure())
             })
+        }
+    })
+}
+
+
+export const updateFile = (dispatch) => {
+        dispatch((dispatch, getState) => {
+        let {
+            tree,
+            filesObj,
+            centerColumnDir,
+            fileId: currentFileId,
+            editorState
+        } = getState(),
+            currentFiles = [...tree[centerColumnDir].files]
+
+        if (currentFileId != null) {
+            let currentName = currentFiles.filter(file => file._id == currentFileId)[0].name,
+                currentContent = convertToRaw(editorState.getCurrentContent()),
+                contentIsSame = isEqual(currentContent, filesObj[currentFileId] && filesObj[currentFileId].content),
+                nameIsSame = !!filesObj[currentFileId] && (filesObj[currentFileId].name.trim() === currentName.trim())
+            if (!contentIsSame || !nameIsSame) {
+                updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName.trim(), currentContent)
+            }
         }
     })
 }
@@ -148,7 +173,7 @@ export const switchFile = (dispatch, selectedFileId) => {
                     }
                 }).catch(err => {
                     console.log('err1', err);
-                    // dispatch(create_new_folder_failure())
+                    dispatch(create_new_folder_failure())
                 })
             }
             updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
@@ -165,5 +190,27 @@ export const confirmNewFileName = dispatch => {
         } = getState(),
             name = renameFileState.fileRef.current.textContent.trim()
         dispatch(rename_file_confirm(centerColumnDir, fileId, name))
+    })
+}
+
+export const getFileFromServer = (dispatch,selectedFileId) => {
+    axios.get("note/get-file", {
+        params: {
+            selectedFileId
+        },
+        headers: {
+            'X-Requested-With': 'axios'
+        },
+        timeout: 1000, // default is `0` (no timeout),
+        responseType: 'json' // default
+    }).then(res => {
+        if (res.data.success == "ok") {
+            dispatch(get_file_success(res.data.content, selectedFileId, name))
+        } else {
+
+        }
+    }).catch(err => {
+        console.log('err1', err);
+        // dispatch(create_new_folder_failure())
     })
 }

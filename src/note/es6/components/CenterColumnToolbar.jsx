@@ -6,9 +6,7 @@ import {
     get_file_success,
 } from "../actions"
 import axios from "axios"
-import { updateFileInBackground } from "./utility"
-import { convertToRaw } from "draft-js"
-import { isEqual } from "lodash"
+import { updateFile,getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 const CenterColumnToolbar = (props) =>
@@ -28,60 +26,32 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     returnToParentDir: e =>
         dispatch((dispatch, getState) => {
-            let { createNewFolder, tree, filesObj, centerColumnDir, fileId: currentFileId, editorState } = getState(),
+            let { createNewFolder, tree,centerColumnDir,filesObj } = getState(),
                 parentDirId = tree[centerColumnDir].parentId,
-                currentfiles = [...tree[centerColumnDir].files],
                 files = tree[parentDirId].files
+
             if (createNewFolder.isTypingFolderName) {
                 return
             }
             if (parentDirId == null) {
                 return
             }
-            let currentName = null
-            let currentContent = null
 
-            if (currentfiles.length != 0) {
-                currentName = currentfiles.filter(file => file._id == currentFileId)[0].name
-                currentContent = convertToRaw(editorState.getCurrentContent())
-            }
+            updateFile(dispatch)
 
             if (files.length == 0) {
                 dispatch(return_to_parent_folder(parentDirId, null, null))
             } else {
-                let nextFileId = files[0]._id,
-                    nextFileName = files[0].name
+                let nextFileId = files[0]._id
                 if (filesObj[nextFileId] != undefined) {
                     dispatch(return_to_parent_folder(parentDirId, nextFileId, filesObj[nextFileId].content))
                 } else {
                     dispatch(return_to_parent_folder(parentDirId, nextFileId, null))
-                    axios.get("note/get-file", {
-                        params: {
-                            selectedFileId: nextFileId
-                        },
-                        headers: {
-                            'X-Requested-With': 'axios'
-                        },
-                        timeout: 1000, // default is `0` (no timeout),
-                        responseType: 'json' // default
-                    }).then(res => {
-                        if (res.data.success == "ok") {
-                            // dispatch(return_to_parent_folder(parentDirId, fileId, res.data.content))
-                            dispatch(get_file_success(res.data.content, nextFileId, nextFileName))
-                        } else {
-
-                        }
-                    }).catch(err => {
-                        console.log('err1', err);
-                        // dispatch(create_new_folder_failure())
-                    })
+                    getFileFromServer(dispatch,nextFileId)
                 }
             }
 
-            let needUpdate = !isEqual(currentContent, filesObj[currentFileId].content)
-            if (currentfiles.length != 0 && needUpdate) {
-                updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
-            }
+
         })
 })
 export default connect(

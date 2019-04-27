@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
 import { change_editor_state, get_file_success } from "../actions"
+import {getFileFromServer} from "./utility"
 import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -48,28 +49,7 @@ class MyEditor extends React.Component {
   componentDidMount() {
     if (this.props.initialRender) {
       if (this.props.fileId != null) {
-        let tree = this.props.tree,
-          fileName = tree[shinelonId].files.filter(file => file._id == this.props.fileId)[0].name
-
-        axios.get("note/get-file", {
-          params: {
-            selectedFileId: this.props.fileId
-          },
-          headers: {
-            'X-Requested-With': 'axios'
-          },
-          timeout: 1000, // default is `0` (no timeout),
-          responseType: 'json' // default
-        }).then(res => {
-          if (res.data.success == "ok") {
-            this.props.fetchInitailFileContent(res.data.content, this.props.fileId, fileName)
-          } else {
-
-          }
-        }).catch(err => {
-          console.log('err1', err);
-          // dispatch(create_new_folder_failure())
-        })
+          this.props.getFileForTheFirstTime(this.props.fileId)
       }
     }
   }
@@ -99,8 +79,8 @@ const mapDispatchToPropsOnMyEditor = dispatch => ({
   onChangeEditorState: (editorState) => {
     dispatch(change_editor_state(editorState))
   },
-  fetchInitailFileContent: (content, fileId, name) => {
-    dispatch(get_file_success(content, fileId, name))
+  getFileForTheFirstTime:(fileId)=>{
+    getFileFromServer(dispatch,fileId)
   }
 })
 const MyEditorBindingRedux = connect(mapStateToPropsOnMyEditor, mapDispatchToPropsOnMyEditor)(MyEditor)

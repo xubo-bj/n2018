@@ -1,8 +1,6 @@
-+ function () {
-    Promise.resolve(3).then(function (x) {
-        console.log(x)
-    })
-    console.log(2)
+let f = function(){
     return
-    console.log(28329)
-}()
+}
+
+f()
+console.log("go on ...")

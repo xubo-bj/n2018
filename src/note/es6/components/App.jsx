@@ -2,9 +2,9 @@ import React from "react"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
 import { connect } from "react-redux"
-import axios from "axios"
 import { isEqual } from "lodash"
-import { updateFileInBackground,submitCreateNewFolder } from "./utility"
+import { updateFileInBackground,submitCreateNewFolder,
+confirmNewFileName } from "./utility"
 import { convertToRaw } from "draft-js"
 
 import {
@@ -37,10 +37,14 @@ class App extends React.Component {
 const mapDispatchToProps = dispatch => ({
     clickMouseRight:e=>{
         dispatch((dispatch,getState)=>{
-            let { createNewFolder} = getState()
+            let { createNewFolder,renameFileState} = getState()
             if (createNewFolder.isTypingFolderName) {
                 e.preventDefault()
                 submitCreateNewFolder(dispatch)
+            }
+            if(renameFileState.isEditingFileName){
+                e.preventDefault()
+                confirmNewFileName(dispatch)
             }
         })
     }
@@ -53,7 +57,8 @@ const mapDispatchToProps = dispatch => ({
                 leftMenuThree,
                 centerDirMenu,
                 centerFileMenu,
-                createNewFolder
+                createNewFolder,
+                renameFileState
             } = getState()
             if (leftMenuOneDisplay == "block") {
                 dispatch(hide_left_menu_one())
@@ -77,6 +82,9 @@ const mapDispatchToProps = dispatch => ({
             if (createNewFolder.isTypingFolderName) {
                 submitCreateNewFolder(dispatch)
             }
+            if(renameFileState.isEditingFileName){
+                confirmNewFileName(dispatch)
+            }
 
         }),
     updateFile: () => {
@@ -90,10 +98,16 @@ const mapDispatchToProps = dispatch => ({
                 currentName = currentfiles.filter(file => file._id == fileId)[0].name
                 currentContent = convertToRaw(editorState.getCurrentContent())
             }
-            let needUpdate= !isEqual(currentContent, filesObj[fileId].content)
-            if (fileId != null && needUpdate) {
-                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)
+
+
+            let contentIsSame = isEqual(currentContent, filesObj[fileId] && filesObj[fileId].content)
+            let nameIsSame = !!filesObj[fileId] && (filesObj[fileId].name.trim() === currentName.trim())
+            console.log("the same :", contentIsSame, nameIsSame)
+            if (fileId != null && (!contentIsSame || !nameIsSame)) {
+                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName.trim(), currentContent)
             }
+
+
         }
         )
     },

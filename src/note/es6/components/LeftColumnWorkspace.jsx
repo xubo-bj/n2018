@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import {
     create_new_folder_prompt,
-    edit_new_folder_name,
     show_left_menu_two,
     show_left_menu_three,
     select_dir,
@@ -11,14 +10,11 @@ import {
     create_new_file_start,
     create_new_file_success,
     create_new_file_failure,
-    get_file_success,
     get_file_from_local,
     no_file_in_folder
 } from "../actions"
 import axios from 'axios';
-import { convertToRaw } from 'draft-js';
-import { getFolders, updateFileInBackground,submitCreateNewFolder } from "./utility"
-import { isEqual } from "lodash"
+import { getFolders,  updateFile, getFileFromServer, submitCreateNewFolder } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -42,11 +38,11 @@ class DirTree extends React.Component {
 
         }
     }
-    clickInEditingFolder(e){
+    clickInEditingFolder(e) {
         e.stopPropagation()
     }
     render() {
-        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir,newFolderRef } = this.props
+        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef } = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -92,7 +88,7 @@ class DirTree extends React.Component {
                             )
                         } else {
                             return (
-                                <li Key={"editable"} className={styles.li} ref={elem=>this.$li=elem}>
+                                <li Key={"editable"} className={styles.li} ref={elem => this.$li = elem}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]} />
@@ -119,7 +115,7 @@ class DirTree extends React.Component {
 
 const LeftColumnWorkspace = (props) => {
     const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
-         centerColumnDir,newFolderRef} = props
+        centerColumnDir, newFolderRef } = props
     return (
         <div className={styles.workspace}>
             <div data-id={shinelonId}
@@ -144,7 +140,7 @@ const LeftColumnWorkspace = (props) => {
                 centerColumnDir={centerColumnDir}
                 leftClickDir={leftClickDir}
                 newFolderRef={newFolderRef}
-                 />
+            />
             <ul className={styles["pop-menu"]}
                 style={{
                     display: props.leftMenuThree.display,
@@ -168,18 +164,17 @@ const mapStateToProps = state => {
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
         tree: state.tree,
-        newFolderRef:state.createNewFolder.newFolderRef
+        newFolderRef: state.createNewFolder.newFolderRef
     }
 }
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag)
             return
-        }
 
         let target = e.target
         if (target.dataset.mark == "arrow-menu") {
@@ -194,70 +189,39 @@ const mapDispatchToProps = dispatch => ({
             }
             dispatch((dispatch, getState) => {
 
-                let { tree, centerColumnDir, fileId: currentFileId, editorState, filesObj } = getState(),
-                    currentfiles = [...tree[centerColumnDir].files],
-                    currentName = null,
-                    currentContent = null
-
-                if (currentfiles.length != 0) {
-                    currentName = currentfiles.filter(file => file._id == currentFileId)[0].name
-                    currentContent = convertToRaw(editorState.getCurrentContent())
-                }
-
                 let dirId = target.dataset.id
                 if (centerColumnDir == dirId) {
                     return
                 }
+
+                updateFile(dispatch)
+
+                let { tree, centerColumnDir, filesObj } = getState()
                 let files = tree[dirId].files
                 if (files.length == 0) {
                     dispatch(no_file_in_folder(dirId))
                 } else {
-                    let fileId = tree[dirId].files[0]._id,
-                        name = tree[dirId].files[0].name
+                    let fileId = tree[dirId].files[0]._id
                     dispatch(select_dir(dirId, fileId))
                     if (filesObj[fileId] != undefined) {
                         dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
                     } else {
-
-                        axios.get("note/get-file", {
-                            params: {
-                                selectedFileId: fileId
-                            },
-                            headers: {
-                                'X-Requested-With': 'axios'
-                            },
-                            timeout: 1000, // default is `0` (no timeout),
-                            responseType: 'json' // default
-                        }).then(res => {
-                            if (res.data.success == "ok") {
-                                dispatch(get_file_success(res.data.content, fileId, name))
-                            } else {
-
-                            }
-                        }).catch(err => {
-                            console.log('err1', err);
-                            // dispatch(create_new_folder_failure())
-                        })
-
+                        getFileFromServer(dispatch, fileId)
                     }
                 }
+
                 getFolders(dispatch, dirId)
 
-                let needUpdate = !isEqual(currentContent, filesObj[currentFileId].content)
-                if (currentFileId != null && needUpdate) {
-                    updateFileInBackground(dispatch, currentFileId, centerColumnDir, currentName, currentContent)
-                }
             })
         }
-
     },
     rightClickRootDir: e => {
         e.preventDefault()
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
         dispatch((dispatch, getState) => {
@@ -267,10 +231,10 @@ const mapDispatchToProps = dispatch => ({
     rightClickDir: e => {
         e.preventDefault()
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
 
@@ -325,10 +289,10 @@ const mapDispatchToProps = dispatch => ({
     },
     toggleDir: (e, _id) => {
         let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
+        dispatch((dispatch, getState) => {
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
         })
-        if(editingFolderFlag){
+        if (editingFolderFlag) {
             return
         }
         e.stopPropagation()

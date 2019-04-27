@@ -12,8 +12,7 @@ import {
     delete_file_success,
     rename_file_prompt,
 } from "../actions"
-import { convertToRaw } from 'draft-js';
-import { updateFileInBackground,confirmNewFileName, getFolders, switchFile } from "./utility"
+import {updateFile, getFileFromServer,confirmNewFileName, getFolders, switchFile } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class CenterColumnWorkspace extends React.Component {
@@ -176,54 +175,23 @@ const mapDispatchToProps = dispatch => ({
         }
         let dirId = target.dataset.id
         dispatch((dispatch, getState) => {
-            let { tree, filesObj, centerColumnDir, fileId, editorState } = getState(),
-                currentFiles = [...tree[centerColumnDir].files],
-                currentName = null,
-                currentContent = null
 
-            if (fileId != null) {
-                currentName = currentFiles.filter(file => file._id == fileId)[0].name
-                currentContent = convertToRaw(editorState.getCurrentContent())
-            }
+            updateFile(dispatch)
 
-
+            let {tree,filesObj} =getState()
             let nextFiles = tree[dirId].files
             if (nextFiles.length == 0) {
                 dispatch(no_file_in_folder(dirId))
             } else {
-                let fileId = tree[dirId].files[0]._id,
-                    name = tree[dirId].files[0].name
+                let fileId = nextFiles[0]._id
                 dispatch(click_folder_in_center_column(dirId))
                 if (filesObj[fileId] != undefined) {
                     dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
                 } else {
-                    axios.get("note/get-file", {
-                        params: {
-                            selectedFileId: fileId
-                        },
-                        headers: {
-                            'X-Requested-With': 'axios'
-                        },
-                        timeout: 1000, // default is `0` (no timeout),
-                        responseType: 'json' // default
-                    }).then(res => {
-                        if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, fileId, name))
-                        } else {
-
-                        }
-                    }).catch(err => {
-                        console.log('err1', err);
-                        // dispatch(create_new_folder_failure())
-                    })
+                    getFileFromServer(dispatch,fileId)
                 }
             }
-
             getFolders(dispatch, dirId)
-
-            if (fileId != null) {
-                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName, currentContent)
-            }
 
         })
 
