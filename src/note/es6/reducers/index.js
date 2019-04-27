@@ -27,6 +27,7 @@ const {
     UPDATE_FILE_SUCCESS,
     UPDATE_FILE_FAILURE,
     GET_FILE_SUCCESS,
+    GET_FILE_FROM_LOCAL,
     NO_FILE_IN_FOLDER,
     CLICK_FOLDER_IN_CENTER_COLUMN,
     SHOW_CENTER_DIR_MENU,
@@ -36,6 +37,7 @@ const {
     RETURN_TO_PARENT_FOLDER,
     DELETE_FILE_SUCCESS,
     EDIT_NEW_FOLDER_NAME,
+    RENAME_FILE_PROMPT,
 
 } = require("../actions")
 
@@ -167,25 +169,27 @@ const tree = (treeObj = {
     [shinelonId]: defaultV
 }, action) => {
     switch (action.type) {
-        case CREATE_NEW_FOLDER_PROMPT: {
-            let _id = action.currentDirId
-            let targetDir = treeObj[_id]
-            targetDir.folded = false
-            targetDir.dirs.push({
-                editable: true,
-                name: "新建文件夹"
-            })
-            return Object.assign({}, treeObj)
-        }
-        case EDIT_NEW_FOLDER_NAME: {
-            let dirs = treeObj[action.currentDirId].dirs,
-                dir = dirs.filter(dir => dir.editable === true)[0]
-            console.log("action dirs :", dir)
-            dir.name = action.name
-            return Object.assign({}, treeObj)
-        }
+        case CREATE_NEW_FOLDER_PROMPT:
+            {
+                let _id = action.currentDirId
+                let targetDir = treeObj[_id]
+                targetDir.folded = false
+                targetDir.dirs.push({
+                    editable: true,
+                    name: "新建文件夹"
+                })
+                return Object.assign({}, treeObj)
+            }
+        case EDIT_NEW_FOLDER_NAME:
+            {
+                let dirs = treeObj[action.currentDirId].dirs,
+                    dir = dirs.filter(dir => dir.editable === true)[0]
+                dir.name = action.name
+                return Object.assign({}, treeObj)
+            }
 
-        case CHANGE_FILE_NAME: {
+        case CHANGE_FILE_NAME:
+            {
                 let {
                     name,
                     fileId,
@@ -281,6 +285,13 @@ const tree = (treeObj = {
                 treeObj[action.dirId].files = filteredFiles
                 return Object.assign({}, treeObj)
             }
+        case RENAME_FILE_PROMPT:
+            {
+                let files = treeObj[action.dirId].files,
+                    file = files.filter(file => file._id === action.fileId)
+                file.editable = true
+                return Object.assign({}, treeObj)
+            }
         default:
             return treeObj
     }
@@ -314,6 +325,7 @@ const editorState = (state = null, action) => {
                 return action.state
             }
         case GET_FILE_SUCCESS:
+        case GET_FILE_FROM_LOCAL:
             {
                 return EditorState.createWithContent(convertFromRaw(action.content))
             }
@@ -326,7 +338,7 @@ const editorState = (state = null, action) => {
             {
                 let rawContentState = action.rawContentState
                 if (rawContentState == null) {
-                    return null 
+                    return null
                 } else {
                     return EditorState.createWithContent(convertFromRaw(rawContentState))
                 }
@@ -351,20 +363,23 @@ const fileId = (id = null, action) => {
                 return action.newFileId
             }
         case GET_FILE_SUCCESS:
+        case GET_FILE_FROM_LOCAL:
         case SELECT_DIR:
         case RETURN_TO_PARENT_FOLDER:
             {
                 return action.fileId
             }
         case NO_FILE_IN_FOLDER:
-        case CREATE_NEW_FOLDER_SUCCESS: {
+        case CREATE_NEW_FOLDER_SUCCESS:
+            {
                 return null
-        }
-        case DELETE_FILE_SUCCESS: {
-            return action.newDisplayFileId
-        }
+            }
+        case DELETE_FILE_SUCCESS:
+            {
+                return action.newDisplayFileId
+            }
         default:
-        return id
+            return id
     }
 }
 
@@ -443,21 +458,27 @@ const fileIdInProcessing = (fileId = null, action) => {
 
 const filesObj = (obj = {}, action) => {
     switch (action.type) {
-        case UPDATE_FILE_SUCCESS:{
-            obj[action.fileId] = {
-                name: action.name,
-                content: action.rawContentState
+        case UPDATE_FILE_SUCCESS:
+            {
+                obj[action.fileId] = {
+                    name: action.name,
+                    content: action.rawContentState
+                }
+                return Object.assign({}, obj)
             }
-            return Object.assign({},obj)
-        }
-        case GET_FILE_SUCCESS:{
-            obj[action.fileId] = action.content
-            return Object.assign({},obj)
-        }
-        case DELETE_FILE_SUCCESS:{
-            delete filesObj[action.fileId]
-            return Object.assign({}, obj)
-        }
+        case GET_FILE_SUCCESS:
+            {
+                obj[action.fileId] = {
+                    name: action.name,
+                    content: action.content
+                }
+                return Object.assign({}, obj)
+            }
+        case DELETE_FILE_SUCCESS:
+            {
+                delete filesObj[action.fileId]
+                return Object.assign({}, obj)
+            }
         default:
             return obj
     }
@@ -465,22 +486,40 @@ const filesObj = (obj = {}, action) => {
 
 
 const createNewFolder = (obj = {
-        newFolderRef: null,
-        isTypingFolderName: false
-    }, action) => {
-    switch(action.type){
-        case CREATE_NEW_FOLDER_PROMPT:{
-            obj.newFolderRef = React.createRef();
-            obj.isTypingFolderName = true
-            return Object.assign({},obj)
-        }
-        case CREATE_NEW_FOLDER_SUCCESS:{
-            obj.newFolderRef = null
-            obj.isTypingFolderName = false
-            return Object.assign({},obj)
-        }
+    newFolderRef: null,
+    isTypingFolderName: false
+}, action) => {
+    switch (action.type) {
+        case CREATE_NEW_FOLDER_PROMPT:
+            {
+                obj.newFolderRef = React.createRef();
+                obj.isTypingFolderName = true
+                return Object.assign({}, obj)
+            }
+        case CREATE_NEW_FOLDER_SUCCESS:
+            {
+                obj.newFolderRef = null
+                obj.isTypingFolderName = false
+                return Object.assign({}, obj)
+            }
         default:
-        return obj
+            return obj
+    }
+}
+
+const renameFileState = (obj = {
+    fileRef: null,
+    isEditingFileName: false
+}, action) => {
+    switch (action.type) {
+        case RENAME_FILE_PROMPT:
+            {
+                obj.fileRef = React.createRef();
+                obj.isEditingFileName = true
+                return Object.assign({}, obj)
+            }
+        default:
+            return obj
     }
 }
 
@@ -503,5 +542,6 @@ module.exports = combineReducers({
     centerDirMenu,
     centerFileMenu,
     showMask,
-    createNewFolder
+    createNewFolder,
+    renameFileState
 })

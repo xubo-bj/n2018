@@ -16,6 +16,7 @@ import {
     create_new_file_success,
     create_new_file_failure,
     get_file_success,
+    get_file_from_local,
     no_file_in_folder
 } from "../actions"
 import axios from 'axios';
@@ -220,7 +221,7 @@ const mapDispatchToProps = dispatch => ({
                         name = tree[dirId].files[0].name
                     dispatch(select_dir(dirId, fileId))
                     if (filesObj[fileId] != undefined) {
-                        dispatch(get_file_success(filesObj[fileId].content, fileId, filesObj[fileId].name))
+                        dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
                     } else {
 
                         axios.get("note/get-file", {

@@ -4,14 +4,16 @@ import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
 import {
     get_file_success,
+    get_file_from_local,
     click_folder_in_center_column,
     no_file_in_folder,
     show_center_dir_menu,
     show_center_file_menu,
     delete_file_success,
+    rename_file_prompt,
 } from "../actions"
 import { convertToRaw } from 'draft-js';
-import { updateFileInBackground, getFolders } from "./utility"
+import { updateFileInBackground, getFolders,switchFile } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 
@@ -55,6 +57,7 @@ const CenterColumnWorkspace = props => {
                 onClick={props.selectFile}
                 onContextMenu={props.showFileMenu}>
                 {props.files && props.files.map(file => {
+                    if(file.editable != true){
                     return (
                         <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
                             <svg className={styles["file-icon"]}>
@@ -64,6 +67,18 @@ const CenterColumnWorkspace = props => {
                             <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
                         </li>
                     )
+
+                    }else{
+                        return(
+                        <li Key={file._id} className={file._id != props.fileId ? styles["li-file"] : styles["li-file-selected"]} data-id={file._id}>
+                            <svg className={styles["file-icon"]}>
+                                <use xlinkHref="/note/images/centerColumn.svg#file" transform="scale(0.5)" />
+                            </svg>
+                            <span className={styles["file-name"]} contentEditable={true}>{file.name}</span>
+                            <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
+                        </li>
+                        )
+                    }
                 })
                 }
             </ul>
@@ -73,7 +88,7 @@ const CenterColumnWorkspace = props => {
                     left: props.centerFileMenu.clientX + "px",
                     top: props.centerFileMenu.clientY + "px"
                 }} >
-                <li className={styles["menu-option"]}>重命名</li>
+                <li className={styles["menu-option"]} onClick={props.renameFile}>重命名</li>
                 <li className={styles["menu-option"]}>移动到</li>
                 <li className={styles["menu-option"]}>复制</li>
                 <li className={styles["menu-option"]} onClick={props.deleleFile}>删除</li>
@@ -108,41 +123,7 @@ const mapDispatchToProps = dispatch => ({
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
-        let selectedFileId = target.dataset.id
-
-        dispatch((dispatch, getState) => {
-            let { filesObj, fileId, centerColumnDir, tree, editorState } = getState()
-            let name = tree[centerColumnDir].files.filter(file => file._id == selectedFileId)[0].name
-            let content = convertToRaw(editorState.getCurrentContent())
-            if (selectedFileId == fileId) {
-                return
-            } else {
-                if (filesObj[selectedFileId] != undefined) {
-                    dispatch(get_file_success(filesObj[selectedFileId].content, selectedFileId, filesObj[selectedFileId].name))
-                } else {
-                    axios.get("note/get-file", {
-                        params: {
-                            selectedFileId
-                        },
-                        headers: {
-                            'X-Requested-With': 'axios'
-                        },
-                        timeout: 1000, // default is `0` (no timeout),
-                        responseType: 'json' // default
-                    }).then(res => {
-                        if (res.data.success == "ok") {
-                            dispatch(get_file_success(res.data.content, selectedFileId,name))
-                        } else {
-                            console.log("success no", res.data)
-                        }
-                    }).catch(err => {
-                        console.log('err1', err);
-                        // dispatch(create_new_folder_failure())
-                    })
-                }
-                updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
-            }
-        })
+        switchFile(dispatch, target.dataset.id)
     },
     openFolder: e => {
 
@@ -179,7 +160,7 @@ const mapDispatchToProps = dispatch => ({
                 name = tree[dirId].files[0].name
                 dispatch(click_folder_in_center_column(dirId))
                 if (filesObj[fileId] != undefined) {
-                    dispatch(get_file_success(filesObj[fileId].content, fileId, filesObj[fileId].name))
+                    dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
                 } else {
                     axios.get("note/get-file", {
                         params: {
@@ -231,7 +212,6 @@ const mapDispatchToProps = dispatch => ({
     },
     showFileMenu: e => {
         e.preventDefault()
-
         let editingFolderFlag = false
         dispatch((dispatch,getState)=>{
             editingFolderFlag = getState().createNewFolder.isTypingFolderName
@@ -244,7 +224,11 @@ const mapDispatchToProps = dispatch => ({
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
-        dispatch(show_center_file_menu(e.clientX, e.clientY, target.dataset.id))
+
+        let selectedFileId = target.dataset.id
+        dispatch(show_center_file_menu(e.clientX, e.clientY, selectedFileId))
+        switchFile(dispatch, selectedFileId)
+
     },
     deleleFile: e => {
         dispatch((dispatch, getState) => {
@@ -280,6 +264,12 @@ const mapDispatchToProps = dispatch => ({
 
 
         })
+    },
+    renameFile: e => {
+        dispatch((dispatch, getState) => {
+            let { centerColumnDir, fileIdInProcessing } = getState()
+            dispatch(rename_file_prompt(centerColumnDir, fileIdInProcessing))
+        })
     }
 })
 function convertTimeFormat(timeString) {
@@ -291,9 +281,6 @@ function convertTimeFormat(timeString) {
     date = date < 10 ? "0" + date : date
     return `${year}-${month}-${date}`
 }
-
-
-
 
 export default connect(
     mapStateToProps,

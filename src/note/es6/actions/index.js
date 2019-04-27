@@ -235,6 +235,18 @@ export const get_file_success = (content,fileId,name) => {
     }
 }
 
+export const GET_FILE_FROM_LOCAL = "GET_FILE_FROM_LOCAL"
+export const get_file_from_local = (content,fileId,name)=>{
+    console.log(GET_FILE_FROM_LOCAL)
+    return{
+        type:GET_FILE_FROM_LOCAL,
+        name,
+        content,
+        fileId
+    }
+}
+
+
 export const NO_FILE_IN_FOLDER = "NO_FILE_IN_FOLDER"
 export const no_file_in_folder = (dirId) => {
     console.log(NO_FILE_IN_FOLDER)
@@ -311,6 +323,16 @@ export const delete_file_success = (dirId,fileId,newDisplayFileId,rawContentStat
         fileId,
         newDisplayFileId,
         rawContentState
+    }
+}
+
+export const RENAME_FILE_PROMPT = "RENAME_FILE_PROMPT"
+export const rename_file_prompt = (dirId,fileId)=>{
+    console.log(RENAME_FILE_PROMPT)
+    return{
+        type:RENAME_FILE_PROMPT,
+        dirId,
+        fileId
     }
 }
 

@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => ({
     onChangeFileName: event => {
         dispatch((dispatch, getState) => {
             let { fileId, centerColumnDir } = getState()
-            dispatch(change_file_name(event.target.value.trim(), fileId, centerColumnDir))
+            dispatch(change_file_name(event.target.value, fileId, centerColumnDir))
         })
     },
     updateFile: () => {
