@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
 import {
-    get_file_success,
     get_file_from_local,
     click_folder_in_center_column,
     no_file_in_folder,
@@ -12,17 +11,16 @@ import {
     delete_file_success,
     rename_file_prompt,
 } from "../actions"
-import {updateFile, getFileFromServer,confirmNewFileName, getFolders, switchFile } from "./utility"
-const shinelonId = require("../../../../config").note.mongodb.shinelonId
+import { inEditingNameState, updateFile, getFileFromServer, confirmNewFileName, getFolders, switchFile } from "./utility"
 
 class CenterColumnWorkspace extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.confirmFileName = this.confirmFileName.bind(this)
     }
     componentDidUpdate() {
         let fileRef = this.props.renameFileState.fileRef
-        if (fileRef!= null) {
+        if (fileRef != null) {
             let s = window.getSelection();
             if (s.rangeCount > 0) s.removeAllRanges();
             let range = document.createRange();
@@ -30,20 +28,19 @@ class CenterColumnWorkspace extends React.Component {
             s.addRange(range);
         }
     }
-    confirmFileName(e){
-        console.log("keydown ------------")
+    confirmFileName(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-        this.props.confirmFileName()
+            this.props.confirmFileName()
         }
     }
-    clickInEditingFolder(e){
+    clickInEditingFolder(e) {
         e.stopPropagation()
     }
     render() {
-        let {openFolder,showDirMenu,dirs,centerDirMenu,selectFile,
+        let { openFolder, showDirMenu, dirs, centerDirMenu, selectFile,
             renameFileState,
-            deleleFile,renameFile,fileId,showFileMenu,files,centerFileMenu} = this.props
+            deleleFile, renameFile, fileId, showFileMenu, files, centerFileMenu } = this.props
         return (
             <div className={styles.workspace}>
                 <ul className={styles["ul-dirs"]}
@@ -104,7 +101,7 @@ class CenterColumnWorkspace extends React.Component {
                                         onClick={this.clickInEditingFolder}
                                         ref={renameFileState.fileRef}
                                         onKeyDown={this.confirmFileName}
-                                     contentEditable={true}>{file.name}</span>
+                                        contentEditable={true}>{file.name}</span>
                                     <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
                                 </li>
                             )
@@ -130,7 +127,7 @@ class CenterColumnWorkspace extends React.Component {
 
 const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
-    let {renameFileState} = state
+    let { renameFileState } = state
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
@@ -143,42 +140,76 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
     selectFile: e => {
-
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+            if (inEditingNameState(getState)) {
+                return
+            }
+            let target = e.target
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            let selectedFileId = target.dataset.id,
+                { fileId, filesObj } = getState()
+            if (selectedFileId == fileId) {
+                return
+            } else {
+                updateFile(dispatch)
+                if (filesObj[selectedFileId] != undefined) {
+                    dispatch(get_file_from_local(filesObj[selectedFileId].content, selectedFileId, filesObj[selectedFileId].name))
+                } else {
+                    getFileFromServer(dispatch, selectedFileId)
+                }
+            }
+
         })
-        if (editingFolderFlag) {
-            return
-        }
+    },
+    showFileMenu: e => {
+        e.preventDefault()
+        dispatch((dispatch, getState) => {
+            if (inEditingNameState(getState)) {
+                return
+            }
+            let target = e.target
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            let selectedFileId = target.dataset.id
+            dispatch(show_center_file_menu(e.clientX, e.clientY, selectedFileId))
+
+            let {
+                filesObj,
+                fileId,
+            } = getState()
+            if (selectedFileId == fileId) {
+                return
+            } else {
+                updateFile(dispatch)
+                if (filesObj[selectedFileId] != undefined) {
+                    dispatch(get_file_from_local(filesObj[selectedFileId].content, selectedFileId, filesObj[selectedFileId].name))
+                } else {
+                    getFileFromServer(dispatch, selectedFileId)
+                }
+            }
 
 
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-        switchFile(dispatch, target.dataset.id)
+        })
     },
     openFolder: e => {
-
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
-        })
-        if (editingFolderFlag) {
-            return
-        }
 
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-        let dirId = target.dataset.id
-        dispatch((dispatch, getState) => {
+            if (inEditingNameState(getState)) {
+                return
+            }
 
             updateFile(dispatch)
 
-            let {tree,filesObj} =getState()
+            let target = e.target
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            let dirId = target.dataset.id
+
+            let { tree, filesObj } = getState()
             let nextFiles = tree[dirId].files
             if (nextFiles.length == 0) {
                 dispatch(no_file_in_folder(dirId))
@@ -188,9 +219,10 @@ const mapDispatchToProps = dispatch => ({
                 if (filesObj[fileId] != undefined) {
                     dispatch(get_file_from_local(filesObj[fileId].content, fileId, filesObj[fileId].name))
                 } else {
-                    getFileFromServer(dispatch,fileId)
+                    getFileFromServer(dispatch, fileId)
                 }
             }
+
             getFolders(dispatch, dirId)
 
         })
@@ -198,40 +230,16 @@ const mapDispatchToProps = dispatch => ({
     },
     showDirMenu: e => {
         e.preventDefault()
-
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+            if (inEditingNameState(getState)) {
+                return
+            }
+            let target = e.target
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            dispatch(show_center_dir_menu(e.clientX, e.clientY, target.dataset.id))
         })
-        if (editingFolderFlag) {
-            return
-        }
-
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-        dispatch(show_center_dir_menu(e.clientX, e.clientY, target.dataset.id))
-    },
-    showFileMenu: e => {
-        e.preventDefault()
-        let editingFolderFlag = false
-        dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
-        })
-        if (editingFolderFlag) {
-            return
-        }
-
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-
-        let selectedFileId = target.dataset.id
-        dispatch(show_center_file_menu(e.clientX, e.clientY, selectedFileId))
-        switchFile(dispatch, selectedFileId)
-
     },
     deleleFile: e => {
         dispatch((dispatch, getState) => {
@@ -274,7 +282,7 @@ const mapDispatchToProps = dispatch => ({
             dispatch(rename_file_prompt(centerColumnDir, fileIdInProcessing))
         })
     },
-    confirmFileName:()=>{
+    confirmFileName: () => {
         confirmNewFileName(dispatch)
     }
 })

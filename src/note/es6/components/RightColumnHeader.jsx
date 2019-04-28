@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/RightColumnHeader.scss"
 import { change_file_name } from "../actions"
-import { updateFileInBackground } from "./utility"
+import { updateFile,inEditingNameState } from "./utility"
 import { convertToRaw } from "draft-js"
 class MyEditor extends React.Component {
     render() {
@@ -15,7 +15,7 @@ class MyEditor extends React.Component {
                 />
                 <input type="button" value={"保存"}
                     className={styles["submit-btn"]}
-                    onClick={this.props.updateFile}
+                    onClick={this.props.updateFile2}
                 />
             </div>
         )
@@ -42,17 +42,8 @@ const mapDispatchToProps = dispatch => ({
             dispatch(change_file_name(event.target.value, fileId, centerColumnDir))
         })
     },
-    updateFile: () => {
-        // dispatch(updateFile)
-        dispatch((dispatch, getState) => {
-            let { fileId,createNewFolder, centerColumnDir, tree, editorState } = getState()
-            if(createNewFolder.isTypingFolderName){
-                return
-            }
-            let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
-            let content = convertToRaw(editorState.getCurrentContent())
-            updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
-        })
+    updateFile2: () => {
+            updateFile(dispatch)
     }
 })
 

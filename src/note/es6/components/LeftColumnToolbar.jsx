@@ -7,9 +7,9 @@ import {
     create_new_folder_prompt,
     create_new_file_start,
     create_new_file_failure,
-    create_new_file_submit,
     create_new_file_success
 } from "../actions"
+import {inEditingNameState} from "./utility"
 const LeftColumnToolbar = (props) => (
     <div className={styles.toolbar}>
         <div className={styles.container}>
@@ -33,15 +33,13 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     displayLeftMenuOne: e => {
-        let editingFolderFlag = false
-        dispatch((dispatch,getState)=>{
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+        dispatch((dispatch, getState) => {
+            if (inEditingNameState(getState)) {
+                return
+            }
+            e.stopPropagation()
+            dispatch(show_left_menu_one())
         })
-        if(editingFolderFlag){
-            return
-        }
-        e.stopPropagation()
-        dispatch(show_left_menu_one())
     },
     createNewFolderPrompt: () => {
         dispatch((dispatch, getState) => {

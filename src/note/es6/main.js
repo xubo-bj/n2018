@@ -12,9 +12,9 @@ delete window.__PRELOADED_STATE__
 
 const store = createStore(reducer,preloadedState,applyMiddleware(thunk))
 store.subscribe(() => {
-  console.log('store :', store.getState())
+  // console.log('store :', store.getState())
 })
-console.log('initial store',store.getState());
+// console.log('initial store',store.getState());
 
 ReactDOM.render(
   <Provider store={store}>

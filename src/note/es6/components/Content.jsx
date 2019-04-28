@@ -6,6 +6,7 @@ import CenterColumn from "./CenterColumn.jsx"
 import RightColumn from "./RightColumn.jsx"
 import axios from "axios"
 import { create_new_file_start, create_new_file_success, create_new_file_failure } from "../actions"
+import {inEditingNameState} from "./utility"
 
 class Content extends React.Component {
     constructor(props){
@@ -73,13 +74,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch=>({
     createNewFile: () => {
         dispatch((dispatch, getState) => {
-            let state = getState()
-            if(state.createNewFolder.isTypingFolderName){
+            if(inEditingNameState(getState)){
                 return
             }
-            let currentDirId = state.currentDirId
+            let { currentDirId, tree } = getState()
             dispatch(create_new_file_start(currentDirId))
-            let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
+            let name = tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
             axios.post("note/create-file/", {
                 name,
                 dirId: currentDirId

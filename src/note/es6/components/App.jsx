@@ -2,10 +2,7 @@ import React from "react"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
 import { connect } from "react-redux"
-import { isEqual } from "lodash"
-import { updateFileInBackground,submitCreateNewFolder,
-confirmNewFileName } from "./utility"
-import { convertToRaw } from "draft-js"
+import { updateFile,submitCreateNewFolder,confirmNewFileName } from "./utility"
 
 import {
     hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
@@ -17,8 +14,11 @@ class App extends React.Component {
         super(props)
     }
     componentDidMount() {
-        window.addEventListener('beforeunload', this.props.updateFile)
-        window.addEventListener("blur", this.props.updateFile)
+        window.addEventListener('beforeunload', this.props.updateFile2)
+        window.addEventListener("blur", this.props.updateFile2)
+    }
+    componentDidUpdate(){
+        console.log("--------APP update----------")
     }
     render() {
         let { hideLeftMenu,clickMouseRight} = this.props
@@ -87,29 +87,8 @@ const mapDispatchToProps = dispatch => ({
             }
 
         }),
-    updateFile: () => {
-        dispatch((dispatch, getState) => {
-            let { fileId, centerColumnDir, editorState, filesObj, tree } = getState(),
-                currentfiles = [...tree[centerColumnDir].files],
-                currentName = null,
-                currentContent = null
-
-            if (fileId != null) {
-                currentName = currentfiles.filter(file => file._id == fileId)[0].name
-                currentContent = convertToRaw(editorState.getCurrentContent())
-            }
-
-
-            let contentIsSame = isEqual(currentContent, filesObj[fileId] && filesObj[fileId].content)
-            let nameIsSame = !!filesObj[fileId] && (filesObj[fileId].name.trim() === currentName.trim())
-            console.log("the same :", contentIsSame, nameIsSame)
-            if (fileId != null && (!contentIsSame || !nameIsSame)) {
-                updateFileInBackground(dispatch, fileId, centerColumnDir, currentName.trim(), currentContent)
-            }
-
-
-        }
-        )
+    updateFile2: () => {
+                updateFile(dispatch)
     },
 
 })

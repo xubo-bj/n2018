@@ -54,7 +54,6 @@ export const getFolders = (dispatch, dirId) => {
     })
 }
 
-
 export const updateFile = (dispatch) => {
         dispatch((dispatch, getState) => {
         let {
@@ -139,47 +138,6 @@ export const submitCreateNewFolder = (dispatch) => {
 }
 
 
-export const switchFile = (dispatch, selectedFileId) => {
-    dispatch((dispatch, getState) => {
-        let {
-            filesObj,
-            fileId,
-            centerColumnDir,
-            tree,
-            editorState
-        } = getState()
-        let name = tree[centerColumnDir].files.filter(file => file._id == fileId)[0].name
-        let content = convertToRaw(editorState.getCurrentContent())
-        if (selectedFileId == fileId) {
-            return
-        } else {
-            if (filesObj[selectedFileId] != undefined) {
-                dispatch(get_file_from_local(filesObj[selectedFileId].content, selectedFileId, filesObj[selectedFileId].name))
-            } else {
-                axios.get("note/get-file", {
-                    params: {
-                        selectedFileId
-                    },
-                    headers: {
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    if (res.data.success == "ok") {
-                        dispatch(get_file_success(res.data.content, selectedFileId, name))
-                    } else {
-                        console.log("success no", res.data)
-                    }
-                }).catch(err => {
-                    console.log('err1', err);
-                    dispatch(create_new_folder_failure())
-                })
-            }
-            updateFileInBackground(dispatch, fileId, centerColumnDir, name, content)
-        }
-    })
-}
 
 export const confirmNewFileName = dispatch => {
     dispatch((dispatch, getState) => {
@@ -213,4 +171,16 @@ export const getFileFromServer = (dispatch,selectedFileId) => {
         console.log('err1', err);
         // dispatch(create_new_folder_failure())
     })
+}
+
+export const inEditingNameState = getState => {
+    let {
+        createNewFolder,
+        renameFileState
+    } = getState()
+    if (createNewFolder.isTypingFolderName || renameFileState.isEditingFileName) {
+        return true
+    } else {
+        return false
+    }
 }

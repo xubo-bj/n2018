@@ -3,9 +3,7 @@ import styles from "../../sass/CenterColumnToolbar.scss"
 import { connect } from 'react-redux'
 import {
     return_to_parent_folder,
-    get_file_success,
 } from "../actions"
-import axios from "axios"
 import { updateFile,getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -26,11 +24,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     returnToParentDir: e =>
         dispatch((dispatch, getState) => {
-            let { createNewFolder, tree,centerColumnDir,filesObj } = getState(),
+            let { createNewFolder, tree,centerColumnDir,filesObj,renameFileState } = getState(),
                 parentDirId = tree[centerColumnDir].parentId,
                 files = tree[parentDirId].files
 
-            if (createNewFolder.isTypingFolderName) {
+            if (createNewFolder.isTypingFolderName || renameFileState.isEditingFileName) {
                 return
             }
             if (parentDirId == null) {

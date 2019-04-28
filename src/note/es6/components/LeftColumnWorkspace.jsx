@@ -14,7 +14,10 @@ import {
     no_file_in_folder
 } from "../actions"
 import axios from 'axios';
-import { getFolders,  updateFile, getFileFromServer, submitCreateNewFolder } from "./utility"
+import {
+    getFolders, updateFile, getFileFromServer,
+    inEditingNameState, submitCreateNewFolder
+} from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class DirTree extends React.Component {
@@ -113,49 +116,57 @@ class DirTree extends React.Component {
     }
 }
 
-const LeftColumnWorkspace = (props) => {
-    const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
-        centerColumnDir, newFolderRef } = props
-    return (
-        <div className={styles.workspace}>
-            <div data-id={shinelonId}
-                className={props.centerColumnDir == shinelonId ? styles["my-dir-selected"] : styles["my-dir"]}
-                onContextMenu={props.rightClickRootDir}
-                onClick={props.leftClickDir}
-            >
-                <i className={styles["my-dir-icon"]} />
-                <span className={styles["my-dir-name"]}>我的文件夹</span>
+class LeftColumnWorkspace extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
+            centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
+            createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
+            createNewFolderPrompt
+        } = this.props
+        return (
+            <div className={styles.workspace}>
+                <div data-id={shinelonId}
+                    className={centerColumnDir == shinelonId ? styles["my-dir-selected"] : styles["my-dir"]}
+                    onContextMenu={rightClickRootDir}
+                    onClick={leftClickDir}
+                >
+                    <i className={styles["my-dir-icon"]} />
+                    <span className={styles["my-dir-name"]}>我的文件夹</span>
+                </div>
+                <ul className={styles["pop-menu"]}
+                    style={{
+                        display: leftMenuTwo.display,
+                        left: leftMenuTwo.clientX + "px",
+                        top: leftMenuTwo.clientY + "px"
+                    }}>
+                    <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
+                    <li className={styles["menu-option"]} onClick={createNewFolderPromptInRoot}>新建文件夹</li>
+                </ul>
+                <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
+                    createNewFolderSubmit={createNewFolderSubmit} toggleDir={toggleDir}
+                    centerColumnDir={centerColumnDir}
+                    leftClickDir={leftClickDir}
+                    newFolderRef={newFolderRef}
+                />
+                <ul className={styles["pop-menu"]}
+                    style={{
+                        display: leftMenuThree.display,
+                        left: leftMenuThree.clientX + "px",
+                        top: leftMenuThree.clientY + "px"
+                    }}>
+                    <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
+                    <li className={styles["menu-option"]} onClick={createNewFolderPrompt}>新建文件夹</li>
+                    <li className={styles["menu-option"]}>重命名</li>
+                    <li className={styles["menu-option"]}>移动到</li>
+                    <li className={styles["menu-option"]}>复制</li>
+                    <li className={styles["menu-option"]}>删除</li>
+                </ul>
             </div>
-            <ul className={styles["pop-menu"]}
-                style={{
-                    display: props.leftMenuTwo.display,
-                    left: props.leftMenuTwo.clientX + "px",
-                    top: props.leftMenuTwo.clientY + "px"
-                }}>
-                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
-                <li className={styles["menu-option"]} onClick={props.createNewFolderPromptInRoot}>新建文件夹</li>
-            </ul>
-            <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
-                createNewFolderSubmit={createNewFolderSubmit} toggleDir={toggleDir}
-                centerColumnDir={centerColumnDir}
-                leftClickDir={leftClickDir}
-                newFolderRef={newFolderRef}
-            />
-            <ul className={styles["pop-menu"]}
-                style={{
-                    display: props.leftMenuThree.display,
-                    left: props.leftMenuThree.clientX + "px",
-                    top: props.leftMenuThree.clientY + "px"
-                }}>
-                <li className={styles["menu-option"]} onClick={props.createNewFilePrompt}>新建笔记</li>
-                <li className={styles["menu-option"]} onClick={props.createNewFolderPrompt}>新建文件夹</li>
-                <li className={styles["menu-option"]}>重命名</li>
-                <li className={styles["menu-option"]}>移动到</li>
-                <li className={styles["menu-option"]}>复制</li>
-                <li className={styles["menu-option"]}>删除</li>
-            </ul>
-        </div>
-    )
+        )
+    }
 }
 
 const mapStateToProps = state => {
@@ -169,25 +180,21 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
-        })
-        if (editingFolderFlag)
-            return
-
-        let target = e.target
-        if (target.dataset.mark == "arrow-menu") {
-            e.stopPropagation()
-            while (target.tagName.toLowerCase() != "li") {
-                target = target.parentElement
+            if (inEditingNameState(getState)) {
+                return
             }
-            dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
-        } else {
-            while (target.dataset.id == undefined) {
-                target = target.parentElement
-            }
-            dispatch((dispatch, getState) => {
+            let target = e.target
+            if (target.dataset.mark == "arrow-menu") {
+                e.stopPropagation()
+                while (target.tagName.toLowerCase() != "li") {
+                    target = target.parentElement
+                }
+                dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+            } else {
+                while (target.dataset.id == undefined) {
+                    target = target.parentElement
+                }
 
                 let dirId = target.dataset.id
                 if (centerColumnDir == dirId) {
@@ -212,37 +219,32 @@ const mapDispatchToProps = dispatch => ({
 
                 getFolders(dispatch, dirId)
 
-            })
-        }
+            }
+
+        })
     },
     rightClickRootDir: e => {
         e.preventDefault()
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
-        })
-        if (editingFolderFlag) {
-            return
-        }
-        dispatch((dispatch, getState) => {
+            if (inEditingNameState(getState)) {
+                return
+            }
             dispatch(show_left_menu_two(e.clientX, e.clientY))
         })
     },
     rightClickDir: e => {
         e.preventDefault()
-        let editingFolderFlag = false
-        dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
-        })
-        if (editingFolderFlag) {
-            return
-        }
 
+        dispatch((dispatch, getState) => {
+            if (inEditingNameState(getState)) {
+                return
+            }
         let target = e.target
         while (target.tagName.toLowerCase() != "li") {
             target = target.parentElement
         }
         dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+        })
     },
     createNewFolderSubmit: () => {
         submitCreateNewFolder(dispatch)
@@ -288,16 +290,14 @@ const mapDispatchToProps = dispatch => ({
         })
     },
     toggleDir: (e, _id) => {
-        let editingFolderFlag = false
         dispatch((dispatch, getState) => {
-            editingFolderFlag = getState().createNewFolder.isTypingFolderName
+            if (inEditingNameState(getState)) {
+                return
+            }
+            e.stopPropagation()
+            dispatch(toggle_dir(_id))
+            getFolders(dispatch, _id)
         })
-        if (editingFolderFlag) {
-            return
-        }
-        e.stopPropagation()
-        dispatch(toggle_dir(_id))
-        getFolders(dispatch, _id)
     }
 })
 
