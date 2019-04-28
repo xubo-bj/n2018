@@ -49,7 +49,7 @@ const mapDispatchToProps = dispatch => ({
         })
     }
     ,
-    hideLeftMenu: () => dispatch(
+    hideLeftMenu: (e) => dispatch(
         (dispatch, getState) => {
             let {
                 leftMenuOneDisplay,
@@ -83,6 +83,9 @@ const mapDispatchToProps = dispatch => ({
                 submitCreateNewFolder(dispatch)
             }
             if(renameFileState.isEditingFileName){
+                if(e.target.dataset.desc == "rename"){
+                    return
+                }
                 confirmNewFileName(dispatch)
             }
 

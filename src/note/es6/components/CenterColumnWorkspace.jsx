@@ -115,7 +115,7 @@ class CenterColumnWorkspace extends React.Component {
                         left: centerFileMenu.clientX + "px",
                         top: centerFileMenu.clientY + "px"
                     }} >
-                    <li className={styles["menu-option"]} onClick={renameFile}>重命名</li>
+                    <li className={styles["menu-option"]} onClick={renameFile} data-desc="rename">重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]} onClick={deleleFile}>删除</li>

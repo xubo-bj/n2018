@@ -265,7 +265,8 @@ router.get("/get-file", async (ctx, next) => {
     if (file != null) {
         ctx.body = {
             success: "ok",
-            content: file.content
+            content: file.content,
+            name:file.name
         }
     } else {
         ctx.body = {

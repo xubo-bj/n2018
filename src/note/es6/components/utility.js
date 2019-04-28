@@ -5,7 +5,6 @@ import {
     create_new_folder_submit,
     create_new_folder_success,
     create_new_folder_failure,
-    get_file_from_local,
     get_file_success,
     rename_file_confirm,
 } from "../actions"
@@ -64,7 +63,6 @@ export const updateFile = (dispatch) => {
             editorState
         } = getState(),
             currentFiles = [...tree[centerColumnDir].files]
-
         if (currentFileId != null) {
             let currentName = currentFiles.filter(file => file._id == currentFileId)[0].name,
                 currentContent = convertToRaw(editorState.getCurrentContent()),
@@ -163,7 +161,7 @@ export const getFileFromServer = (dispatch,selectedFileId) => {
         responseType: 'json' // default
     }).then(res => {
         if (res.data.success == "ok") {
-            dispatch(get_file_success(res.data.content, selectedFileId, name))
+            dispatch(get_file_success(res.data.content, selectedFileId, res.data.name))
         } else {
 
         }
