@@ -355,3 +355,14 @@ export const rename_folder_prompt =(dirId)=>{
         dirId
     }
 }
+
+export const RENAME_FOLDER_CONFIRM_LOCALLY = "RENAME_FOLDER_CONFIRM_LOCALLY"
+export const rename_folder_confirm_locallly = (parentId,renameDirId,name)=>{
+    console.log(RENAME_FOLDER_CONFIRM_LOCALLY)
+    return{
+        type:RENAME_FOLDER_CONFIRM_LOCALLY,
+        parentId,
+        renameDirId,
+        name
+    }
+}

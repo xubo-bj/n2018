@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import {
     return_to_parent_folder,
 } from "../actions"
-import { updateFile,getFileFromServer } from "./utility"
+import { inEditingNameState,updateFile,getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 const CenterColumnToolbar = (props) =>
@@ -24,13 +24,14 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     returnToParentDir: e =>
         dispatch((dispatch, getState) => {
-            let { createNewFolder, tree,centerColumnDir,filesObj,renameFileState } = getState(),
+            let { tree, centerColumnDir, filesObj } = getState(),
                 parentDirId = tree[centerColumnDir].parentId,
                 files = tree[parentDirId].files
 
-            if (createNewFolder.isTypingFolderName || renameFileState.isEditingFileName) {
+            if (inEditingNameState(getState)) {
                 return
             }
+
             if (parentDirId == null) {
                 return
             }

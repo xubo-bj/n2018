@@ -40,7 +40,7 @@ const {
     RENAME_FILE_PROMPT,
     RENAME_FILE_CONFIRM,
     RENAME_FOLDER_PROMPT,
-
+    RENAME_FOLDER_CONFIRM_LOCALLY
 } = require("../actions")
 
 const leftMenuOneDisplay = (display = "none", action) => {
@@ -182,9 +182,19 @@ const tree = (treeObj = {
                 })
                 return Object.assign({}, treeObj)
             }
-            case RENAME_FOLDER_PROMPT:{
-                let renameDir= treeObj[action.dirId]
+        case RENAME_FOLDER_PROMPT:
+            {
+                let renameDir = treeObj[action.dirId]
                 renameDir.editable = true
+                return Object.assign({}, treeObj)
+            }
+        case RENAME_FOLDER_CONFIRM_LOCALLY:
+            {
+                let parentDir = treeObj[action.parentId]
+                parentDir.dirs.filter(dir => dir._id == action.renameDirId)[0].name = action.name
+                let renameDir = treeObj[action.renameDirId]
+                renameDir.name = action.name
+                delete renameDir.editable
                 return Object.assign({}, treeObj)
             }
 
@@ -293,19 +303,21 @@ const tree = (treeObj = {
                 treeObj[action.dirId].files = filteredFiles
                 return Object.assign({}, treeObj)
             }
-        case RENAME_FILE_PROMPT: {
-            let files = treeObj[action.dirId].files,
-                file = files.filter(file => file._id === action.fileId)[0]
-            file.editable = true
-            return Object.assign({}, treeObj)
-        }
-        case RENAME_FILE_CONFIRM: {
-            let files = treeObj[action.dirId].files,
-                file = files.filter(file => file._id === action.fileId)[0]
-            delete file.editable
-            file.name = action.name
-            return Object.assign({}, treeObj)
-        }
+        case RENAME_FILE_PROMPT:
+            {
+                let files = treeObj[action.dirId].files,
+                    file = files.filter(file => file._id === action.fileId)[0]
+                file.editable = true
+                return Object.assign({}, treeObj)
+            }
+        case RENAME_FILE_CONFIRM:
+            {
+                let files = treeObj[action.dirId].files,
+                    file = files.filter(file => file._id === action.fileId)[0]
+                delete file.editable
+                file.name = action.name
+                return Object.assign({}, treeObj)
+            }
         default:
             return treeObj
     }
@@ -502,7 +514,7 @@ const filesObj = (obj = {}, action) => {
 const folderNameState = (obj = {
     folderRef: null,
     isTypingFolderName: false,
-    isRenameFolderName:false
+    isRenamingFolder: false
 }, action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
@@ -517,11 +529,18 @@ const folderNameState = (obj = {
                 obj.isTypingFolderName = false
                 return Object.assign({}, obj)
             }
-        case RENAME_FOLDER_PROMPT:{
+        case RENAME_FOLDER_PROMPT:
+            {
                 obj.folderRef = React.createRef()
-                obj.isRenameFolderName = true
+                obj.isRenamingFolder = true
                 return Object.assign({}, obj)
-        }
+            }
+        case RENAME_FOLDER_CONFIRM_LOCALLY:
+            {
+                obj.folderRef = null
+                obj.isRenamingFolder = false
+                return Object.assign({}, obj)
+            }
         default:
             return obj
     }
@@ -550,20 +569,21 @@ const renameFileState = (obj = {
 }
 
 
-const renameFolderState = (obj={
-    folderRef:null,
-    isEditingFolderName:false
-},action)=>{
-    switch(action.type){
-        case RENAME_FOLDER_PROMPT:{
-            obj.folderRef = React.createRef()
-            obj.isEditingFolderName = true
-                return Object.assign({}, obj)
-        }
-        default:
-        return obj
-    }
-}
+// const renameFolderState = (obj = {
+//     folderRef: null,
+//     isEditingFolderName: false
+// }, action) => {
+//     switch (action.type) {
+//         case RENAME_FOLDER_PROMPT:
+//             {
+//                 obj.folderRef = React.createRef()
+//                 obj.isEditingFolderName = true
+//                 return Object.assign({}, obj)
+//             }
+//         default:
+//             return obj
+//     }
+// }
 
 
 
@@ -587,5 +607,4 @@ module.exports = combineReducers({
     showMask,
     folderNameState,
     renameFileState,
-    renameFolderState
 })

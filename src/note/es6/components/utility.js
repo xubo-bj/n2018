@@ -1,4 +1,5 @@
 import {
+    rename_folder_confirm_locallly,
     update_file_success,
     update_file_failure,
     fetch_folders,
@@ -176,9 +177,45 @@ export const inEditingNameState = getState => {
         folderNameState,
         renameFileState
     } = getState()
-    if (folderNameState.isTypingFolderName || renameFileState.isEditingFileName) {
+    if (folderNameState.isTypingFolderName || renameFileState.isEditingFileName ||folderNameState.isRenamingFolder) {
         return true
     } else {
         return false
     }
+}
+
+export const renameFolderConfirm = dispatch => {
+        dispatch((dispatch, getState) => {
+        let {
+            currentDirId,
+            tree,
+            folderNameState
+        } = getState(),
+            parentId = tree[currentDirId].parentId,
+            name = folderNameState.folderRef.current.textContent.trim()
+        dispatch(rename_folder_confirm_locallly(parentId, currentDirId, name))
+    axios.put("note/update-folder", {
+        name,
+        parentId,
+        currentDirId,
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+            'X-Requested-With': 'axios'
+        },
+        timeout: 1000, // default is `0` (no timeout),
+        responseType: 'json' // default
+    }).then(res => {
+        let {
+            success,
+            mtime
+        } = res.data
+        if (success) {
+
+        }
+    }).catch(err => {
+        console.log('err', err);
+        dispatch(update_file_failure())
+    })
+    })
 }

@@ -341,5 +341,55 @@ router.get('/test', async (ctx, next) => {
         "drop userfiles": y
     }
 })
+router.put('/update-folder', async (ctx, next) => {
+    /*
+    let connection = await client.connect()
+    let userfilesCollection = connection.db(dbName).collection(userfiles)
+    let mtime = new Date()
+    let {
+        name,
+        content,
+        fileId,
+        dirId,
+    } = ctx.request.body
+    let updateFilesResult = await userfilesCollection.updateOne({
+        _id: new ObjectID(fileId)
+    }, {
+        $set: {
+            name,
+            content,
+            mtime,
+        }
+    })
+    if (updateFilesResult.modifiedCount === 1) {
+        let userdirsCollection = connection.db(dbName).collection(userdirs)
+        let updateDirsResult = await userdirsCollection.updateOne({
+            _id: new ObjectID(dirId),
+            "files._id": new ObjectID(fileId)
+        }, {
+            $set: {
+                "files.$.name": name,
+                "files.$.mtime": mtime
+            }
+        })
 
+        if (updateDirsResult.modifiedCount === 1) {
+            ctx.body = {
+                success: "ok",
+                mtime
+            }
+        } else {
+            ctx.body = {
+                success: "no",
+                error: "update folder that file locates in failure"
+            }
+        }
+    } else {
+        ctx.body = {
+            success: "no",
+            error: "update file failure"
+        }
+    }
+    */
+})
 module.exports = router

@@ -2,7 +2,9 @@ import React from "react"
 import Header from "./Header.jsx"
 import Content from "./Content.jsx"
 import { connect } from "react-redux"
-import { updateFile,submitCreateNewFolder,confirmNewFileName } from "./utility"
+import { updateFile, submitCreateNewFolder, confirmNewFileName,
+renameFolderConfirm
+} from "./utility"
 
 import {
     hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
@@ -17,14 +19,14 @@ class App extends React.Component {
         window.addEventListener('beforeunload', this.props.updateFile2)
         window.addEventListener("blur", this.props.updateFile2)
     }
-    componentDidUpdate(){
+    componentDidUpdate() {
         console.log("--------APP update----------")
     }
     render() {
-        let { hideLeftMenu,clickMouseRight} = this.props
+        let { hideLeftMenu, clickMouseRight } = this.props
         return (
             <div onClick={hideLeftMenu} className={styles.container}
-            onContextMenu={clickMouseRight}
+                onContextMenu={clickMouseRight}
             >
                 <Header />
                 <Content />
@@ -35,14 +37,14 @@ class App extends React.Component {
 
 
 const mapDispatchToProps = dispatch => ({
-    clickMouseRight:e=>{
-        dispatch((dispatch,getState)=>{
-            let { folderNameState,renameFileState} = getState()
+    clickMouseRight: e => {
+        dispatch((dispatch, getState) => {
+            let { folderNameState, renameFileState } = getState()
             if (folderNameState.isTypingFolderName) {
                 e.preventDefault()
                 submitCreateNewFolder(dispatch)
             }
-            if(renameFileState.isEditingFileName){
+            if (renameFileState.isEditingFileName) {
                 e.preventDefault()
                 confirmNewFileName(dispatch)
             }
@@ -82,16 +84,22 @@ const mapDispatchToProps = dispatch => ({
             if (folderNameState.isTypingFolderName) {
                 submitCreateNewFolder(dispatch)
             }
-            if(renameFileState.isEditingFileName){
-                if(e.target.dataset.desc == "rename"){
+            if (renameFileState.isEditingFileName) {
+                if (e.target.dataset.desc == "rename") {
                     return
                 }
                 confirmNewFileName(dispatch)
             }
-
-        }),
+            if(folderNameState.isRenamingFolder){
+                if (e.target.dataset.desc == "rename") {
+                    return
+                }
+                renameFolderConfirm(dispatch)
+            }
+        }
+    ),
     updateFile2: () => {
-                updateFile(dispatch)
+        updateFile(dispatch)
     },
 
 })

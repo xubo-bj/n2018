@@ -17,7 +17,8 @@ import {
 import axios from 'axios';
 import {
     getFolders, updateFile, getFileFromServer,
-    inEditingNameState, submitCreateNewFolder
+    inEditingNameState, submitCreateNewFolder,
+    renameFolderConfirm
 } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -37,14 +38,13 @@ class DirTree extends React.Component {
     }
     keydown(e) {
         if (e.keyCode == 13) {
-console.log("fjsflfsl")
             e.preventDefault()
-            let {createNewFolderSubmit,isTypingFolderName,isRenameFolderName} = this.props
+            let {createNewFolderSubmit,isTypingFolderName,isRenamingFolder,renameFolderConfirm_2} = this.props
             if(isTypingFolderName){
                 createNewFolderSubmit()
             }
-            if(isRenameFolderName){
-console.log("fjsflfsl")
+            if(isRenamingFolder){
+                renameFolderConfirm_2()
             }
         }
     }
@@ -53,7 +53,7 @@ console.log("fjsflfsl")
     }
     render() {
         let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef,
-            isTypingFolderName, isRenameFolderName } = this.props
+            isTypingFolderName, isRenamingFolder,renameFolderConfirm_2 } = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -107,7 +107,8 @@ console.log("fjsflfsl")
                                         centerColumnDir={centerColumnDir}
                                         newFolderRef={newFolderRef}
                                         isTypingFolderName={isTypingFolderName}
-                                        isRenameFolderName={isRenameFolderName}
+                                        isRenamingFolder={isRenamingFolder}
+                                        renameFolderConfirm_2={renameFolderConfirm_2}
                                     />
                                 </li>
                             )
@@ -146,7 +147,8 @@ class LeftColumnWorkspace extends React.Component {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
             createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
-            createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenameFolderName
+            createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenamingFolder,
+            renameFolderConfirm_2
         } = this.props
         return (
             <div className={styles.workspace}>
@@ -173,7 +175,8 @@ class LeftColumnWorkspace extends React.Component {
                     leftClickDir={leftClickDir}
                     newFolderRef={newFolderRef}
                     isTypingFolderName={isTypingFolderName}
-                    isRenameFolderName={isRenameFolderName}
+                    isRenamingFolder={isRenamingFolder}
+                    renameFolderConfirm_2={renameFolderConfirm_2}
                 />
                 <ul className={styles["pop-menu"]}
                     style={{
@@ -183,7 +186,7 @@ class LeftColumnWorkspace extends React.Component {
                     }}>
                     <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPrompt}>新建文件夹</li>
-                    <li className={styles["menu-option"]} onClick={renameFolderPrompt}>重命名</li>
+                    <li className={styles["menu-option"]} onClick={renameFolderPrompt} data-desc="rename">重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]}>删除</li>
@@ -201,7 +204,7 @@ const mapStateToProps = state => {
         tree: state.tree,
         newFolderRef: state.folderNameState.folderRef,
         isTypingFolderName: state.folderNameState.isTypingFolderName,
-        isRenameFolderName: state.folderNameState.isRenameFolderName
+        isRenamingFolder: state.folderNameState.isRenamingFolder
     }
 }
 const mapDispatchToProps = dispatch => ({
@@ -330,7 +333,9 @@ const mapDispatchToProps = dispatch => ({
             let {currentDirId} = getState()
             dispatch(rename_folder_prompt(currentDirId))
         })
-
+    },
+    renameFolderConfirm_2:()=>{
+        renameFolderConfirm(dispatch)
     }
 })
 
