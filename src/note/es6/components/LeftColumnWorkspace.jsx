@@ -27,7 +27,7 @@ class DirTree extends React.Component {
         this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
-        if (this.props.newFolderRef != null && this.$li != null) {
+        if (this.props.newFolderRef != null && this.$isEditingFolderNmae!= null) {
             let s = window.getSelection();
             if (s.rangeCount > 0) s.removeAllRanges();
             let range = document.createRange();
@@ -37,16 +37,23 @@ class DirTree extends React.Component {
     }
     keydown(e) {
         if (e.keyCode == 13) {
+console.log("fjsflfsl")
             e.preventDefault()
-            this.props.createNewFolderSubmit()
-
+            let {createNewFolderSubmit,isTypingFolderName,isRenameFolderName} = this.props
+            if(isTypingFolderName){
+                createNewFolderSubmit()
+            }
+            if(isRenameFolderName){
+console.log("fjsflfsl")
+            }
         }
     }
     clickInEditingFolder(e) {
         e.stopPropagation()
     }
     render() {
-        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef} = this.props
+        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef,
+            isTypingFolderName, isRenameFolderName } = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -76,17 +83,18 @@ class DirTree extends React.Component {
                                                 ? e => toggleDir(e, dir._id)
                                                 : null
                                             } />
-                                        <div className={styles.dir}>
+                                        <div className={styles.dir}
+                                            ref={childTargetDir.editable ? elem => this.$isEditingFolderNmae = elem : null}>
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
 
-                                            {!dir.editable ?
+                                            {!childTargetDir.editable ?
                                                 <span className={styles.dirName}>{childTargetDir.name}</span>
                                                 :
                                                 <span className={styles.dirName}
                                                     onKeyDown={this.keydown}
                                                     onClick={this.clickInEditingFolder}
                                                     ref={newFolderRef}
-                                                    contentEditable={dir.editable}
+                                                    contentEditable={true}
                                                 >{childTargetDir.name}</span>
                                             }
 
@@ -98,12 +106,14 @@ class DirTree extends React.Component {
                                         toggleDir={toggleDir}
                                         centerColumnDir={centerColumnDir}
                                         newFolderRef={newFolderRef}
+                                        isTypingFolderName={isTypingFolderName}
+                                        isRenameFolderName={isRenameFolderName}
                                     />
                                 </li>
                             )
                         } else {
                             return (
-                                <li Key={"editable"} className={styles.li} ref={elem => this.$li = elem}>
+                                <li Key={"editable"} className={styles.li} ref={elem => this.$isEditingFolderNmae= elem}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]} />
@@ -136,7 +146,7 @@ class LeftColumnWorkspace extends React.Component {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
             createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
-            createNewFolderPrompt,renameFolderPrompt
+            createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenameFolderName
         } = this.props
         return (
             <div className={styles.workspace}>
@@ -162,6 +172,8 @@ class LeftColumnWorkspace extends React.Component {
                     centerColumnDir={centerColumnDir}
                     leftClickDir={leftClickDir}
                     newFolderRef={newFolderRef}
+                    isTypingFolderName={isTypingFolderName}
+                    isRenameFolderName={isRenameFolderName}
                 />
                 <ul className={styles["pop-menu"]}
                     style={{
@@ -187,7 +199,9 @@ const mapStateToProps = state => {
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
         tree: state.tree,
-        newFolderRef: state.createNewFolder.newFolderRef,
+        newFolderRef: state.folderNameState.folderRef,
+        isTypingFolderName: state.folderNameState.isTypingFolderName,
+        isRenameFolderName: state.folderNameState.isRenameFolderName
     }
 }
 const mapDispatchToProps = dispatch => ({
@@ -313,9 +327,6 @@ const mapDispatchToProps = dispatch => ({
     },
     renameFolderPrompt:e=>{
         dispatch((dispatch,getState)=>{
-            if(inEditingNameState(getState)){
-                return
-            }
             let {currentDirId} = getState()
             dispatch(rename_folder_prompt(currentDirId))
         })

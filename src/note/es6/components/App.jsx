@@ -37,8 +37,8 @@ class App extends React.Component {
 const mapDispatchToProps = dispatch => ({
     clickMouseRight:e=>{
         dispatch((dispatch,getState)=>{
-            let { createNewFolder,renameFileState} = getState()
-            if (createNewFolder.isTypingFolderName) {
+            let { folderNameState,renameFileState} = getState()
+            if (folderNameState.isTypingFolderName) {
                 e.preventDefault()
                 submitCreateNewFolder(dispatch)
             }
@@ -57,7 +57,7 @@ const mapDispatchToProps = dispatch => ({
                 leftMenuThree,
                 centerDirMenu,
                 centerFileMenu,
-                createNewFolder,
+                folderNameState,
                 renameFileState
             } = getState()
             if (leftMenuOneDisplay == "block") {
@@ -79,7 +79,7 @@ const mapDispatchToProps = dispatch => ({
             if (centerFileMenu.display == "block") {
                 dispatch(hide_center_file_menu())
             }
-            if (createNewFolder.isTypingFolderName) {
+            if (folderNameState.isTypingFolderName) {
                 submitCreateNewFolder(dispatch)
             }
             if(renameFileState.isEditingFileName){

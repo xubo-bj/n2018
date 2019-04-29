@@ -106,10 +106,10 @@ export const submitCreateNewFolder = (dispatch) => {
     dispatch(create_new_folder_submit())
     dispatch((dispatch, getState) => {
         let {
-            createNewFolder,
+            folderNameState,
             currentDirId
         } = getState()
-        let name = createNewFolder.newFolderRef.current.textContent.trim()
+        let name = folderNameState.folderRef.current.textContent.trim()
         axios.post("note/create-folder/", {
             name,
             dirId: currentDirId
@@ -173,10 +173,10 @@ export const getFileFromServer = (dispatch,selectedFileId) => {
 
 export const inEditingNameState = getState => {
     let {
-        createNewFolder,
+        folderNameState,
         renameFileState
     } = getState()
-    if (createNewFolder.isTypingFolderName || renameFileState.isEditingFileName) {
+    if (folderNameState.isTypingFolderName || renameFileState.isEditingFileName) {
         return true
     } else {
         return false

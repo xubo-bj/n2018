@@ -499,24 +499,29 @@ const filesObj = (obj = {}, action) => {
 }
 
 
-const createNewFolder = (obj = {
-    newFolderRef: null,
-    isTypingFolderName: false
+const folderNameState = (obj = {
+    folderRef: null,
+    isTypingFolderName: false,
+    isRenameFolderName:false
 }, action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
-        case RENAME_FOLDER_PROMPT:
             {
-                obj.newFolderRef = React.createRef();
+                obj.folderRef = React.createRef()
                 obj.isTypingFolderName = true
                 return Object.assign({}, obj)
             }
         case CREATE_NEW_FOLDER_SUCCESS:
             {
-                obj.newFolderRef = null
+                obj.folderRef = null
                 obj.isTypingFolderName = false
                 return Object.assign({}, obj)
             }
+        case RENAME_FOLDER_PROMPT:{
+                obj.folderRef = React.createRef()
+                obj.isRenameFolderName = true
+                return Object.assign({}, obj)
+        }
         default:
             return obj
     }
@@ -545,20 +550,21 @@ const renameFileState = (obj = {
 }
 
 
-// const renameFolderState = (obj={
-//     folderRef:null,
-//     isEditingFolderName:false
-// },action)=>{
-//     switch(action.type){
-//         case RENAME_FOLDER_PROMPT:{
-//             obj.folderRef = React.createRef()
-//             obj.isEditingFolderName = true
-//                 return Object.assign({}, obj)
-//         }
-//         default:
-//         return obj
-//     }
-// }
+const renameFolderState = (obj={
+    folderRef:null,
+    isEditingFolderName:false
+},action)=>{
+    switch(action.type){
+        case RENAME_FOLDER_PROMPT:{
+            obj.folderRef = React.createRef()
+            obj.isEditingFolderName = true
+                return Object.assign({}, obj)
+        }
+        default:
+        return obj
+    }
+}
+
 
 
 
@@ -579,7 +585,7 @@ module.exports = combineReducers({
     centerDirMenu,
     centerFileMenu,
     showMask,
-    createNewFolder,
+    folderNameState,
     renameFileState,
-    // renameFolderState
+    renameFolderState
 })

@@ -2,7 +2,6 @@ require("@babel/register");
 const path = require('path')
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require("mongodb").ObjectID
-const assert = require('assert');
 const {
     createStore
 } = require("redux")
@@ -25,7 +24,6 @@ router.prefix('/note')
 const {
     EditorState,
     convertToRaw,
-    convertFromRaw
 } = require("draft-js")
 
 router.get('/', async (ctx, next) => {
@@ -129,6 +127,7 @@ router.post('/create-folder', async (ctx, next) => {
         }
     }
 })
+
 router.get("/get-folders", async (ctx, next) => {
     let dbConn = await client.connect()
     let userdirsCol = dbConn.db(dbName).collection(userdirs)
@@ -205,7 +204,6 @@ router.post('/create-file', async (ctx, next) => {
 })
 
 router.put('/update-file', async (ctx, next) => {
-    console.log("update----------file-----------------")
     let connection = await client.connect()
     let userfilesCollection = connection.db(dbName).collection(userfiles)
     let mtime = new Date()
