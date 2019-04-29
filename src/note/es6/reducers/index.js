@@ -38,7 +38,8 @@ const {
     DELETE_FILE_SUCCESS,
     EDIT_NEW_FOLDER_NAME,
     RENAME_FILE_PROMPT,
-    RENAME_FILE_CONFIRM
+    RENAME_FILE_CONFIRM,
+    RENAME_FOLDER_PROMPT,
 
 } = require("../actions")
 
@@ -181,6 +182,12 @@ const tree = (treeObj = {
                 })
                 return Object.assign({}, treeObj)
             }
+            case RENAME_FOLDER_PROMPT:{
+                let renameDir= treeObj[action.dirId]
+                renameDir.editable = true
+                return Object.assign({}, treeObj)
+            }
+
         case EDIT_NEW_FOLDER_NAME:
             {
                 let dirs = treeObj[action.currentDirId].dirs,
@@ -498,6 +505,7 @@ const createNewFolder = (obj = {
 }, action) => {
     switch (action.type) {
         case CREATE_NEW_FOLDER_PROMPT:
+        case RENAME_FOLDER_PROMPT:
             {
                 obj.newFolderRef = React.createRef();
                 obj.isTypingFolderName = true
@@ -537,6 +545,22 @@ const renameFileState = (obj = {
 }
 
 
+// const renameFolderState = (obj={
+//     folderRef:null,
+//     isEditingFolderName:false
+// },action)=>{
+//     switch(action.type){
+//         case RENAME_FOLDER_PROMPT:{
+//             obj.folderRef = React.createRef()
+//             obj.isEditingFolderName = true
+//                 return Object.assign({}, obj)
+//         }
+//         default:
+//         return obj
+//     }
+// }
+
+
 
 const {
     combineReducers
@@ -556,5 +580,6 @@ module.exports = combineReducers({
     centerFileMenu,
     showMask,
     createNewFolder,
-    renameFileState
+    renameFileState,
+    // renameFolderState
 })

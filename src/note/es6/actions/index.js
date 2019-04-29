@@ -346,3 +346,12 @@ export const rename_file_confirm = (dirId,fileId,name)=>{
         name
     }
 }
+
+export const RENAME_FOLDER_PROMPT = "RENAME_FOLDER_PROMPT"
+export const rename_folder_prompt =(dirId)=>{
+    console.log(RENAME_FOLDER_PROMPT)
+    return{
+        type:RENAME_FOLDER_PROMPT,
+        dirId
+    }
+}

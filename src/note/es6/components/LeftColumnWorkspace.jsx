@@ -2,6 +2,7 @@ import React from "react"
 import { connect } from 'react-redux'
 import styles from "../../sass/LeftColumnWorkspace.scss"
 import {
+    rename_folder_prompt,
     create_new_folder_prompt,
     show_left_menu_two,
     show_left_menu_three,
@@ -45,7 +46,7 @@ class DirTree extends React.Component {
         e.stopPropagation()
     }
     render() {
-        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef } = this.props
+        let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef} = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -61,7 +62,7 @@ class DirTree extends React.Component {
                     onClick={this.props.leftClickDir}
                 >
                     {targetDir.dirs.map(dir => {
-                        if (dir._id) {
+                        if (!dir.editable) {
                             let childTargetDir = tree[dir._id]
                             return (
                                 <li Key={dir._id} className={styles.li} data-id={dir._id}>
@@ -77,7 +78,18 @@ class DirTree extends React.Component {
                                             } />
                                         <div className={styles.dir}>
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
-                                            <span className={styles.dirName}>{childTargetDir.name}</span>
+
+                                            {!dir.editable ?
+                                                <span className={styles.dirName}>{childTargetDir.name}</span>
+                                                :
+                                                <span className={styles.dirName}
+                                                    onKeyDown={this.keydown}
+                                                    onClick={this.clickInEditingFolder}
+                                                    ref={newFolderRef}
+                                                    contentEditable={dir.editable}
+                                                >{childTargetDir.name}</span>
+                                            }
+
                                         </div>
                                         <i className={styles["arrow-menu"]} data-mark="arrow-menu" />
                                     </div>
@@ -124,7 +136,7 @@ class LeftColumnWorkspace extends React.Component {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
             createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
-            createNewFolderPrompt
+            createNewFolderPrompt,renameFolderPrompt
         } = this.props
         return (
             <div className={styles.workspace}>
@@ -159,7 +171,7 @@ class LeftColumnWorkspace extends React.Component {
                     }}>
                     <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPrompt}>新建文件夹</li>
-                    <li className={styles["menu-option"]}>重命名</li>
+                    <li className={styles["menu-option"]} onClick={renameFolderPrompt}>重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]}>删除</li>
@@ -175,7 +187,7 @@ const mapStateToProps = state => {
         leftMenuTwo: state.leftMenuTwo,
         leftMenuThree: state.leftMenuThree,
         tree: state.tree,
-        newFolderRef: state.createNewFolder.newFolderRef
+        newFolderRef: state.createNewFolder.newFolderRef,
     }
 }
 const mapDispatchToProps = dispatch => ({
@@ -298,6 +310,16 @@ const mapDispatchToProps = dispatch => ({
             dispatch(toggle_dir(_id))
             getFolders(dispatch, _id)
         })
+    },
+    renameFolderPrompt:e=>{
+        dispatch((dispatch,getState)=>{
+            if(inEditingNameState(getState)){
+                return
+            }
+            let {currentDirId} = getState()
+            dispatch(rename_folder_prompt(currentDirId))
+        })
+
     }
 })
 
