@@ -84,10 +84,10 @@ class DirTree extends React.Component {
                                                 : null
                                             } />
                                         <div className={styles.dir}
-                                            ref={childTargetDir.editable ? elem => this.$isEditingFolderNmae = elem : null}>
+                                            ref={childTargetDir.leftColumnEditable? elem => this.$isEditingFolderNmae = elem : null}>
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
 
-                                            {!childTargetDir.editable ?
+                                            {!childTargetDir.leftColumnEditable?
                                                 <span className={styles.dirName}>{childTargetDir.name}</span>
                                                 :
                                                 <span className={styles.dirName}
@@ -292,6 +292,7 @@ const mapDispatchToProps = dispatch => ({
 
             let state = getState()
             let currentDirId = state.currentDirId
+            updateFile(dispatch)
             dispatch(create_new_file_start(currentDirId))
             let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
             axios.post("note/create-file/", {
@@ -331,7 +332,7 @@ const mapDispatchToProps = dispatch => ({
     renameFolderPrompt:e=>{
         dispatch((dispatch,getState)=>{
             let {currentDirId} = getState()
-            dispatch(rename_folder_prompt(currentDirId))
+            dispatch(rename_folder_prompt(currentDirId,"left"))
         })
     },
     renameFolderConfirm_2:()=>{

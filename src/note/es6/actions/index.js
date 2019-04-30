@@ -348,11 +348,12 @@ export const rename_file_confirm = (dirId,fileId,name)=>{
 }
 
 export const RENAME_FOLDER_PROMPT = "RENAME_FOLDER_PROMPT"
-export const rename_folder_prompt =(dirId)=>{
+export const rename_folder_prompt =(dirId,position)=>{
     console.log(RENAME_FOLDER_PROMPT)
     return{
         type:RENAME_FOLDER_PROMPT,
-        dirId
+        dirId,
+        position
     }
 }
 
@@ -364,5 +365,16 @@ export const rename_folder_confirm_locallly = (parentId,renameDirId,name)=>{
         parentId,
         renameDirId,
         name
+    }
+}
+
+export const RENAME_FOLDER_RESPONSE_FROM_SERVER = "RENAME_FOLDER_RESPONSE_FROM_SERVER"
+export const rename_folder_response_from_server = (parentId, renameDirId, mtime) => {
+    console.log(RENAME_FOLDER_RESPONSE_FROM_SERVER)
+    return {
+        type: RENAME_FOLDER_RESPONSE_FROM_SERVER,
+        parentId,
+        renameDirId,
+        mtime
     }
 }

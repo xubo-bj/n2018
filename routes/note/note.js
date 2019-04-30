@@ -342,38 +342,34 @@ router.get('/test', async (ctx, next) => {
     }
 })
 router.put('/update-folder', async (ctx, next) => {
-    /*
     let connection = await client.connect()
-    let userfilesCollection = connection.db(dbName).collection(userfiles)
+    let userdirsCollection = connection.db(dbName).collection(userdirs)
     let mtime = new Date()
     let {
         name,
-        content,
-        fileId,
-        dirId,
+        parentId,
+        currentDirId,
     } = ctx.request.body
-    let updateFilesResult = await userfilesCollection.updateOne({
-        _id: new ObjectID(fileId)
+    let updateDirsResult = await userdirsCollection.updateOne({
+        _id: new ObjectID(currentDirId)
     }, {
         $set: {
             name,
-            content,
             mtime,
         }
     })
-    if (updateFilesResult.modifiedCount === 1) {
-        let userdirsCollection = connection.db(dbName).collection(userdirs)
-        let updateDirsResult = await userdirsCollection.updateOne({
-            _id: new ObjectID(dirId),
-            "files._id": new ObjectID(fileId)
+    if (updateDirsResult.modifiedCount === 1) {
+        let updateDirsResult_2 = await userdirsCollection.updateOne({
+            _id: new ObjectID(parentId),
+            "dirs._id": new ObjectID(currentDirId)
         }, {
             $set: {
-                "files.$.name": name,
-                "files.$.mtime": mtime
+                "dirs.$.name": name,
+                "dirs.$.mtime": mtime
             }
         })
 
-        if (updateDirsResult.modifiedCount === 1) {
+        if (updateDirsResult_2.modifiedCount === 1) {
             ctx.body = {
                 success: "ok",
                 mtime
@@ -390,6 +386,5 @@ router.put('/update-folder', async (ctx, next) => {
             error: "update file failure"
         }
     }
-    */
 })
 module.exports = router

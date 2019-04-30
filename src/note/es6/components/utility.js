@@ -9,9 +9,13 @@ import {
     get_file_success,
     rename_file_confirm,
 } from "../actions"
-import {convertToRaw} from "draft-js"
+import {
+    convertToRaw
+} from "draft-js"
 import axios from "axios"
-import {isEqual} from "lodash"
+import {
+    isEqual
+} from "lodash"
 
 export const getFolders = (dispatch, dirId) => {
     dispatch((dispatch, getState) => {
@@ -55,7 +59,7 @@ export const getFolders = (dispatch, dirId) => {
 }
 
 export const updateFile = (dispatch) => {
-        dispatch((dispatch, getState) => {
+    dispatch((dispatch, getState) => {
         let {
             tree,
             filesObj,
@@ -96,7 +100,7 @@ export const updateFileInBackground = (dispatch, fileId, dirId, name, content) =
             mtime
         } = res.data
         if (success) {
-            dispatch(update_file_success(mtime, fileId, dirId, content,name))
+            dispatch(update_file_success(mtime, fileId, dirId, content, name))
         }
     }).catch(err => {
         console.log('err', err);
@@ -105,6 +109,7 @@ export const updateFileInBackground = (dispatch, fileId, dirId, name, content) =
 }
 export const submitCreateNewFolder = (dispatch) => {
     dispatch(create_new_folder_submit())
+    updateFile(dispatch)
     dispatch((dispatch, getState) => {
         let {
             folderNameState,
@@ -139,7 +144,7 @@ export const submitCreateNewFolder = (dispatch) => {
 
 
 export const confirmNewFileName = dispatch => {
-    dispatch((dispatch, getState) => {
+        dispatch((dispatch, getState) => {
         let {
             renameFileState,
             centerColumnDir,
@@ -150,7 +155,7 @@ export const confirmNewFileName = dispatch => {
     })
 }
 
-export const getFileFromServer = (dispatch,selectedFileId) => {
+export const getFileFromServer = (dispatch, selectedFileId) => {
     axios.get("note/get-file", {
         params: {
             selectedFileId
@@ -177,7 +182,7 @@ export const inEditingNameState = getState => {
         folderNameState,
         renameFileState
     } = getState()
-    if (folderNameState.isTypingFolderName || renameFileState.isEditingFileName ||folderNameState.isRenamingFolder) {
+    if (folderNameState.isTypingFolderName || renameFileState.isEditingFileName || folderNameState.isRenamingFolder) {
         return true
     } else {
         return false
@@ -185,7 +190,7 @@ export const inEditingNameState = getState => {
 }
 
 export const renameFolderConfirm = dispatch => {
-        dispatch((dispatch, getState) => {
+    dispatch((dispatch, getState) => {
         let {
             currentDirId,
             tree,
@@ -194,28 +199,28 @@ export const renameFolderConfirm = dispatch => {
             parentId = tree[currentDirId].parentId,
             name = folderNameState.folderRef.current.textContent.trim()
         dispatch(rename_folder_confirm_locallly(parentId, currentDirId, name))
-    axios.put("note/update-folder", {
-        name,
-        parentId,
-        currentDirId,
-    }, {
-        headers: {
-            "Content-Type": "application/json",
-            'X-Requested-With': 'axios'
-        },
-        timeout: 1000, // default is `0` (no timeout),
-        responseType: 'json' // default
-    }).then(res => {
-        let {
-            success,
-            mtime
-        } = res.data
-        if (success) {
-
-        }
-    }).catch(err => {
-        console.log('err', err);
-        dispatch(update_file_failure())
-    })
+        axios.put("note/update-folder", {
+            name,
+            parentId,
+            currentDirId,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                'X-Requested-With': 'axios'
+            },
+            timeout: 1000, // default is `0` (no timeout),
+            responseType: 'json' // default
+        }).then(res => {
+            let {
+                success,
+                mtime
+            } = res.data
+            if (success) {
+                console.log("mtime :===========",mtime)
+            }
+        }).catch(err => {
+            console.log('err', err);
+            dispatch(update_file_failure())
+        })
     })
 }

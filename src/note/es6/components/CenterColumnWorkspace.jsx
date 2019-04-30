@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import styles from "../../sass/CenterColumnWorkspace.scss"
 import axios from 'axios';
 import {
+    rename_folder_prompt,
     get_file_from_local,
     click_folder_in_center_column,
     no_file_in_folder,
@@ -11,27 +12,35 @@ import {
     delete_file_success,
     rename_file_prompt,
 } from "../actions"
-import { inEditingNameState, updateFile, getFileFromServer, confirmNewFileName, getFolders, switchFile } from "./utility"
+import {renameFolderConfirm, inEditingNameState, updateFile, getFileFromServer, confirmNewFileName, getFolders } from "./utility"
 
 class CenterColumnWorkspace extends React.Component {
     constructor(props) {
         super(props)
-        this.confirmFileName = this.confirmFileName.bind(this)
+        this.confirmName = this.confirmName.bind(this)
     }
     componentDidUpdate() {
         let fileRef = this.props.renameFileState.fileRef
-        if (fileRef != null) {
+        let folderRef = this.props.folderNameState.folderRef
+        let ref = fileRef || folderRef
+        if (ref != null) {
             let s = window.getSelection();
             if (s.rangeCount > 0) s.removeAllRanges();
             let range = document.createRange();
-            range.selectNodeContents(fileRef.current);
+            range.selectNodeContents(ref.current);
             s.addRange(range);
         }
     }
-    confirmFileName(e) {
+    confirmName(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            this.props.confirmFileName()
+            let {renameFileState,folderNameState,renameFolderConfirm_2,confirmFileName} = this.props
+            if (renameFileState.isEditingFileName) {
+                confirmFileName()
+            }
+            if(folderNameState.isRenamingFolder){
+                renameFolderConfirm_2()
+            }
         }
     }
     clickInEditingFolder(e) {
@@ -39,7 +48,7 @@ class CenterColumnWorkspace extends React.Component {
     }
     render() {
         let { openFolder, showDirMenu, dirs, centerDirMenu, selectFile,
-            renameFileState,
+            renameFileState,renameFolderPrompt,tree,folderNameState,
             deleleFile, renameFile, fileId, showFileMenu, files, centerFileMenu } = this.props
         return (
             <div className={styles.workspace}>
@@ -51,12 +60,22 @@ class CenterColumnWorkspace extends React.Component {
                         if (dir.editable) {
                             return null
                         } else {
+                            let childDir = tree[dir._id]
                             return (
                                 <li Key={dir._id} className={styles["li-dir"]} data-id={dir._id}>
                                     <svg className={styles["dir-icon"]}>
                                         <use xlinkHref="/note/images/centerColumn.svg#folder" transform="scale(0.5)" />
                                     </svg>
-                                    <span className={styles["dir-name"]}>{dir.name}</span>
+                                    {childDir.centerColumnEditable ?
+                                        <span className={styles["dir-name"]}
+                                                    onKeyDown={this.confirmName}
+                                                    onClick={this.clickInEditingFolder}
+                                                    ref={folderNameState.folderRef}
+                                                    contentEditable={true}
+                                        >{dir.name}</span>
+                                        :
+                                        <span className={styles["dir-name"]}>{dir.name}</span>
+                                    }
                                     <span className={styles["dir-mtime"]}>{convertTimeFormat(dir.mtime)}</span>
                                 </li>
                             )
@@ -71,7 +90,9 @@ class CenterColumnWorkspace extends React.Component {
                         left: centerDirMenu.clientX + "px",
                         top: centerDirMenu.clientY + "px"
                     }} >
-                    <li className={styles["menu-option"]}>重命名</li>
+                    <li className={styles["menu-option"]} data-desc="rename"
+                    onClick={renameFolderPrompt}
+                    >重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]}>删除</li>
@@ -100,7 +121,7 @@ class CenterColumnWorkspace extends React.Component {
                                     <span className={styles["file-name"]}
                                         onClick={this.clickInEditingFolder}
                                         ref={renameFileState.fileRef}
-                                        onKeyDown={this.confirmFileName}
+                                        onKeyDown={this.confirmName}
                                         contentEditable={true}>{file.name}</span>
                                     <span className={styles["file-mtime"]}>{convertTimeFormat(file.mtime)}</span>
                                 </li>
@@ -127,16 +148,20 @@ class CenterColumnWorkspace extends React.Component {
 
 const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
-    let { renameFileState } = state
+    let { renameFileState,folderNameState } = state
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
         fileId: state.fileId,
         centerDirMenu: state.centerDirMenu,
         centerFileMenu: state.centerFileMenu,
-        renameFileState
+        renameFileState,
+        tree:state.tree,
+        folderNameState
     }
 }
+
+    
 
 const mapDispatchToProps = dispatch => ({
     selectFile: e => {
@@ -284,6 +309,15 @@ const mapDispatchToProps = dispatch => ({
     },
     confirmFileName: () => {
         confirmNewFileName(dispatch)
+    },
+    renameFolderPrompt:e=>{
+        dispatch((dispatch,getState)=>{
+            let {currentDirId} = getState()
+            dispatch(rename_folder_prompt(currentDirId,"center"))
+        })
+    },
+    renameFolderConfirm_2:()=>{
+        renameFolderConfirm(dispatch)
     }
 })
 function convertTimeFormat(timeString) {

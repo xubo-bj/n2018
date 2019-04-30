@@ -1,10 +1,9 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { Editor, EditorState } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import { change_editor_state, get_file_success } from "../actions"
+import { change_editor_state } from "../actions"
 import {getFileFromServer} from "./utility"
-import axios from 'axios';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
 class Toolbar extends React.Component {

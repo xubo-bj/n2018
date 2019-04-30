@@ -5,6 +5,7 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    RENAME_FOLDER_RESPONSE_FROM_SERVER,
     SHOW_LEFT_MENU_ONE,
     HIDE_LEFT_MENU_ONE,
     SHOW_LEFT_MENU_TWO,
@@ -185,7 +186,12 @@ const tree = (treeObj = {
         case RENAME_FOLDER_PROMPT:
             {
                 let renameDir = treeObj[action.dirId]
-                renameDir.editable = true
+                if(action.position == "left"){
+                renameDir.leftColumnEditable = true
+                }
+                if(action.position == "center"){
+                    renameDir.centerColumnEditable = true
+                }
                 return Object.assign({}, treeObj)
             }
         case RENAME_FOLDER_CONFIRM_LOCALLY:
@@ -194,7 +200,15 @@ const tree = (treeObj = {
                 parentDir.dirs.filter(dir => dir._id == action.renameDirId)[0].name = action.name
                 let renameDir = treeObj[action.renameDirId]
                 renameDir.name = action.name
-                delete renameDir.editable
+                delete renameDir.leftColumnEditable
+                delete renameDir.centerColumnEditable
+                return Object.assign({}, treeObj)
+            }
+            case RENAME_FOLDER_RESPONSE_FROM_SERVER:{
+                let parentDir = treeObj[action.parentId]
+                parentDir.dirs.filter(dir => dir._id == action.renameDirId)[0].mtime= action.mtime
+                let renameDir = treeObj[action.renameDirId]
+                renameDir.mtime= action.mtime
                 return Object.assign({}, treeObj)
             }
 

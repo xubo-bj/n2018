@@ -9,7 +9,7 @@ import {
     create_new_file_failure,
     create_new_file_success
 } from "../actions"
-import {inEditingNameState} from "./utility"
+import {updateFile,inEditingNameState} from "./utility"
 const LeftColumnToolbar = (props) => (
     <div className={styles.toolbar}>
         <div className={styles.container}>
@@ -51,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch((dispatch, getState) => {
             let state = getState()
             let centerColumnDir = state.centerColumnDir
+            updateFile(dispatch)
             dispatch(create_new_file_start(centerColumnDir))
             let name = state.tree[centerColumnDir].files.filter(file => file._id == "tempId")[0].name
             axios.post("note/create-file/", {
