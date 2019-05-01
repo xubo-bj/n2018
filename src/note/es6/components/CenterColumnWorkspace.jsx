@@ -12,7 +12,8 @@ import {
     delete_file_success,
     rename_file_prompt,
 } from "../actions"
-import {renameFolderConfirm, inEditingNameState, updateFile, getFileFromServer, confirmNewFileName, getFolders } from "./utility"
+import {renameFolderConfirm, inEditingNameState, updateFile,deleteFolder,
+     getFileFromServer, confirmNewFileName, getFolders } from "./utility"
 
 class CenterColumnWorkspace extends React.Component {
     constructor(props) {
@@ -49,7 +50,9 @@ class CenterColumnWorkspace extends React.Component {
     render() {
         let { openFolder, showDirMenu, dirs, centerDirMenu, selectFile,
             renameFileState,renameFolderPrompt,tree,folderNameState,
-            deleleFile, renameFile, fileId, showFileMenu, files, centerFileMenu } = this.props
+            deleleFile, renameFile, fileId, showFileMenu,
+             files, centerFileMenu ,deleteFolder_2,
+            } = this.props
         return (
             <div className={styles.workspace}>
                 <ul className={styles["ul-dirs"]}
@@ -95,7 +98,7 @@ class CenterColumnWorkspace extends React.Component {
                     >重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
-                    <li className={styles["menu-option"]}>删除</li>
+                    <li className={styles["menu-option"]} onClick={deleteFolder_2}>删除</li>
                 </ul>
                 <ul className={styles["ul-files"]}
                     onClick={selectFile}
@@ -318,6 +321,9 @@ const mapDispatchToProps = dispatch => ({
     },
     renameFolderConfirm_2:()=>{
         renameFolderConfirm(dispatch)
+    },
+    deleteFolder_2:()=>{
+        deleteFolder(dispatch)
     }
 })
 function convertTimeFormat(timeString) {

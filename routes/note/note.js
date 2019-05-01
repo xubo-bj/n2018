@@ -75,7 +75,8 @@ router.post('/create-folder', async (ctx, next) => {
 
     let {
         dirId,
-        name
+        name,
+        ancestors
     } = ctx.request.body
 
     let d = new Date()
@@ -85,7 +86,8 @@ router.post('/create-folder', async (ctx, next) => {
         mtime: d,
         dirs: [],
         files: [],
-        parentId: dirId
+        parentId: dirId,
+        ancestors
     })
 
 
@@ -330,7 +332,8 @@ router.get('/test', async (ctx, next) => {
         mtime: new Date(),
         parentId: null,
         dirs: [],
-        files: []
+        files: [],
+        ancestors:[]
     })
     let userfiles = r.db(dbName).collection("userfiles")
     let y = await userfiles.drop()

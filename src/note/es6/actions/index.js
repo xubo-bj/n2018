@@ -85,14 +85,15 @@ export const create_new_folder_submit = () => {
 
 
 export const CREATE_NEW_FOLDER_SUCCESS = "CREATE_NEW_FOLDER_SUCCESS"
-export const create_new_folder_success = (parentId, newId, name, time) => {
+export const create_new_folder_success = (parentId, newId, name, time,ancestors) => {
     console.log(CREATE_NEW_FOLDER_SUCCESS)
     return {
         type: CREATE_NEW_FOLDER_SUCCESS,
         parentId,
         newId,
         name,
-        time
+        time,
+        ancestors
     }
 }
 export const CREATE_NEW_FOLDER_FAILURE = "CREATE_NEW_FOLDER_FAILURE"
@@ -376,5 +377,16 @@ export const rename_folder_response_from_server = (parentId, renameDirId, mtime)
         parentId,
         renameDirId,
         mtime
+    }
+}
+
+export const DELETE_FOLDER = "DELETE_FOLDER"
+export const delete_folder = (centerColumnDir,dirId,fileIds)=>{
+    console.log(DELETE_FOLDER)
+    return{
+        type:DELETE_FOLDER,
+        centerColumnDir,
+        dirId,
+        fileIds
     }
 }

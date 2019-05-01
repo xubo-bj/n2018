@@ -18,7 +18,7 @@ import axios from 'axios';
 import {
     getFolders, updateFile, getFileFromServer,
     inEditingNameState, submitCreateNewFolder,
-    renameFolderConfirm
+    renameFolderConfirm,deleteFolder
 } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -148,7 +148,7 @@ class LeftColumnWorkspace extends React.Component {
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
             createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
             createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenamingFolder,
-            renameFolderConfirm_2
+            renameFolderConfirm_2,deleteFolder_2
         } = this.props
         return (
             <div className={styles.workspace}>
@@ -189,7 +189,7 @@ class LeftColumnWorkspace extends React.Component {
                     <li className={styles["menu-option"]} onClick={renameFolderPrompt} data-desc="rename">重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
                     <li className={styles["menu-option"]}>复制</li>
-                    <li className={styles["menu-option"]}>删除</li>
+                    <li className={styles["menu-option"]} onClick={deleteFolder_2}>删除</li>
                 </ul>
             </div>
         )
@@ -337,6 +337,9 @@ const mapDispatchToProps = dispatch => ({
     },
     renameFolderConfirm_2:()=>{
         renameFolderConfirm(dispatch)
+    },
+    deleteFolder_2:()=>{
+        deleteFolder(dispatch)
     }
 })
 

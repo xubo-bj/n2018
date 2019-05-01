@@ -8,6 +8,7 @@ import {
     create_new_folder_failure,
     get_file_success,
     rename_file_confirm,
+    delete_folder
 } from "../actions"
 import {
     convertToRaw
@@ -113,12 +114,19 @@ export const submitCreateNewFolder = (dispatch) => {
     dispatch((dispatch, getState) => {
         let {
             folderNameState,
-            currentDirId
+            currentDirId,
+            tree
         } = getState()
-        let name = folderNameState.folderRef.current.textContent.trim()
+        let name = folderNameState.folderRef.current.textContent.trim(),
+            parentAncestors = tree[currentDirId].ancestors,
+            ancestors = [...parentAncestors]
+
+        ancestors.push(currentDirId)
+
         axios.post("note/create-folder/", {
             name,
-            dirId: currentDirId
+            dirId: currentDirId,
+            ancestors
         }, {
             headers: {
                 "Content-Type": "application/json",
@@ -133,7 +141,7 @@ export const submitCreateNewFolder = (dispatch) => {
                 name,
                 time
             } = res.data
-            dispatch(create_new_folder_success(parentId, newId, name, time))
+            dispatch(create_new_folder_success(parentId, newId, name, time, ancestors))
         }).catch(err => {
             console.log('err', err);
             dispatch(create_new_folder_failure())
@@ -144,7 +152,7 @@ export const submitCreateNewFolder = (dispatch) => {
 
 
 export const confirmNewFileName = dispatch => {
-        dispatch((dispatch, getState) => {
+    dispatch((dispatch, getState) => {
         let {
             renameFileState,
             centerColumnDir,
@@ -216,11 +224,37 @@ export const renameFolderConfirm = dispatch => {
                 mtime
             } = res.data
             if (success) {
-                console.log("mtime :===========",mtime)
+                console.log("mtime :===========", mtime)
             }
         }).catch(err => {
             console.log('err', err);
             dispatch(update_file_failure())
         })
     })
+}
+
+function traversalFiles(tree,targetDir, fileIds = []) {
+        for (let i = 0; i < targetDir.files.length; i++) {
+            fileIds.push(targetDir.files[i]._id)
+        }
+        for(let i=0;i<targetDir.dirs.length;i++){
+            traversalFiles(tree,tree[targetDir.dirs[i]._id],fileIds)
+        }
+    return fileIds
+}
+export const deleteFolder = dispatch => {
+    dispatch((dispatch, getState) => {
+        let {
+            currentDirId,
+            centerColumnDir,
+            tree
+        } = getState()
+        let fileIds = traversalFiles(tree,tree[currentDirId])
+        let centerDirAncestors = tree[centerColumnDir].ancestors
+        if(centerDirAncestors.indexOf(currentDirId)!= -1 || currentDirId == centerColumnDir){
+            centerColumnDir = tree[currentDirId].parentId
+        }
+        dispatch(delete_folder(centerColumnDir,currentDirId,fileIds))
+    })
+
 }

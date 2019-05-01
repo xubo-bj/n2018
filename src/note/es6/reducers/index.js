@@ -264,7 +264,8 @@ const tree = (treeObj = {
                     parentId,
                     newId,
                     name,
-                    time
+                    time,
+                    ancestors
                 } = action
                 let newDir = {
                     _id: newId,
@@ -274,7 +275,8 @@ const tree = (treeObj = {
                     folded: true,
                     dirs: [],
                     files: [],
-                    parentId
+                    parentId,
+                    ancestors
                 }
                 let parentDir = treeObj[parentId]
                 let dirs = parentDir.dirs.filter(dir => dir.editable == null)
