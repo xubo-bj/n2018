@@ -153,7 +153,8 @@ router.post('/create-file', async (ctx, next) => {
 
     let {
         dirId,
-        name
+        name,
+        ancestors
     } = ctx.request.body
 
     let d = new Date()
@@ -162,7 +163,8 @@ router.post('/create-file', async (ctx, next) => {
         ctime: d,
         mtime: d,
         content: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-        ownerFolderId: dirId
+        ownerFolderId: dirId,
+        ancestors
     })
 
     let userdirsCollection = result.db(dbName).collection(userdirs)
@@ -266,7 +268,7 @@ router.get("/get-file", async (ctx, next) => {
         ctx.body = {
             success: "ok",
             content: file.content,
-            name:file.name
+            name: file.name
         }
     } else {
         ctx.body = {
@@ -303,14 +305,14 @@ router.delete("/delete-file", async (ctx, next) => {
         })
         //  如果删除userfiles中的document失败了也不影响使用，以后每隔一段时间清理一下userfiles就可以了。
         let content = null
-        if(newDisplayFileId != null){
-           let file = await userfilesCol.findOne({
+        if (newDisplayFileId != null) {
+            let file = await userfilesCol.findOne({
                 _id: new ObjectID(newDisplayFileId)
             })
             content = file.content
         }
         ctx.body = {
-            success:"ok",
+            success: "ok",
             content
         }
     } else {
@@ -333,7 +335,7 @@ router.get('/test', async (ctx, next) => {
         parentId: null,
         dirs: [],
         files: [],
-        ancestors:[]
+        ancestors: []
     })
     let userfiles = r.db(dbName).collection("userfiles")
     let y = await userfiles.drop()
@@ -390,4 +392,63 @@ router.put('/update-folder', async (ctx, next) => {
         }
     }
 })
+
+router.delete("/delete-folder", async (ctx, next) => {
+    let {
+        currentDirId,
+        parentId
+    } = ctx.query
+
+    let dbConn = await client.connect()
+    let userdirsCol = dbConn.db(dbName).collection(userdirs)
+    let userfilesCol = dbConn.db(dbName).collection(userfiles)
+    let findResult = await userdirsCol.findOne({
+        _id: new ObjectID(currentDirId)
+    })
+    let arr = findResult.files.map(x => new ObjectID(x._id))
+
+
+    let p1 = userdirsCol.deleteMany({
+        ancestors: currentDirId
+    })
+    let p2 = userfilesCol.deleteMany({
+        ancestors: currentDirId
+    })
+    let p3 = null
+
+    if (arr.length > 0) {
+        p3 = userfilesCol.deleteMany({
+            _id: {
+                $in: arr
+            }
+        })
+    }
+    let p4 = userdirsCol.deleteOne({
+        _id: new ObjectID(currentDirId)
+    })
+    let p5 = userdirsCol.updateOne({
+        _id: new ObjectID(parentId)
+    }, {
+        $pull: {
+            dirs: {
+                _id: new ObjectID(currentDirId)
+            }
+        }
+    })
+    let pall = null
+    if(p3 != null){
+    pall = [p1,p2,p3,p4,p5]
+    }else{
+        pall = [p1,p2,p4,p5]
+    }
+    let r = await Promise.all(pall)
+    for(let i =0; i<r.length-1;i++){
+        console.log(i," :",r[i].deletedCount)
+    }
+    console.log(r.length-1," :",r[r.length-1].modifiedCount)
+    ctx.body = {success:"ok"}
+
+})
+
+
 module.exports = router

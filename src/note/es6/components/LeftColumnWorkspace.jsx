@@ -8,9 +8,6 @@ import {
     show_left_menu_three,
     select_dir,
     toggle_dir,
-    create_new_file_start,
-    create_new_file_success,
-    create_new_file_failure,
     get_file_from_local,
     no_file_in_folder
 } from "../actions"
@@ -18,7 +15,7 @@ import axios from 'axios';
 import {
     getFolders, updateFile, getFileFromServer,
     inEditingNameState, submitCreateNewFolder,
-    renameFolderConfirm,deleteFolder
+    renameFolderConfirm,deleteFolder,createNewFilePrompt
 } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -146,7 +143,7 @@ class LeftColumnWorkspace extends React.Component {
     render() {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
-            createNewFilePrompt, createNewFolderPromptInRoot, leftMenuThree,
+            createNewFilePrompt_2, createNewFolderPromptInRoot, leftMenuThree,
             createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenamingFolder,
             renameFolderConfirm_2,deleteFolder_2
         } = this.props
@@ -166,7 +163,7 @@ class LeftColumnWorkspace extends React.Component {
                         left: leftMenuTwo.clientX + "px",
                         top: leftMenuTwo.clientY + "px"
                     }}>
-                    <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
+                    <li className={styles["menu-option"]} onClick={createNewFilePrompt_2}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
                 <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
@@ -184,7 +181,7 @@ class LeftColumnWorkspace extends React.Component {
                         left: leftMenuThree.clientX + "px",
                         top: leftMenuThree.clientY + "px"
                     }}>
-                    <li className={styles["menu-option"]} onClick={createNewFilePrompt}>新建笔记</li>
+                    <li className={styles["menu-option"]} onClick={createNewFilePrompt_2}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPrompt}>新建文件夹</li>
                     <li className={styles["menu-option"]} onClick={renameFolderPrompt} data-desc="rename">重命名</li>
                     <li className={styles["menu-option"]}>移动到</li>
@@ -287,37 +284,8 @@ const mapDispatchToProps = dispatch => ({
             dispatch(create_new_folder_prompt(currentDirId))
         })
     },
-    createNewFilePrompt: () => {
-        dispatch((dispatch, getState) => {
-
-            let state = getState()
-            let currentDirId = state.currentDirId
-            updateFile(dispatch)
-            dispatch(create_new_file_start(currentDirId))
-            let name = state.tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
-            axios.post("note/create-file/", {
-                name,
-                dirId: currentDirId
-            },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        'X-Requested-With': 'axios'
-                    },
-                    timeout: 1000, // default is `0` (no timeout),
-                    responseType: 'json' // default
-                }).then(res => {
-                    let { success, newFileId, name, time } = res.data
-                    if (success == "ok") {
-                        dispatch(create_new_file_success(currentDirId, newFileId, name, time))
-                    } else {
-                        dispatch(create_new_file_failure())
-                    }
-                }).catch(err => {
-                    console.log('err', err);
-                    dispatch(create_new_file_failure())
-                })
-        })
+    createNewFilePrompt_2: () => {
+        createNewFilePrompt(dispatch)
     },
     toggleDir: (e, _id) => {
         dispatch((dispatch, getState) => {

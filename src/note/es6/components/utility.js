@@ -8,7 +8,10 @@ import {
     create_new_folder_failure,
     get_file_success,
     rename_file_confirm,
-    delete_folder
+    delete_folder,
+    create_new_file_start,
+    create_new_file_success,
+    create_new_file_failure,
 } from "../actions"
 import {
     convertToRaw
@@ -233,15 +236,58 @@ export const renameFolderConfirm = dispatch => {
     })
 }
 
-function traversalFiles(tree,targetDir, fileIds = []) {
-        for (let i = 0; i < targetDir.files.length; i++) {
-            fileIds.push(targetDir.files[i]._id)
+function traversalFiles(tree, targetDir, fileIds = []) {
+    console.log("td", targetDir)
+    for (let i = 0; i < targetDir.files.length; i++) {
+        fileIds.push(targetDir.files[i]._id)
+    }
+    for (let i = 0; i < targetDir.dirs.length; i++) {
+        let nextDir = tree[targetDir.dirs[i]._id]
+        if (nextDir != undefined) {
+            traversalFiles(tree,nextDir, fileIds)
         }
-        for(let i=0;i<targetDir.dirs.length;i++){
-            traversalFiles(tree,tree[targetDir.dirs[i]._id],fileIds)
-        }
+    }
     return fileIds
 }
+
+export const createNewFilePrompt = dispatch => {
+    dispatch((dispatch, getState) => {
+        let {currentDirId,tree}= getState(),
+        ancestors = tree[currentDirId].ancestors
+        updateFile(dispatch)
+        dispatch(create_new_file_start(currentDirId))
+        let name = tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
+        axios.post("note/create-file/", {
+            name,
+            dirId: currentDirId,
+            ancestors
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                'X-Requested-With': 'axios'
+            },
+            timeout: 1000, // default is `0` (no timeout),
+            responseType: 'json' // default
+        }).then(res => {
+            let {
+                success,
+                newFileId,
+                name,
+                time
+            } = res.data
+            if (success == "ok") {
+                dispatch(create_new_file_success(currentDirId, newFileId, name, time,ancestors))
+            } else {
+                dispatch(create_new_file_failure())
+            }
+        }).catch(err => {
+            console.log('err', err);
+            dispatch(create_new_file_failure())
+        })
+    })
+}
+
+
 export const deleteFolder = dispatch => {
     dispatch((dispatch, getState) => {
         let {
@@ -249,12 +295,31 @@ export const deleteFolder = dispatch => {
             centerColumnDir,
             tree
         } = getState()
-        let fileIds = traversalFiles(tree,tree[currentDirId])
+        let fileIds = traversalFiles(tree, tree[currentDirId])
         let centerDirAncestors = tree[centerColumnDir].ancestors
-        if(centerDirAncestors.indexOf(currentDirId)!= -1 || currentDirId == centerColumnDir){
+        if (centerDirAncestors.indexOf(currentDirId) != -1 || currentDirId == centerColumnDir) {
             centerColumnDir = tree[currentDirId].parentId
         }
-        dispatch(delete_folder(centerColumnDir,currentDirId,fileIds))
+        let parentId = tree[currentDirId].parentId
+        dispatch(delete_folder(centerColumnDir, currentDirId, parentId, fileIds))
+            axios.delete("note/delete-folder/", {
+                params: {
+                    currentDirId,
+                    parentId
+                },
+                headers: {
+                    'X-Requested-With': 'axios'
+                },
+                timeout: 1000, // default is `0` (no timeout),
+                responseType: 'json' // default
+            }).then(res => {
+                if (res.data.success === "ok") {
+                }else{
+
+                }
+            }).catch(err => {
+                console.log('err', err);
+            })
     })
 
 }

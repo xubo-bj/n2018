@@ -2,10 +2,11 @@
  * pop menu in the toolbar of left-column
  */
 export const SHOW_LEFT_MENU_ONE = "SHOW_LEFT_MENU_ONE"
-export const show_left_menu_one = () => {
+export const show_left_menu_one = (centerColumnDir) => {
     console.log(SHOW_LEFT_MENU_ONE)
     return {
-        type: SHOW_LEFT_MENU_ONE
+        type: SHOW_LEFT_MENU_ONE,
+        centerColumnDir
     }
 }
 export const HIDE_LEFT_MENU_ONE = "HIDE_LEFT_MENU_ONE"
@@ -175,14 +176,15 @@ export const create_new_file_submit = () => {
 
 
 export const CREATE_NEW_FILE_SUCCESS = "CREATE_NEW_FILE_SUCCESS"
-export const create_new_file_success = (parentDirId, newFileId, name, time) => {
+export const create_new_file_success = (parentDirId, newFileId, name, time,ancestors) => {
     console.log(CREATE_NEW_FILE_SUCCESS)
     return {
         type: CREATE_NEW_FILE_SUCCESS,
         parentDirId,
         newFileId,
         name,
-        time
+        time,
+        ancestors
     }
 }
 export const CREATE_NEW_FILE_FAILURE = "CREATE_NEW_FILE_FAILURE"
@@ -381,12 +383,13 @@ export const rename_folder_response_from_server = (parentId, renameDirId, mtime)
 }
 
 export const DELETE_FOLDER = "DELETE_FOLDER"
-export const delete_folder = (centerColumnDir,dirId,fileIds)=>{
+export const delete_folder = (centerColumnDir,dirId,parentId,fileIds)=>{
     console.log(DELETE_FOLDER)
     return{
         type:DELETE_FOLDER,
         centerColumnDir,
         dirId,
+        parentId,
         fileIds
     }
 }

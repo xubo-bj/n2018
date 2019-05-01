@@ -5,6 +5,7 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    DELETE_FOLDER,
     RENAME_FOLDER_RESPONSE_FROM_SERVER,
     SHOW_LEFT_MENU_ONE,
     HIDE_LEFT_MENU_ONE,
@@ -132,6 +133,10 @@ const currentDirId = (_id = shinelonId, action) => {
                 // return action.parentDirId == null ? shinelonId : action.parentDirId
                 return action.parentDirId
             }
+        case SHOW_LEFT_MENU_ONE:
+            {
+                return action.centerColumnDir
+            }
         default:
             return _id
     }
@@ -156,6 +161,10 @@ const centerColumnDir = (_id = shinelonId, action) => {
                 // return action.parentDirId == null ? shinelonId : action.parentDirId
                 return action.parentDirId
             }
+        case DELETE_FOLDER:
+            {
+                return action.centerColumnDir
+            }
         default:
             return _id
     }
@@ -172,6 +181,19 @@ const tree = (treeObj = {
     [shinelonId]: defaultV
 }, action) => {
     switch (action.type) {
+        case DELETE_FOLDER:
+            {
+                let keys = Object.getOwnPropertyNames(treeObj)
+                for (let i = 0; i < keys.length; i++) {
+                    if (treeObj[keys[i]].ancestors.indexOf(action.dirId) != -1) {
+                        delete treeObj[keys[i]]
+                    }
+                }
+                delete treeObj[action.dirId]
+                let parentDir = treeObj[action.parentId]
+                parentDir.dirs = parentDir.dirs.filter(dir => dir._id != action.dirId)
+                return Object.assign({}, treeObj)
+            }
         case CREATE_NEW_FOLDER_PROMPT:
             {
                 let _id = action.currentDirId
@@ -186,10 +208,10 @@ const tree = (treeObj = {
         case RENAME_FOLDER_PROMPT:
             {
                 let renameDir = treeObj[action.dirId]
-                if(action.position == "left"){
-                renameDir.leftColumnEditable = true
+                if (action.position == "left") {
+                    renameDir.leftColumnEditable = true
                 }
-                if(action.position == "center"){
+                if (action.position == "center") {
                     renameDir.centerColumnEditable = true
                 }
                 return Object.assign({}, treeObj)
@@ -204,11 +226,12 @@ const tree = (treeObj = {
                 delete renameDir.centerColumnEditable
                 return Object.assign({}, treeObj)
             }
-            case RENAME_FOLDER_RESPONSE_FROM_SERVER:{
+        case RENAME_FOLDER_RESPONSE_FROM_SERVER:
+            {
                 let parentDir = treeObj[action.parentId]
-                parentDir.dirs.filter(dir => dir._id == action.renameDirId)[0].mtime= action.mtime
+                parentDir.dirs.filter(dir => dir._id == action.renameDirId)[0].mtime = action.mtime
                 let renameDir = treeObj[action.renameDirId]
-                renameDir.mtime= action.mtime
+                renameDir.mtime = action.mtime
                 return Object.assign({}, treeObj)
             }
 
@@ -500,6 +523,13 @@ const fileIdInProcessing = (fileId = null, action) => {
 
 const filesObj = (obj = {}, action) => {
     switch (action.type) {
+        case DELETE_FOLDER:
+            {
+                action.fileIds.forEach(element => {
+                    delete obj[element]
+                });
+                return Object.assign({}, obj)
+            }
         case UPDATE_FILE_SUCCESS:
             {
                 obj[action.fileId] = {
