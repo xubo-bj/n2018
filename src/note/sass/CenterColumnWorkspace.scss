@@ -4,6 +4,7 @@
     bottom: 0;
     left: 0;
     right: 0;
+    overflow: hidden;
 }
 
 .ul-dirs {
@@ -86,4 +87,14 @@
         color: rgba(118, 176, 243, 1);
         cursor: pointer;
     }
+}
+
+.scrollbar{
+    position: absolute;
+    display: none;
+    width: 12px;
+    right: 0px;
+    top: 0;
+    background-color: #76B0F3;
+    opacity: .3;
 }

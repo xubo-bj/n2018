@@ -244,7 +244,7 @@ function traversalFiles(tree, targetDir, fileIds = []) {
     for (let i = 0; i < targetDir.dirs.length; i++) {
         let nextDir = tree[targetDir.dirs[i]._id]
         if (nextDir != undefined) {
-            traversalFiles(tree,nextDir, fileIds)
+            traversalFiles(tree, nextDir, fileIds)
         }
     }
     return fileIds
@@ -252,8 +252,11 @@ function traversalFiles(tree, targetDir, fileIds = []) {
 
 export const createNewFilePrompt = dispatch => {
     dispatch((dispatch, getState) => {
-        let {currentDirId,tree}= getState(),
-        ancestors = tree[currentDirId].ancestors
+        let {
+            currentDirId,
+            tree
+        } = getState(),
+            ancestors = tree[currentDirId].ancestors
         updateFile(dispatch)
         dispatch(create_new_file_start(currentDirId))
         let name = tree[currentDirId].files.filter(file => file._id == "tempId")[0].name
@@ -276,7 +279,7 @@ export const createNewFilePrompt = dispatch => {
                 time
             } = res.data
             if (success == "ok") {
-                dispatch(create_new_file_success(currentDirId, newFileId, name, time,ancestors))
+                dispatch(create_new_file_success(currentDirId, newFileId, name, time, ancestors))
             } else {
                 dispatch(create_new_file_failure())
             }
@@ -302,24 +305,116 @@ export const deleteFolder = dispatch => {
         }
         let parentId = tree[currentDirId].parentId
         dispatch(delete_folder(centerColumnDir, currentDirId, parentId, fileIds))
-            axios.delete("note/delete-folder/", {
-                params: {
-                    currentDirId,
-                    parentId
-                },
-                headers: {
-                    'X-Requested-With': 'axios'
-                },
-                timeout: 1000, // default is `0` (no timeout),
-                responseType: 'json' // default
-            }).then(res => {
-                if (res.data.success === "ok") {
-                }else{
+        axios.delete("note/delete-folder/", {
+            params: {
+                currentDirId,
+                parentId
+            },
+            headers: {
+                'X-Requested-With': 'axios'
+            },
+            timeout: 1000, // default is `0` (no timeout),
+            responseType: 'json' // default
+        }).then(res => {
+            if (res.data.success === "ok") {} else {
 
-                }
-            }).catch(err => {
-                console.log('err', err);
-            })
+            }
+        }).catch(err => {
+            console.log('err', err);
+        })
     })
 
+}
+
+export class addScrollbar {
+    constructor(component) {
+        this.scrollbar = component.$scrollbar
+        this.wrapper = component.$wrapper
+        this.scrollbarHeight = null
+        this.startWrapperScrollTop = null
+        this.startClientY = null
+        this.wrapperHeight = null
+        this.wrapperScrollHeight = null
+        this.flag = false
+        this.inside = false
+        this.dragMoveCenterScrollbar = this.dragMoveCenterScrollbar.bind(this)
+        this.init()
+    }
+    static initialize(component){
+        new addScrollbar(component)
+    }
+
+    dragMoveCenterScrollbar(e) {
+        if (this.flag) {
+            let distance = e.clientY - this.startClientY,
+                scrollTop = Math.round(this.startWrapperScrollTop + distance * this.wrapperScrollHeight / this.wrapperHeight)
+            if (scrollTop >= 0 && scrollTop + this.wrapperHeight <= this.wrapperScrollHeight) {
+                this.wrapper.scrollTop = scrollTop
+                this.scrollbar.style.top = Math.round(scrollTop + scrollTop * this.wrapperHeight / this.wrapperScrollHeight) + 'px'
+            } else if (scrollTop < 0) {
+                this.wrapper.scrollTop = 0
+                this.scrollbar.style.top = "0px"
+            } else {
+                this.wrapper.scrollTop = this.wrapperScrollHeight - this.wrapperHeight
+                this.scrollbar.style.top = this.wrapperScrollHeight - this.scrollbarHeight + "px"
+            }
+        }
+    }
+    addMouseDownEvent() {
+        this.scrollbar.addEventListener("mousedown", e => {
+            this.flag = true
+            this.startClientY = e.clientY
+            this.startWrapperScrollTop = this.wrapper.scrollTop
+            this.wrapperHeight = this.wrapper.offsetHeight
+            this.wrapperScrollHeight = this.wrapper.scrollHeight
+            this.scrollbarHeight = this.scrollbar.offsetHeight
+            // document.body.addEventListener("mousemove", this.dragMoveCenterScrollbar)
+        })
+    }
+    addMouseMoveEvent() {
+        document.body.addEventListener("mousemove", this.dragMoveCenterScrollbar)
+
+    }
+    addMouseUpEvent() {
+        document.body.addEventListener("mouseup", e => {
+            if (this.flag) {
+                this.flag = false
+                // document.body.removeEventListener("mousemove", this.dragMoveCenterScrollbar)
+                if (!this.inside) {
+                    this.scrollbar.style.display = "none"
+                }
+            }
+        })
+    }
+    addMouseEnterEvent() {
+        this.wrapper.addEventListener("mouseenter", e => {
+            if (this.wrapper.scrollHeight > this.wrapper.offsetHeight) {
+                this.scrollbar.style.display = "block"
+            }
+            this.inside = true
+        })
+
+    }
+    addMouseLeaveEvent() {
+        this.wrapper.addEventListener("mouseleave", e => {
+            this.inside = false
+            if (!this.flag) {
+                this.scrollbar.style.display = "none"
+            }
+        })
+    }
+    calcScrollbarHeight(){
+        let height = this.wrapper.offsetHeight,
+            scrollHeight = this.wrapper.scrollHeight
+        this.scrollbar.style.height = Math.round(height * height / scrollHeight) + "px"
+
+    }
+    init() {
+        this.calcScrollbarHeight()
+        this.addMouseDownEvent()
+        this.addMouseMoveEvent()
+        this.addMouseUpEvent()
+        this.addMouseEnterEvent()
+        this.addMouseLeaveEvent()
+    }
 }

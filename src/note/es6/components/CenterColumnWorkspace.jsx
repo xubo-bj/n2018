@@ -12,34 +12,52 @@ import {
     delete_file_success,
     rename_file_prompt,
 } from "../actions"
-import {renameFolderConfirm, inEditingNameState, updateFile,deleteFolder,
-     getFileFromServer, confirmNewFileName, getFolders } from "./utility"
+import {
+    renameFolderConfirm, inEditingNameState, updateFile, deleteFolder,
+    getFileFromServer, confirmNewFileName, getFolders, addScrollbar
+} from "./utility"
 
 class CenterColumnWorkspace extends React.Component {
     constructor(props) {
         super(props)
         this.confirmName = this.confirmName.bind(this)
     }
+    componentDidMount() {
+        addScrollbar.initialize(this)
+    }
     componentDidUpdate() {
-        let fileRef = this.props.renameFileState.fileRef
-        let folderRef = this.props.folderNameState.folderRef
-        let ref = fileRef || folderRef
-        if (ref != null) {
-            let s = window.getSelection();
-            if (s.rangeCount > 0) s.removeAllRanges();
-            let range = document.createRange();
-            range.selectNodeContents(ref.current);
-            s.addRange(range);
-        }
+        (function renameFileOrFolder() {
+            let fileRef = this.props.renameFileState.fileRef
+            let folderRef = this.props.folderNameState.folderRef
+            let ref = fileRef || folderRef
+            if (ref != null) {
+                let s = window.getSelection();
+                if (s.rangeCount > 0) s.removeAllRanges()
+                let range = document.createRange()
+                range.selectNodeContents(ref.current)
+                s.addRange(range);
+            }
+        }.bind(this))();
+
+        (function updateScollbar() {
+            let wrapperHeight = this.$wrapper.offsetHeight,
+                wrapperScrollHeight = this.$wrapper.scrollHeight,
+                wrapperScrollTop = this.$wrapper.scrollTop,
+                scrollbarHeight = Math.round(wrapperHeight * wrapperHeight / wrapperScrollHeight)
+            this.$scrollbar.style.height = scrollbarHeight + "px"
+            this.$scrollbar.style.top = Math.round(wrapperScrollTop * wrapperHeight / wrapperScrollHeight + wrapperScrollTop) + "px"
+        }.bind(this))();
+
+
     }
     confirmName(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            let {renameFileState,folderNameState,renameFolderConfirm_2,confirmFileName} = this.props
+            let { renameFileState, folderNameState, renameFolderConfirm_2, confirmFileName } = this.props
             if (renameFileState.isEditingFileName) {
                 confirmFileName()
             }
-            if(folderNameState.isRenamingFolder){
+            if (folderNameState.isRenamingFolder) {
                 renameFolderConfirm_2()
             }
         }
@@ -49,12 +67,14 @@ class CenterColumnWorkspace extends React.Component {
     }
     render() {
         let { openFolder, showDirMenu, dirs, centerDirMenu, selectFile,
-            renameFileState,renameFolderPrompt,tree,folderNameState,
+            renameFileState, renameFolderPrompt, tree, folderNameState,
             deleleFile, renameFile, fileId, showFileMenu,
-             files, centerFileMenu ,deleteFolder_2,
-            } = this.props
+            files, centerFileMenu, deleteFolder_2,
+        } = this.props
         return (
-            <div className={styles.workspace}>
+            <div className={styles.workspace}
+                ref={elem => this.$wrapper = elem}
+            >
                 <ul className={styles["ul-dirs"]}
                     onClick={openFolder}
                     onContextMenu={showDirMenu}
@@ -71,10 +91,10 @@ class CenterColumnWorkspace extends React.Component {
                                     </svg>
                                     {childDir.centerColumnEditable ?
                                         <span className={styles["dir-name"]}
-                                                    onKeyDown={this.confirmName}
-                                                    onClick={this.clickInEditingFolder}
-                                                    ref={folderNameState.folderRef}
-                                                    contentEditable={true}
+                                            onKeyDown={this.confirmName}
+                                            onClick={this.clickInEditingFolder}
+                                            ref={folderNameState.folderRef}
+                                            contentEditable={true}
                                         >{dir.name}</span>
                                         :
                                         <span className={styles["dir-name"]}>{dir.name}</span>
@@ -94,10 +114,8 @@ class CenterColumnWorkspace extends React.Component {
                         top: centerDirMenu.clientY + "px"
                     }} >
                     <li className={styles["menu-option"]} data-desc="rename"
-                    onClick={renameFolderPrompt}
+                        onClick={renameFolderPrompt}
                     >重命名</li>
-                    <li className={styles["menu-option"]}>移动到</li>
-                    <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]} onClick={deleteFolder_2}>删除</li>
                 </ul>
                 <ul className={styles["ul-files"]}
@@ -140,10 +158,11 @@ class CenterColumnWorkspace extends React.Component {
                         top: centerFileMenu.clientY + "px"
                     }} >
                     <li className={styles["menu-option"]} onClick={renameFile} data-desc="rename">重命名</li>
-                    <li className={styles["menu-option"]}>移动到</li>
-                    <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]} onClick={deleleFile}>删除</li>
                 </ul>
+                <div className={styles["scrollbar"]}
+                    ref={elem => this.$scrollbar = elem}
+                />
             </div>
         )
     }
@@ -151,7 +170,7 @@ class CenterColumnWorkspace extends React.Component {
 
 const mapStateToProps = state => {
     let current = state.tree[state.centerColumnDir]
-    let { renameFileState,folderNameState } = state
+    let { renameFileState, folderNameState } = state
     return {
         dirs: current.dirs.length > 0 ? [...current.dirs] : null,
         files: current.files.length > 0 ? [...current.files] : null,
@@ -159,12 +178,12 @@ const mapStateToProps = state => {
         centerDirMenu: state.centerDirMenu,
         centerFileMenu: state.centerFileMenu,
         renameFileState,
-        tree:state.tree,
+        tree: state.tree,
         folderNameState
     }
 }
 
-    
+
 
 const mapDispatchToProps = dispatch => ({
     selectFile: e => {
@@ -202,7 +221,11 @@ const mapDispatchToProps = dispatch => ({
                 target = target.parentElement
             }
             let selectedFileId = target.dataset.id
-            dispatch(show_center_file_menu(e.clientX, e.clientY, selectedFileId))
+            if (document.body.clientHeight - e.clientY > 60) {
+                dispatch(show_center_file_menu(e.clientX, e.clientY, selectedFileId))
+            } else {
+                dispatch(show_center_file_menu(e.clientX, e.clientY - 60, selectedFileId))
+            }
 
             let {
                 filesObj,
@@ -266,7 +289,11 @@ const mapDispatchToProps = dispatch => ({
             while (target.tagName.toLowerCase() != "li") {
                 target = target.parentElement
             }
-            dispatch(show_center_dir_menu(e.clientX, e.clientY, target.dataset.id))
+            if (document.body.clientHeight - e.clientY > 60) {
+                dispatch(show_center_dir_menu(e.clientX, e.clientY, target.dataset.id))
+            } else {
+                dispatch(show_center_dir_menu(e.clientX, e.clientY - 60, target.dataset.id))
+            }
         })
     },
     deleleFile: e => {
@@ -313,16 +340,16 @@ const mapDispatchToProps = dispatch => ({
     confirmFileName: () => {
         confirmNewFileName(dispatch)
     },
-    renameFolderPrompt:e=>{
-        dispatch((dispatch,getState)=>{
-            let {currentDirId} = getState()
-            dispatch(rename_folder_prompt(currentDirId,"center"))
+    renameFolderPrompt: e => {
+        dispatch((dispatch, getState) => {
+            let { currentDirId } = getState()
+            dispatch(rename_folder_prompt(currentDirId, "center"))
         })
     },
-    renameFolderConfirm_2:()=>{
+    renameFolderConfirm_2: () => {
         renameFolderConfirm(dispatch)
     },
-    deleteFolder_2:()=>{
+    deleteFolder_2: () => {
         deleteFolder(dispatch)
     }
 })

@@ -179,3 +179,22 @@
     text-overflow:ellipsis;
     white-space:nowrap
 }
+
+.wrapper{
+    position: absolute;
+    width: 100%;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+.scrollbar{
+    position: absolute;
+    display: none;
+    width: 12px;
+    right: 0px;
+    top: 0;
+    background-color: #76B0F3;
+    opacity: .3;
+}

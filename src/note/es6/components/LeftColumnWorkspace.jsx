@@ -11,11 +11,11 @@ import {
     get_file_from_local,
     no_file_in_folder
 } from "../actions"
-import axios from 'axios';
 import {
     getFolders, updateFile, getFileFromServer,
     inEditingNameState, submitCreateNewFolder,
-    renameFolderConfirm,deleteFolder,createNewFilePrompt
+    renameFolderConfirm, deleteFolder, createNewFilePrompt,
+    addScrollbar
 } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -25,7 +25,7 @@ class DirTree extends React.Component {
         this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
-        if (this.props.newFolderRef != null && this.$isEditingFolderNmae!= null) {
+        if (this.props.newFolderRef != null && this.$isEditingFolderNmae != null) {
             let s = window.getSelection();
             if (s.rangeCount > 0) s.removeAllRanges();
             let range = document.createRange();
@@ -36,11 +36,11 @@ class DirTree extends React.Component {
     keydown(e) {
         if (e.keyCode == 13) {
             e.preventDefault()
-            let {createNewFolderSubmit,isTypingFolderName,isRenamingFolder,renameFolderConfirm_2} = this.props
-            if(isTypingFolderName){
+            let { createNewFolderSubmit, isTypingFolderName, isRenamingFolder, renameFolderConfirm_2 } = this.props
+            if (isTypingFolderName) {
                 createNewFolderSubmit()
             }
-            if(isRenamingFolder){
+            if (isRenamingFolder) {
                 renameFolderConfirm_2()
             }
         }
@@ -50,7 +50,7 @@ class DirTree extends React.Component {
     }
     render() {
         let { _id, tree, centerColumnDir, level, createNewFolderSubmit, toggleDir, newFolderRef,
-            isTypingFolderName, isRenamingFolder,renameFolderConfirm_2 } = this.props
+            isTypingFolderName, isRenamingFolder, renameFolderConfirm_2 } = this.props
         let targetDir = tree[_id]
         if (targetDir == null) {
             return null
@@ -81,10 +81,10 @@ class DirTree extends React.Component {
                                                 : null
                                             } />
                                         <div className={styles.dir}
-                                            ref={childTargetDir.leftColumnEditable? elem => this.$isEditingFolderNmae = elem : null}>
+                                            ref={childTargetDir.leftColumnEditable ? elem => this.$isEditingFolderNmae = elem : null}>
                                             <i className={childTargetDir.folded ? styles["dir-closed"] : styles["dir-open"]} />
 
-                                            {!childTargetDir.leftColumnEditable?
+                                            {!childTargetDir.leftColumnEditable ?
                                                 <span className={styles.dirName}>{childTargetDir.name}</span>
                                                 :
                                                 <span className={styles.dirName}
@@ -111,7 +111,7 @@ class DirTree extends React.Component {
                             )
                         } else {
                             return (
-                                <li Key={"editable"} className={styles.li} ref={elem => this.$isEditingFolderNmae= elem}>
+                                <li Key={"editable"} className={styles.li} ref={elem => this.$isEditingFolderNmae = elem}>
                                     <div className={styles["li-content"]}
                                         style={{ paddingLeft: level * 20 + "px" }}>
                                         <i className={styles["arrow-hidden"]} />
@@ -140,12 +140,25 @@ class LeftColumnWorkspace extends React.Component {
     constructor(props) {
         super(props)
     }
+    componentDidMount(){
+        addScrollbar.initialize(this)
+    }
+    componentDidUpdate(){
+        (function updateScollbar() {
+            let wrapperHeight = this.$wrapper.offsetHeight,
+                wrapperScrollHeight = this.$wrapper.scrollHeight,
+                wrapperScrollTop = this.$wrapper.scrollTop,
+                scrollbarHeight = Math.round(wrapperHeight * wrapperHeight / wrapperScrollHeight)
+            this.$scrollbar.style.height = scrollbarHeight + "px"
+            this.$scrollbar.style.top = Math.round(wrapperScrollTop * wrapperHeight / wrapperScrollHeight + wrapperScrollTop) + "px"
+        }.bind(this))();
+    }
     render() {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,
             centerColumnDir, leftMenuTwo, newFolderRef, rightClickRootDir,
             createNewFilePrompt_2, createNewFolderPromptInRoot, leftMenuThree,
-            createNewFolderPrompt,renameFolderPrompt,isTypingFolderName,isRenamingFolder,
-            renameFolderConfirm_2,deleteFolder_2
+            createNewFolderPrompt, renameFolderPrompt, isTypingFolderName, isRenamingFolder,
+            renameFolderConfirm_2, deleteFolder_2
         } = this.props
         return (
             <div className={styles.workspace}>
@@ -166,15 +179,23 @@ class LeftColumnWorkspace extends React.Component {
                     <li className={styles["menu-option"]} onClick={createNewFilePrompt_2}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPromptInRoot}>新建文件夹</li>
                 </ul>
-                <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
-                    createNewFolderSubmit={createNewFolderSubmit} toggleDir={toggleDir}
-                    centerColumnDir={centerColumnDir}
-                    leftClickDir={leftClickDir}
-                    newFolderRef={newFolderRef}
-                    isTypingFolderName={isTypingFolderName}
-                    isRenamingFolder={isRenamingFolder}
-                    renameFolderConfirm_2={renameFolderConfirm_2}
-                />
+
+                <div className={styles["wrapper"]}
+                    ref={elem => this.$wrapper = elem}
+                >
+                    <DirTree tree={tree} _id={shinelonId} level={1} rightClickDir={rightClickDir}
+                        createNewFolderSubmit={createNewFolderSubmit} toggleDir={toggleDir}
+                        centerColumnDir={centerColumnDir}
+                        leftClickDir={leftClickDir}
+                        newFolderRef={newFolderRef}
+                        isTypingFolderName={isTypingFolderName}
+                        isRenamingFolder={isRenamingFolder}
+                        renameFolderConfirm_2={renameFolderConfirm_2}
+                    />
+                    <div className={styles["scrollbar"]}
+                        ref={elem => this.$scrollbar = elem}
+                    />
+                </div>
                 <ul className={styles["pop-menu"]}
                     style={{
                         display: leftMenuThree.display,
@@ -184,8 +205,6 @@ class LeftColumnWorkspace extends React.Component {
                     <li className={styles["menu-option"]} onClick={createNewFilePrompt_2}>新建笔记</li>
                     <li className={styles["menu-option"]} onClick={createNewFolderPrompt}>新建文件夹</li>
                     <li className={styles["menu-option"]} onClick={renameFolderPrompt} data-desc="rename">重命名</li>
-                    <li className={styles["menu-option"]}>移动到</li>
-                    <li className={styles["menu-option"]}>复制</li>
                     <li className={styles["menu-option"]} onClick={deleteFolder_2}>删除</li>
                 </ul>
             </div>
@@ -204,6 +223,7 @@ const mapStateToProps = state => {
         isRenamingFolder: state.folderNameState.isRenamingFolder
     }
 }
+
 const mapDispatchToProps = dispatch => ({
     leftClickDir: e => {
         dispatch((dispatch, getState) => {
@@ -265,11 +285,15 @@ const mapDispatchToProps = dispatch => ({
             if (inEditingNameState(getState)) {
                 return
             }
-        let target = e.target
-        while (target.tagName.toLowerCase() != "li") {
-            target = target.parentElement
-        }
-        dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+            let target = e.target
+            while (target.tagName.toLowerCase() != "li") {
+                target = target.parentElement
+            }
+            if (document.body.offsetHeight - e.clientY < 120) {
+                dispatch(show_left_menu_three(e.clientX, e.clientY-120, target.dataset.id))
+            } else {
+                dispatch(show_left_menu_three(e.clientX, e.clientY, target.dataset.id))
+            }
         })
     },
     createNewFolderSubmit: () => {
@@ -297,22 +321,19 @@ const mapDispatchToProps = dispatch => ({
             getFolders(dispatch, _id)
         })
     },
-    renameFolderPrompt:e=>{
-        dispatch((dispatch,getState)=>{
-            let {currentDirId} = getState()
-            dispatch(rename_folder_prompt(currentDirId,"left"))
+    renameFolderPrompt: e => {
+        dispatch((dispatch, getState) => {
+            let { currentDirId } = getState()
+            dispatch(rename_folder_prompt(currentDirId, "left"))
         })
     },
-    renameFolderConfirm_2:()=>{
+    renameFolderConfirm_2: () => {
         renameFolderConfirm(dispatch)
     },
-    deleteFolder_2:()=>{
+    deleteFolder_2: () => {
         deleteFolder(dispatch)
     }
 })
-
-
-
 
 
 export default connect(

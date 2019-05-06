@@ -19,9 +19,6 @@ class App extends React.Component {
         window.addEventListener('beforeunload', this.props.updateFile2)
         window.addEventListener("blur", this.props.updateFile2)
     }
-    componentDidUpdate() {
-        console.log("--------APP update----------")
-    }
     render() {
         let { hideLeftMenu, clickMouseRight } = this.props
         return (
