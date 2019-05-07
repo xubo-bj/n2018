@@ -393,3 +393,12 @@ export const delete_folder = (centerColumnDir,dirId,parentId,fileIds)=>{
         fileIds
     }
 }
+
+export const SELECT_FONT_COLOR = "SELECT_FONT_COLOR"
+export const select_font_color = color=>{
+    console.log(SELECT_FONT_COLOR)
+    return{
+        type:SELECT_FONT_COLOR,
+        color
+    }
+}

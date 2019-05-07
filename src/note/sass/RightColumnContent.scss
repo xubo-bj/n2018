@@ -6,16 +6,60 @@
     right: 0;
 }
 
-.toolbar{
-  height: 46px;
-  border: 1px solid #000;
-}
 .editor{
-  border: 1px solid #f00;
   position: absolute;
   top: 46px;
   bottom: 0;
   left: 0;
   right: 0;
   overflow: hidden;
+}
+
+.toolbar{
+  height: 46px;
+  display: flex;
+  align-items: center;
+     border-bottom: 1px solid rgba(0,0,0,.05); 
+}
+.icon {
+  background-image: url(/note/images/draft-icon.svg);
+  background-repeat: no-repeat;
+    transition: background-color .3s ease;
+    cursor: pointer;
+  &:hover{
+    background-color: #f1f3f6;
+  }
+}
+.bold{
+  composes:icon;
+  width: 22px;
+  height: 22px;
+  background-position: 81.19658119658119% 59.45945945945946%;
+}
+.italic{
+  composes:icon;
+      background-position: 81.19658119658119% 0;
+    width: 22px;
+    height: 22px;
+}
+.underline{
+  composes:icon;
+      width: 22px;
+    height: 22px;
+    background-position: 100% 29.7297%;
+}
+.color{
+  composes:icon;
+  // position: relative;
+  width: 22px;
+    height: 22px;
+    background-position: 65.812% 90.0901%;
+
+    .color-line {
+    display: inline-block;
+    margin-top: 17px;
+    margin-left: 4px;
+    width: 13px;
+    height: 2px;
+    }
 }

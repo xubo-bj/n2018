@@ -364,10 +364,6 @@ export class addScrollbar {
         this.scrollbar.addEventListener("mousedown", e => {
             this.flag = true
             this.startClientY = e.clientY
-            this.startWrapperScrollTop = this.wrapper.scrollTop
-            this.wrapperHeight = this.wrapper.offsetHeight
-            this.wrapperScrollHeight = this.wrapper.scrollHeight
-            this.scrollbarHeight = this.scrollbar.offsetHeight
             // document.body.addEventListener("mousemove", this.dragMoveCenterScrollbar)
         })
     }
@@ -388,11 +384,17 @@ export class addScrollbar {
     }
     addMouseEnterEvent() {
         this.wrapper.addEventListener("mouseenter", e => {
-            if (this.wrapper.scrollHeight > this.wrapper.offsetHeight) {
+            this.startWrapperScrollTop = this.wrapper.scrollTop
+            this.wrapperHeight = this.wrapper.offsetHeight
+            this.wrapperScrollHeight = this.wrapper.scrollHeight
+            let barHeight = Math.round(this.wrapperHeight * this.wrapperHeight / this.wrapperScrollHeight)
+            this.scrollbarHeight = barHeight
+            this.scrollbar.style.height = barHeight +"px"
+            if (this.wrapperScrollHeight > this.wrapperHeight) {
                 this.scrollbar.style.display = "block"
             }
             this.inside = true
-        })
+            })
 
     }
     addMouseLeaveEvent() {
@@ -403,18 +405,38 @@ export class addScrollbar {
             }
         })
     }
-    calcScrollbarHeight(){
+    addWheelEvent(){
+        this.wrapper.addEventListener("wheel",function(e){
+            let step = 40,
+                distance = e.deltaY > 0 ? step : step * (-1),
+                scrollTop = Math.round(this.wrapper.scrollTop+ distance * this.wrapperScrollHeight / this.wrapperHeight)
+            if (scrollTop >= 0 && scrollTop + this.wrapperHeight <= this.wrapperScrollHeight) {
+                this.wrapper.scrollTop = scrollTop
+                this.scrollbar.style.top = Math.round(scrollTop + scrollTop * this.wrapperHeight / this.wrapperScrollHeight) + 'px'
+            } else if (scrollTop < 0) {
+                this.wrapper.scrollTop = 0
+                this.scrollbar.style.top = "0px"
+            } else {
+                this.wrapper.scrollTop = this.wrapperScrollHeight - this.wrapperHeight
+                this.scrollbar.style.top = this.wrapperScrollHeight - this.scrollbarHeight + "px"
+            }
+        }.bind(this))
+    }
+    initializeValue() {
         let height = this.wrapper.offsetHeight,
-            scrollHeight = this.wrapper.scrollHeight
-        this.scrollbar.style.height = Math.round(height * height / scrollHeight) + "px"
-
+            scrollHeight = this.wrapper.scrollHeight,
+            barHeight = Math.round(height * height / scrollHeight)
+        this.scrollbar.style.height = barHeight + "px"
+        document.body.offsetHeight
+        this.scrollbarHeight = barHeight
     }
     init() {
-        this.calcScrollbarHeight()
+        this.initializeValue()
         this.addMouseDownEvent()
         this.addMouseMoveEvent()
         this.addMouseUpEvent()
         this.addMouseEnterEvent()
         this.addMouseLeaveEvent()
+        this.addWheelEvent()
     }
 }

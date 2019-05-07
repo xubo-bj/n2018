@@ -25,13 +25,15 @@ class DirTree extends React.Component {
         this.keydown = this.keydown.bind(this)
     }
     componentDidUpdate() {
-        if (this.props.newFolderRef != null && this.$isEditingFolderNmae != null) {
-            let s = window.getSelection();
-            if (s.rangeCount > 0) s.removeAllRanges();
-            let range = document.createRange();
-            range.selectNodeContents(this.props.newFolderRef.current);
-            s.addRange(range);
-        }
+        (function renameFolderSelection() {
+            if (this.props.newFolderRef != null && this.$isEditingFolderNmae != null) {
+                let s = window.getSelection();
+                if (s.rangeCount > 0) s.removeAllRanges();
+                let range = document.createRange();
+                range.selectNodeContents(this.props.newFolderRef.current);
+                s.addRange(range);
+            }
+        }.bind(this))();
     }
     keydown(e) {
         if (e.keyCode == 13) {
@@ -144,14 +146,17 @@ class LeftColumnWorkspace extends React.Component {
         addScrollbar.initialize(this)
     }
     componentDidUpdate(){
-        (function updateScollbar() {
-            let wrapperHeight = this.$wrapper.offsetHeight,
-                wrapperScrollHeight = this.$wrapper.scrollHeight,
-                wrapperScrollTop = this.$wrapper.scrollTop,
-                scrollbarHeight = Math.round(wrapperHeight * wrapperHeight / wrapperScrollHeight)
-            this.$scrollbar.style.height = scrollbarHeight + "px"
-            this.$scrollbar.style.top = Math.round(wrapperScrollTop * wrapperHeight / wrapperScrollHeight + wrapperScrollTop) + "px"
-        }.bind(this))();
+            (function updateScollbar() {
+                let wrapperHeight = this.$wrapper.offsetHeight,
+                    wrapperScrollHeight = this.$wrapper.scrollHeight,
+                    wrapperScrollTop = this.$wrapper.scrollTop,
+                    scrollbarHeight = Math.round(wrapperHeight * wrapperHeight / wrapperScrollHeight)
+                this.$scrollbar.style.height = scrollbarHeight + "px"
+                this.$scrollbar.style.top = Math.round(wrapperScrollTop * wrapperHeight / wrapperScrollHeight + wrapperScrollTop) + "px"
+                if (wrapperScrollHeight <= wrapperHeight) {
+                    this.$scrollbar.style.display = "none"
+                }
+            }.bind(this))();
     }
     render() {
         const { tree, rightClickDir, createNewFolderSubmit, toggleDir, leftClickDir,

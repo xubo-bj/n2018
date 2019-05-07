@@ -5,6 +5,7 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    SELECT_FONT_COLOR,
     DELETE_FOLDER,
     RENAME_FOLDER_RESPONSE_FROM_SERVER,
     SHOW_LEFT_MENU_ONE,
@@ -615,22 +616,16 @@ const renameFileState = (obj = {
 }
 
 
-// const renameFolderState = (obj = {
-//     folderRef: null,
-//     isEditingFolderName: false
-// }, action) => {
-//     switch (action.type) {
-//         case RENAME_FOLDER_PROMPT:
-//             {
-//                 obj.folderRef = React.createRef()
-//                 obj.isEditingFolderName = true
-//                 return Object.assign({}, obj)
-//             }
-//         default:
-//             return obj
-//     }
-// }
-
+const editorWorkingValue = (obj={color:"#ff0000"},action)=>{
+    switch(action.type){
+        case SELECT_FONT_COLOR:{
+            obj.color = action.color
+            return Object.assign({},obj)
+        }
+        default:
+        return obj
+    }
+}
 
 
 
@@ -638,6 +633,7 @@ const {
     combineReducers
 } = require("redux")
 module.exports = combineReducers({
+    editorWorkingValue,
     leftMenuOneDisplay,
     leftMenuTwo,
     leftMenuThree,

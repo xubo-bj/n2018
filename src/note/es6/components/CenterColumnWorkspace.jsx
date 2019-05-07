@@ -46,6 +46,9 @@ class CenterColumnWorkspace extends React.Component {
                 scrollbarHeight = Math.round(wrapperHeight * wrapperHeight / wrapperScrollHeight)
             this.$scrollbar.style.height = scrollbarHeight + "px"
             this.$scrollbar.style.top = Math.round(wrapperScrollTop * wrapperHeight / wrapperScrollHeight + wrapperScrollTop) + "px"
+            if(wrapperScrollHeight <= wrapperHeight){
+                this.$scrollbar.style.display = "none"
+            }
         }.bind(this))();
 
 
