@@ -5,6 +5,7 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    SELECT_BACKGROUND_COLOR,
     SELECT_FONT_COLOR,
     DELETE_FOLDER,
     RENAME_FOLDER_RESPONSE_FROM_SERVER,
@@ -616,14 +617,21 @@ const renameFileState = (obj = {
 }
 
 
-const editorWorkingValue = (obj={color:"#ff0000"},action)=>{
-    switch(action.type){
-        case SELECT_FONT_COLOR:{
+const editorWorkingValue = (obj = {
+    color: "#FF0000",
+    bgColor: "FFFFFF"
+}, action) => {
+    switch (action.type) {
+        case SELECT_FONT_COLOR: {
             obj.color = action.color
-            return Object.assign({},obj)
+            return Object.assign({}, obj)
+        }
+        case SELECT_BACKGROUND_COLOR: {
+            obj.bgColor = action.color
+            return Object.assign({}, obj)
         }
         default:
-        return obj
+            return obj
     }
 }
 

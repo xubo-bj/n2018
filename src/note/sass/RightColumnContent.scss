@@ -24,35 +24,29 @@
 .icon {
   background-image: url(/note/images/draft-icon.svg);
   background-repeat: no-repeat;
-    transition: background-color .3s ease;
-    cursor: pointer;
-  &:hover{
+  transition: background-color .3s ease;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  &:hover {
     background-color: #f1f3f6;
   }
 }
 .bold{
   composes:icon;
-  width: 22px;
-  height: 22px;
   background-position: 81.19658119658119% 59.45945945945946%;
 }
 .italic{
   composes:icon;
       background-position: 81.19658119658119% 0;
-    width: 22px;
-    height: 22px;
 }
 .underline{
   composes:icon;
-      width: 22px;
-    height: 22px;
     background-position: 100% 29.7297%;
 }
 .color{
   composes:icon;
   // position: relative;
-  width: 22px;
-    height: 22px;
     background-position: 65.812% 90.0901%;
 
     .color-line {
@@ -62,4 +56,41 @@
     width: 13px;
     height: 2px;
     }
+}
+.color-expand {
+  width: 14px;
+  display: flex;
+  align-items: center;
+  transition: background-color .3s ease;
+  cursor: pointer;
+  height: 22px;
+  &:hover {
+    background-color: #f1f3f6;
+  }
+}
+
+.color-arrow {
+  composes: icon;
+  background-position: 70.44534412955466% 55.27426160337553%;
+  width: 9px;
+  height: 7px;
+}
+
+.undo{
+  composes:icon;
+  background-position: 18.803418803418804% 100%;
+
+}
+.no-undo{
+  composes:undo;
+      background-position: 9.401709401709402% 80.18018018018019%;
+}
+.redo{
+  composes:icon;
+  background-position: 37.60683760683761% 80.18018018018019%;
+}
+.no-redo{
+  composes:redo;
+  background-position: 28.205128205128204% 80.18018018018019%;
+
 }

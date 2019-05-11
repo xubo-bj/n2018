@@ -402,3 +402,12 @@ export const select_font_color = color=>{
         color
     }
 }
+
+export const SELECT_BACKGROUND_COLOR = "SELECT_BACKGROUND_COLOR"
+export const select_background_color = color=>{
+    console.log(SELECT_BACKGROUND_COLOR)
+    return{
+        type:SELECT_BACKGROUND_COLOR,
+        color
+    }
+}
