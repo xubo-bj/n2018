@@ -44,11 +44,8 @@
   composes:icon;
     background-position: 100% 29.7297%;
 }
-.color{
+.color,.bg-color{
   composes:icon;
-  // position: relative;
-    background-position: 65.812% 90.0901%;
-
     .color-line {
     display: inline-block;
     margin-top: 17px;
@@ -56,6 +53,14 @@
     width: 13px;
     height: 2px;
     }
+}
+.toolbar{
+  .color{
+    background-position: 65.812% 90.0901%;
+  }
+  .bg-color{
+   background-position: 56.41025641025641% 90.09009009009009%;
+  }
 }
 .color-expand {
   width: 14px;
@@ -92,5 +97,8 @@
 .no-redo{
   composes:redo;
   background-position: 28.205128205128204% 80.18018018018019%;
-
+}
+.clear-style{
+  composes:icon;
+  background-position: 100% 19.81981981981982%;
 }

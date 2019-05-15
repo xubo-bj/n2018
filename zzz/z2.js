@@ -1,3 +1,2 @@
-let str ="abcdef"
-console.log(str.substr(1,4))
-console.log(str.substring(1,4))
+let arr ="012345"
+console.log(arr.substr(3))

@@ -1,7 +1,8 @@
 import React from "react"
 import {
     EditorState,
-    convertFromRaw
+    convertFromRaw,
+    Modifier
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
@@ -619,7 +620,8 @@ const renameFileState = (obj = {
 
 const editorWorkingValue = (obj = {
     color: "#FF0000",
-    bgColor: "FFFFFF"
+    bgColor: "#FFA500",
+    target:null
 }, action) => {
     switch (action.type) {
         case SELECT_FONT_COLOR: {

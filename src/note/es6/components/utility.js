@@ -340,7 +340,7 @@ export class addScrollbar {
         this.dragMoveCenterScrollbar = this.dragMoveCenterScrollbar.bind(this)
         this.init()
     }
-    static initialize(component){
+    static initialize(component) {
         new addScrollbar(component)
     }
 
@@ -389,12 +389,12 @@ export class addScrollbar {
             this.wrapperScrollHeight = this.wrapper.scrollHeight
             let barHeight = Math.round(this.wrapperHeight * this.wrapperHeight / this.wrapperScrollHeight)
             this.scrollbarHeight = barHeight
-            this.scrollbar.style.height = barHeight +"px"
+            this.scrollbar.style.height = barHeight + "px"
             if (this.wrapperScrollHeight > this.wrapperHeight) {
                 this.scrollbar.style.display = "block"
             }
             this.inside = true
-            })
+        })
 
     }
     addMouseLeaveEvent() {
@@ -405,11 +405,11 @@ export class addScrollbar {
             }
         })
     }
-    addWheelEvent(){
-        this.wrapper.addEventListener("wheel",function(e){
+    addWheelEvent() {
+        this.wrapper.addEventListener("wheel", function (e) {
             let step = 40,
                 distance = e.deltaY > 0 ? step : step * (-1),
-                scrollTop = Math.round(this.wrapper.scrollTop+ distance * this.wrapperScrollHeight / this.wrapperHeight)
+                scrollTop = Math.round(this.wrapper.scrollTop + distance * this.wrapperScrollHeight / this.wrapperHeight)
             if (scrollTop >= 0 && scrollTop + this.wrapperHeight <= this.wrapperScrollHeight) {
                 this.wrapper.scrollTop = scrollTop
                 this.scrollbar.style.top = Math.round(scrollTop + scrollTop * this.wrapperHeight / this.wrapperScrollHeight) + 'px'
