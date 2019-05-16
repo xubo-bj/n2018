@@ -8,7 +8,8 @@ renameFolderConfirm
 
 import {
     hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
-    hide_center_dir_menu, hide_center_file_menu,
+    hide_center_dir_menu, hide_center_file_menu,hide_font_size_menu,
+    hide_font_family_menu,
 } from "../actions"
 import styles from "../../sass/App.scss"
 class App extends React.Component {
@@ -20,9 +21,9 @@ class App extends React.Component {
         window.addEventListener("blur", this.props.updateFile2)
     }
     render() {
-        let { hideLeftMenu, clickMouseRight } = this.props
+        let { clickMouseLeft, clickMouseRight } = this.props
         return (
-            <div onClick={hideLeftMenu} className={styles.container}
+            <div onClick={clickMouseLeft} className={styles.container}
                 onContextMenu={clickMouseRight}
             >
                 <Header />
@@ -36,7 +37,9 @@ class App extends React.Component {
 const mapDispatchToProps = dispatch => ({
     clickMouseRight: e => {
         dispatch((dispatch, getState) => {
-            let { folderNameState, renameFileState } = getState()
+            let { folderNameState, renameFileState ,fontSizeMenu,
+                fontFamilyMenu,
+            } = getState()
             if (folderNameState.isTypingFolderName) {
                 e.preventDefault()
                 submitCreateNewFolder(dispatch)
@@ -45,10 +48,19 @@ const mapDispatchToProps = dispatch => ({
                 e.preventDefault()
                 confirmNewFileName(dispatch)
             }
+            if(fontSizeMenu.display == "block"){
+                e.preventDefault()
+                dispatch(hide_font_size_menu())
+                return
+            }
+            if(fontFamilyMenu.display == "block"){
+                e.preventDefault()
+                dispatch(hide_font_family_menu())
+            }
         })
     }
     ,
-    hideLeftMenu: (e) => dispatch(
+    clickMouseLeft: (e) => dispatch(
         (dispatch, getState) => {
             let {
                 leftMenuOneDisplay,
@@ -57,7 +69,9 @@ const mapDispatchToProps = dispatch => ({
                 centerDirMenu,
                 centerFileMenu,
                 folderNameState,
-                renameFileState
+                renameFileState,
+                fontSizeMenu,
+                fontFamilyMenu,
             } = getState()
             if (leftMenuOneDisplay == "block") {
                 dispatch(hide_left_menu_one())
@@ -82,16 +96,26 @@ const mapDispatchToProps = dispatch => ({
                 submitCreateNewFolder(dispatch)
             }
             if (renameFileState.isEditingFileName) {
-                if (e.target.dataset.desc == "rename") {
-                    return
+                if (e.target.dataset.desc != "rename") {
+                    confirmNewFileName(dispatch)
                 }
-                confirmNewFileName(dispatch)
             }
-            if(folderNameState.isRenamingFolder){
-                if (e.target.dataset.desc == "rename") {
-                    return
+            if (folderNameState.isRenamingFolder) {
+                if (e.target.dataset.desc != "rename") {
+                    renameFolderConfirm(dispatch)
                 }
-                renameFolderConfirm(dispatch)
+            }
+            if (fontSizeMenu.display == "block") {
+                if (!(e.target.dataset.desc == "showFontSize" ||
+                    e.target.parentElement.dataset.desc == "showFontSize")) {
+                    dispatch(hide_font_size_menu())
+                }
+            }
+            if (fontFamilyMenu.display == "block") {
+                if (!(e.target.dataset.desc == "showFontFamily" ||
+                    e.target.parentElement.dataset.desc == "showFontFamily")) {
+                dispatch(hide_font_family_menu())
+                }
             }
         }
     ),

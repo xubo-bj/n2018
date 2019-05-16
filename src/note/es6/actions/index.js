@@ -394,20 +394,38 @@ export const delete_folder = (centerColumnDir,dirId,parentId,fileIds)=>{
     }
 }
 
-export const SELECT_FONT_COLOR = "SELECT_FONT_COLOR"
-export const select_font_color = color=>{
-    console.log(SELECT_FONT_COLOR)
+
+export const SHOW_FONT_SIZE_MENU = "SHOW_FONT_SIZE_MENU"
+export const show_font_size_menu = (clientX,clientY)=>{
+    console.log(SHOW_FONT_SIZE_MENU)
     return{
-        type:SELECT_FONT_COLOR,
-        color
+        type:SHOW_FONT_SIZE_MENU,
+        clientX,
+        clientY
+    }
+}
+export const HIDE_FONT_SIZE_MENU = "HIDE_FONT_SIZE_MENU"
+export const hide_font_size_menu = ()=>{
+    console.log(HIDE_FONT_SIZE_MENU)
+    return{
+        type:HIDE_FONT_SIZE_MENU
     }
 }
 
-export const SELECT_BACKGROUND_COLOR = "SELECT_BACKGROUND_COLOR"
-export const select_background_color = color=>{
-    console.log(SELECT_BACKGROUND_COLOR)
+export const SHOW_FONT_FAMILY_MENU = "SHOW_FONT_FAMILY_MENU"
+export const show_font_family_menu = (clientX,clientY)=>{
+    console.log(SHOW_FONT_FAMILY_MENU)
     return{
-        type:SELECT_BACKGROUND_COLOR,
-        color
+        type:SHOW_FONT_FAMILY_MENU,
+        clientX,
+        clientY
+    }
+}
+
+export const HIDE_FONT_FAMILY_MENU = "HIDE_FONT_FAMILY_MENU"
+export const hide_font_family_menu = ()=>{
+    console.log(HIDE_FONT_FAMILY_MENU)
+    return{
+        type:HIDE_FONT_FAMILY_MENU
     }
 }

@@ -1,11 +1,15 @@
 import React from "react"
+import {combineReducers} from "redux"
 import {
     EditorState,
     convertFromRaw,
-    Modifier
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    SHOW_FONT_FAMILY_MENU,
+    HIDE_FONT_FAMILY_MENU,
+    HIDE_FONT_SIZE_MENU,
+    SHOW_FONT_SIZE_MENU,
     SELECT_BACKGROUND_COLOR,
     SELECT_FONT_COLOR,
     DELETE_FOLDER,
@@ -413,7 +417,6 @@ const editorState = (state = null, action) => {
             }
         default:
             {
-                // console.log("default ---")
                 // return EditorState.createWithContent(convertFromRaw(state))
                 return state
             }
@@ -618,32 +621,51 @@ const renameFileState = (obj = {
 }
 
 
-const editorWorkingValue = (obj = {
-    color: "#FF0000",
-    bgColor: "#FFA500",
-    target:null
-}, action) => {
-    switch (action.type) {
-        case SELECT_FONT_COLOR: {
-            obj.color = action.color
-            return Object.assign({}, obj)
+
+
+const fontSizeMenu = (obj={display:"none", clientX:0,clientY:0},action)=>{
+    switch(action.type){
+        case SHOW_FONT_SIZE_MENU:{
+            return {
+                display: "block",
+                clientX: action.clientX,
+                clientY: action.clientY
+            }
         }
-        case SELECT_BACKGROUND_COLOR: {
-            obj.bgColor = action.color
-            return Object.assign({}, obj)
+        case HIDE_FONT_SIZE_MENU:{
+            obj.display = "none"
+            return Object.assign({},obj)
         }
-        default:
+        default:{
+        return obj
+        }
+    }
+}
+
+const fontFamilyMenu = (obj={display:"none", clientX:0,clientY:0},action)=>{
+    switch(action.type){
+        case SHOW_FONT_FAMILY_MENU:{
+            return {
+                display: "block",
+                clientX: action.clientX,
+                clientY: action.clientY
+            }
+        }
+        case HIDE_FONT_FAMILY_MENU:{
+            obj.display = "none"
+            return Object.assign({},obj)
+        }
+        default: {
             return obj
+        }
     }
 }
 
 
 
-const {
-    combineReducers
-} = require("redux")
 module.exports = combineReducers({
-    editorWorkingValue,
+    fontFamilyMenu,
+    fontSizeMenu,
     leftMenuOneDisplay,
     leftMenuTwo,
     leftMenuThree,
