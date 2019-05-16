@@ -3,6 +3,7 @@ import {combineReducers} from "redux"
 import {
     EditorState,
     convertFromRaw,
+    CompositeDecorator,
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
@@ -390,6 +391,39 @@ const showMask = (flag = false, action) => {
     }
 }
 
+
+      function findLinkEntities(contentBlock, callback, contentState) {
+        contentBlock.findEntityRanges(
+          (character) => {
+            const entityKey = character.getEntity();
+            return (
+              entityKey !== null &&
+              contentState.getEntity(entityKey).getType() === 'LINK'
+            );
+          },
+          callback
+        );
+      }
+
+      const Link = (props) => {
+        const {url} = props.contentState.getEntity(props.entityKey).getData();
+        return React.createElement("a", {
+            href: url,
+            style: {
+                color: '#3b5998',
+                textDecoration: 'underline'
+            }
+        }, props.children);
+
+        };
+
+    const decorator = new CompositeDecorator([{
+        strategy: findLinkEntities,
+        component: Link
+    }]);
+
+
+
 const editorState = (state = null, action) => {
     switch (action.type) {
         case CHANGE_EDITOR_STATE:
@@ -403,7 +437,7 @@ const editorState = (state = null, action) => {
             }
         case CREATE_NEW_FILE_SUCCESS:
             {
-                return EditorState.createEmpty()
+                return EditorState.createEmpty(decorator)
             }
         case DELETE_FILE_SUCCESS:
         case RETURN_TO_PARENT_FOLDER:

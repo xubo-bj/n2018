@@ -24,7 +24,10 @@ router.prefix('/note')
 const {
     EditorState,
     convertToRaw,
+    CompositeDecorator
 } = require("draft-js")
+
+const React = require("react")
 
 router.get('/', async (ctx, next) => {
     let dbConn = await client.connect()
@@ -158,11 +161,16 @@ router.post('/create-file', async (ctx, next) => {
     } = ctx.request.body
 
     let d = new Date()
+    const decorator = new CompositeDecorator([{
+        strategy: findLinkEntities,
+        component: Link
+    }]);
+
     let r = await userfilesCollection.insertOne({
         name,
         ctime: d,
         mtime: d,
-        content: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+        content: convertToRaw(EditorState.createEmpty(decorator).getCurrentContent()),
         ownerFolderId: dirId,
         ancestors
     })
@@ -449,6 +457,32 @@ router.delete("/delete-folder", async (ctx, next) => {
     ctx.body = {success:"ok"}
 
 })
+
+
+
+      function findLinkEntities(contentBlock, callback, contentState) {
+        contentBlock.findEntityRanges(
+          (character) => {
+            const entityKey = character.getEntity();
+            return (
+              entityKey !== null &&
+              contentState.getEntity(entityKey).getType() === 'LINK'
+            );
+          },
+          callback
+        );
+      }
+
+      function Link(props){
+          const { url } = props.contentState.getEntity(props.entityKey).getData();
+          return React.createElement("a", {
+              href: url,
+              style: {
+                  color: '#3b5998',
+                  textDecoration: 'underline'
+              }
+          }, props.children)
+      };
 
 
 module.exports = router

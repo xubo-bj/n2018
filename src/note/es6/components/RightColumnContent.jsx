@@ -1,8 +1,8 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
-import { Editor, EditorState, RichUtils, Modifier } from 'draft-js';
+import { Editor,CompositeDecorator, EditorState, RichUtils, Modifier } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import {show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
+import { show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
 import { getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -42,9 +42,9 @@ class RightColumnCotent extends React.Component {
     let { editorState, onChangeEditorState, toggleInlineStyle, handleKeyCommand,
       color, customStyleFn, applyInlineStyle, bgColor, clearStyle, fontSizeMenu,
       undo, redo, undoStackSize, redoStackSize, showFontSizeMenu, fontSize,
-showFontFamilyMenu,fontFamilyMenu,fontFamily,
+      showFontFamilyMenu, fontFamilyMenu, fontFamily,
     } = this.props,
-    fontNames = ["微软雅黑","宋体","新宋体","仿宋","楷体","黑体","Arial","Arial Black","Times New Roman","Courier New"]
+      fontNames = ["微软雅黑", "宋体", "新宋体", "仿宋", "楷体", "黑体", "Arial", "Arial Black", "Times New Roman", "Courier New"]
     return (
       <div className={styles.content}>
         <div className={styles.toolbar}>
@@ -108,9 +108,40 @@ showFontFamilyMenu,fontFamilyMenu,fontFamily,
   }
 }
 
+
+
+      function findLinkEntities(contentBlock, callback, contentState) {
+        contentBlock.findEntityRanges(
+          (character) => {
+            const entityKey = character.getEntity();
+            return (
+              entityKey !== null &&
+              contentState.getEntity(entityKey).getType() === 'LINK'
+            );
+          },
+          callback
+        );
+      }
+
+      const Link = (props) => {
+        const {url} = props.contentState.getEntity(props.entityKey).getData();
+        return (
+          <a href={url} style={{color: '#3b5998',textDecoration: 'underline'}}>
+            {props.children}
+          </a>
+        );
+      };
+
+    const decorator = new CompositeDecorator([{
+        strategy: findLinkEntities,
+        component: Link
+    }]);
+
+
+
 const mapStateToProps = state => {
-  let { editorState, fontSizeMenu ,fontFamilyMenu} = state
-  editorState = editorState == null ? EditorState.createEmpty() : editorState
+  let { editorState, fontSizeMenu, fontFamilyMenu } = state
+  editorState = editorState == null ? EditorState.createEmpty(decorator) : editorState
   let inlineStyle = editorState.getCurrentInlineStyle(),
     fontSize = 14,
     color = "#FF0000",
@@ -126,7 +157,7 @@ const mapStateToProps = state => {
     if (/^back#/.test(value)) {
       backgrundColor = value.substr(4)
     }
-    if(/^fontFamily/.test(value)){
+    if (/^fontFamily/.test(value)) {
       fontFamily = value.substr(10)
     }
   }
@@ -214,7 +245,7 @@ const mapDispatchToProps = dispatch => ({
       if (/^fontSize/.test(value)) {
         obj.fontSize = value.substr(8) + "px"
       }
-      if(/^fontFamily/.test(value)){
+      if (/^fontFamily/.test(value)) {
         obj.fontFamily = value.substr(10)
       }
     }
@@ -241,8 +272,8 @@ const mapDispatchToProps = dispatch => ({
           if (/^fontSize/.test(value)) {
             arr.push(value)
           }
-        }else if(target == "fontFamily"){
-          if(/^fontFamily/.test(value)){
+        } else if (target == "fontFamily") {
+          if (/^fontFamily/.test(value)) {
             arr.push(value)
           }
         }
@@ -254,12 +285,13 @@ const mapDispatchToProps = dispatch => ({
       dispatch(change_editor_state(
         EditorState.forceSelection(EditorState.createWithContent(finalContentState), selectionState))
       )
+
     })
   },
   showFontSizeMenu: (e) => {
     dispatch(show_font_size_menu(e.clientX, e.clientY))
   },
-  showFontFamilyMenu:e=>{
+  showFontFamilyMenu: e => {
     dispatch(show_font_family_menu(e.clientX, e.clientY))
   }
 })
