@@ -51,30 +51,15 @@ class RightColumnCotent extends React.Component {
           <i className={undoStackSize > 0 ? styles["undo"] : styles["no-undo"]} onClick={undo} />
           <i className={redoStackSize > 0 ? styles["redo"] : styles["no-redo"]} onClick={redo} />
           <i className={styles["clear-style"]} onClick={clearStyle} />
-          <i className={styles["font-size"]} onClick={showFontSizeMenu} data-desc="showFontSize">
-            <span className={styles["number"]}>{fontSize}</span>
-            <span className={styles["expand-arrow"]} />
-          </i>
-          <ul className={styles["font-size-menu"]}
-            onClick={e => applyInlineStyle("fontSize", e.target.dataset.fontSize)}
-            style={{ display: fontSizeMenu.display, left: fontSizeMenu.clientX - 40 + "px", top: fontSizeMenu.clientY + 25 + "px" }}>
-            {[12, 14, 16, 18, 20, 22, 24, 26, 28, 30].map((value, index) =>
-              <li key={index} className={styles["li"]}
-                data-font-size={value}
-              >{value}</li>)}
-          </ul>
+          <i className={styles["separator"]} />
           <i className={styles["font-family"]} onClick={showFontFamilyMenu} data-desc="showFontFamily">
             <span className={styles["font-name"]}>{fontFamily}</span>
             <span className={styles["expand-arrow"]} />
           </i>
-          <ul className={styles["font-family-menu"]}
-            onClick={e => applyInlineStyle("fontFamily", e.target.dataset.fontName)}
-            style={{ display: fontFamilyMenu.display, left: fontFamilyMenu.clientX - 70 + "px", top: fontFamilyMenu.clientY + 25 + "px" }}>
-            {fontNames.map((value, index) =>
-              <li key={index} className={styles["li"]}
-                data-font-name={value}
-              >{value}</li>)}
-          </ul>
+          <i className={styles["font-size"]} onClick={showFontSizeMenu} data-desc="showFontSize">
+            <span className={styles["number"]}>{fontSize}</span>
+            <span className={styles["expand-arrow"]} />
+          </i>
           <i className={styles["bold"]} onClick={() => toggleInlineStyle("BOLD")} />
           <i className={styles["italic"]} onClick={() => toggleInlineStyle("ITALIC")} />
           <i className={styles["underline"]} onClick={() => toggleInlineStyle("UNDERLINE")} />
@@ -91,6 +76,22 @@ class RightColumnCotent extends React.Component {
             <span className={styles["color-arrow"]} />
           </i>
 
+          <ul className={styles["font-family-menu"]}
+            onClick={e => applyInlineStyle("fontFamily", e.target.dataset.fontName)}
+            style={{ display: fontFamilyMenu.display, left: fontFamilyMenu.clientX - 70 + "px", top: fontFamilyMenu.clientY + 25 + "px" }}>
+            {fontNames.map((value, index) =>
+              <li key={index} className={styles["li"]}
+                data-font-name={value}
+              >{value}</li>)}
+          </ul>
+          <ul className={styles["font-size-menu"]}
+            onClick={e => applyInlineStyle("fontSize", e.target.dataset.fontSize)}
+            style={{ display: fontSizeMenu.display, left: fontSizeMenu.clientX - 40 + "px", top: fontSizeMenu.clientY + 25 + "px" }}>
+            {[12, 14, 16, 18, 20, 22, 24, 26, 28, 30].map((value, index) =>
+              <li key={index} className={styles["li"]}
+                data-font-size={value}
+              >{value}</li>)}
+          </ul>
           <input type="color" style={{ display: "none" }} ref={elem => this.$inputColor = elem} />
           <input type="color" style={{ display: "none" }} ref={elem => this.$inputBgColor = elem} />
         </div>
