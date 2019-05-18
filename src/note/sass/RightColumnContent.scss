@@ -14,6 +14,12 @@
   right: 0;
   overflow: hidden;
   font-size:14px;
+  [data-href=draftjs]{
+    cursor: pointer;
+  }
+}
+[data-cursor=painter]{
+  cursor: url("/note/images/painter.cur"),auto;
 }
 
 .toolbar{
@@ -182,4 +188,42 @@
 .format-painter{
   composes:icon;
       background-position: 100% 69.36936936936937%;
+}
+.link-container {
+  box-shadow: 0 1px 16px rgba(90, 109, 122, .4);
+  height: 80px;
+  width: 450px;
+  background-color: #fff;
+  position: fixed;
+  border-radius: 2px;
+  border: 1px solid #e0e1e5;
+  z-index: 256;
+  align-items: center;
+  justify-content: center;
+}
+
+.link-input {
+  width: 277px;
+  height: 30px;
+  border-radius: 2px;
+  border: 1px solid #e5e5e5;
+  color: #797979;
+  outline: none;
+  padding-left: 5px;
+}
+
+.link-confirm {
+  font-size: 12px;
+  color: #fff;
+  line-height: 34px;
+  text-align: center;
+  width: 64px;
+  height: 30px;
+  border-radius: 2px;
+  background-color: #398dee;
+}
+
+.add-link {
+  composes: icon;
+  background-position: 81.19658119658119% 19.81981981981982%;
 }

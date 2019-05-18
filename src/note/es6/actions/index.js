@@ -446,3 +446,20 @@ export const use_inline_style = ()=>{
         type:USE_INLINE_STYLE
     }
 }
+
+export const SHOW_LINK_INPUT = "SHOW_LINK_INPUT"
+export const show_link_input = (clientX, clientY) => {
+    console.log(SHOW_LINK_INPUT)
+    return {
+        type: SHOW_LINK_INPUT,
+        clientX,
+        clientY
+    }
+}
+export const HIDE_LINK_INPUT = "HIDE_LINK_INPUT"
+export const hide_link_input = ()=>{
+    console.log(HIDE_LINK_INPUT)
+    return{
+        type:HIDE_LINK_INPUT
+    }
+}

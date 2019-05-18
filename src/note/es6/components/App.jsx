@@ -9,7 +9,7 @@ renameFolderConfirm
 import {
     hide_left_menu_one, hide_left_menu_two, hide_left_menu_three,
     hide_center_dir_menu, hide_center_file_menu,hide_font_size_menu,
-    hide_font_family_menu,
+    hide_font_family_menu,hide_link_input,
 } from "../actions"
 import styles from "../../sass/App.scss"
 class App extends React.Component {
@@ -38,24 +38,24 @@ const mapDispatchToProps = dispatch => ({
     clickMouseRight: e => {
         dispatch((dispatch, getState) => {
             let { folderNameState, renameFileState ,fontSizeMenu,
-                fontFamilyMenu,
+                fontFamilyMenu,linkInputBox,
             } = getState()
+            // e.preventDefault()
             if (folderNameState.isTypingFolderName) {
-                e.preventDefault()
                 submitCreateNewFolder(dispatch)
             }
             if (renameFileState.isEditingFileName) {
-                e.preventDefault()
                 confirmNewFileName(dispatch)
             }
             if(fontSizeMenu.display == "block"){
-                e.preventDefault()
                 dispatch(hide_font_size_menu())
                 return
             }
             if(fontFamilyMenu.display == "block"){
-                e.preventDefault()
                 dispatch(hide_font_family_menu())
+            }
+            if(linkInputBox.display == "flex"){
+                dispatch(hide_link_input())
             }
         })
     }
@@ -72,6 +72,7 @@ const mapDispatchToProps = dispatch => ({
                 renameFileState,
                 fontSizeMenu,
                 fontFamilyMenu,
+                linkInputBox,
             } = getState()
             if (leftMenuOneDisplay == "block") {
                 dispatch(hide_left_menu_one())
@@ -116,6 +117,9 @@ const mapDispatchToProps = dispatch => ({
                     e.target.parentElement.dataset.desc == "showFontFamily")) {
                 dispatch(hide_font_family_menu())
                 }
+            }
+            if(linkInputBox.display == "flex"){
+                dispatch(hide_link_input())
             }
         }
     ),

@@ -477,12 +477,13 @@ router.delete("/delete-folder", async (ctx, next) => {
           const { url } = props.contentState.getEntity(props.entityKey).getData();
           return React.createElement("a", {
               href: url,
+              ["data-href"]:"draftjs",
               style: {
                   color: '#3b5998',
                   textDecoration: 'underline'
               }
           }, props.children)
-      };
+      }
 
 
 module.exports = router

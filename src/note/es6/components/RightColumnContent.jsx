@@ -1,8 +1,8 @@
 import React, { Fragment } from "react"
 import { connect } from 'react-redux'
-import { Editor,CompositeDecorator, EditorState, RichUtils, Modifier } from 'draft-js';
+import { Editor, CompositeDecorator, EditorState, RichUtils, Modifier } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import {save_inline_style,use_inline_style, show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
+import { show_link_input, hide_link_input, save_inline_style, use_inline_style, show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
 import { getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -37,12 +37,16 @@ class RightColumnCotent extends React.Component {
     this.$inputBgColor.addEventListener("input", e => {
       this.props.applyInlineStyle("back", e.target.value)
     })
+
+  }
+  componentDidUpdate() {
   }
   render() {
     let { editorState, onChangeEditorState, toggleInlineStyle, handleKeyCommand,
       color, customStyleFn, applyInlineStyle, bgColor, clearStyle, fontSizeMenu,
       undo, redo, undoStackSize, redoStackSize, showFontSizeMenu, fontSize,
-      showFontFamilyMenu, fontFamilyMenu, fontFamily,copyFormat,
+      showFontFamilyMenu, fontFamilyMenu, fontFamily, copyFormat, mouseUp,
+      copiedInlineStyle, linkInputBox, showLinkBox,confirmLink,
     } = this.props,
       fontNames = ["微软雅黑", "宋体", "新宋体", "仿宋", "楷体", "黑体", "Arial", "Arial Black", "Times New Roman", "Courier New"]
     return (
@@ -51,7 +55,7 @@ class RightColumnCotent extends React.Component {
           <i className={undoStackSize > 0 ? styles["undo"] : styles["no-undo"]} onClick={undo} />
           <i className={redoStackSize > 0 ? styles["redo"] : styles["no-redo"]} onClick={redo} />
           <i className={styles["clear-style"]} onClick={clearStyle} />
-          <i className={styles["format-painter"]} onClick={copyFormat}/>
+          <i className={styles["format-painter"]} onClick={copyFormat} />
 
 
           <i className={styles["separator"]} />
@@ -66,6 +70,8 @@ class RightColumnCotent extends React.Component {
           <i className={styles["bold"]} onClick={() => toggleInlineStyle("BOLD")} />
           <i className={styles["italic"]} onClick={() => toggleInlineStyle("ITALIC")} />
           <i className={styles["underline"]} onClick={() => toggleInlineStyle("UNDERLINE")} />
+
+
           <i className={styles["separator"]} />
           <i className={styles["color"]} onClick={() => applyInlineStyle("text", color)}>
             <span className={styles["color-line"]} style={{ backgroundColor: color }} />
@@ -79,6 +85,9 @@ class RightColumnCotent extends React.Component {
           <i className={styles["color-expand"]} onClick={this.showBackgroundPalette}>
             <span className={styles["color-arrow"]} />
           </i>
+
+          <i className={styles["separator"]} />
+          <i className={styles["add-link"]} onClick={showLinkBox} />
 
           <ul className={styles["font-family-menu"]}
             onClick={e => applyInlineStyle("fontFamily", e.target.dataset.fontName)}
@@ -98,8 +107,17 @@ class RightColumnCotent extends React.Component {
           </ul>
           <input type="color" style={{ display: "none" }} ref={elem => this.$inputColor = elem} />
           <input type="color" style={{ display: "none" }} ref={elem => this.$inputBgColor = elem} />
+          <div className={styles["link-container"]} onClick={e => e.stopPropagation()}
+            style={{ display: linkInputBox.display, left: linkInputBox.clientX + "px", top: linkInputBox.clientY + 'px' }}
+          >
+            <input type="text" className={styles["link-input"]}
+              placeholder="输入链接" ref={elem => this.$inputLink = elem} />
+            <span className={styles["link-confirm"]} onClick={() => confirmLink(this.$inputLink)}>确定</span>
+          </div>
         </div>
-        <div className={styles.editor} onClick={this.focusEditor}>
+
+        <div className={styles.editor} onClick={this.focusEditor}
+          onMouseUp={mouseUp} data-cursor={copiedInlineStyle.flag ? "painter" : "normal"}>
           <Editor
             ref={this.setEditor}
             editorState={editorState}
@@ -115,37 +133,37 @@ class RightColumnCotent extends React.Component {
 
 
 
-      function findLinkEntities(contentBlock, callback, contentState) {
-        contentBlock.findEntityRanges(
-          (character) => {
-            const entityKey = character.getEntity();
-            return (
-              entityKey !== null &&
-              contentState.getEntity(entityKey).getType() === 'LINK'
-            );
-          },
-          callback
-        );
-      }
+function findLinkEntities(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges(
+    (character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+}
 
-      const Link = (props) => {
-        const {url} = props.contentState.getEntity(props.entityKey).getData();
-        return (
-          <a href={url} style={{color: '#3b5998',textDecoration: 'underline'}}>
-            {props.children}
-          </a>
-        );
-      };
+const Link = (props) => {
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
+  return (
+    <a href={url} data-href="draftjs" style={{ color: '#3b5998', textDecoration: 'underline' }}>
+      {props.children}
+    </a>
+  );
+};
 
-    const decorator = new CompositeDecorator([{
-        strategy: findLinkEntities,
-        component: Link
-    }]);
+const decorator = new CompositeDecorator([{
+  strategy: findLinkEntities,
+  component: Link
+}]);
 
 
 
 const mapStateToProps = state => {
-  let { editorState, fontSizeMenu, fontFamilyMenu } = state
+  let { copiedInlineStyle, editorState, fontSizeMenu, fontFamilyMenu, linkInputBox } = state
   editorState = editorState == null ? EditorState.createEmpty(decorator) : editorState
   let inlineStyle = editorState.getCurrentInlineStyle(),
     fontSize = 14,
@@ -166,7 +184,6 @@ const mapStateToProps = state => {
       fontFamily = value.substr(10)
     }
   }
-
   return {
     editorState,
     fileId: state.fileId,
@@ -180,6 +197,8 @@ const mapStateToProps = state => {
     fontSize,
     fontFamily,
     fontFamilyMenu,
+    copiedInlineStyle,
+    linkInputBox,
   }
 }
 
@@ -299,8 +318,8 @@ const mapDispatchToProps = dispatch => ({
   showFontFamilyMenu: e => {
     dispatch(show_font_family_menu(e.clientX, e.clientY))
   },
-  copyFormat:()=>{
-    dispatch((dispatch,getState)=>{
+  copyFormat: () => {
+    dispatch((dispatch, getState) => {
       let { editorState } = getState(),
         inlineStyle = editorState.getCurrentInlineStyle(),
         arr = []
@@ -308,6 +327,66 @@ const mapDispatchToProps = dispatch => ({
         arr.push(value)
       }
       dispatch(save_inline_style(arr))
+    })
+  },
+  mouseUp: e => {
+    setTimeout(function () {
+      dispatch((dispatch, getState) => {
+        let { editorState, copiedInlineStyle } = getState(),
+          selectionState = editorState.getSelection(),
+          currentContentState = editorState.getCurrentContent(),
+          currentInlineStyle = editorState.getCurrentInlineStyle()
+
+        let arr = []
+        for (let value of currentInlineStyle) {
+          arr.push(value)
+        }
+
+        let nextContentState = arr.reduce((contentState, elem) => {
+          return Modifier.removeInlineStyle(contentState, selectionState, elem)
+        }, currentContentState);
+
+        if (copiedInlineStyle.flag) {
+          if (!selectionState.isCollapsed()) {
+            nextContentState = copiedInlineStyle.arr.reduce((nextContentState, elem) => {
+              return Modifier.applyInlineStyle(nextContentState, selectionState, elem)
+            }, nextContentState)
+            dispatch(change_editor_state(
+              EditorState.forceSelection(EditorState.createWithContent(nextContentState), selectionState))
+            )
+          }
+          dispatch(use_inline_style())
+        }
+      })
+    }, 100)
+  },
+  showLinkBox: e => {
+    e.stopPropagation()
+    dispatch(show_link_input(e.clientX - 440, e.clientY + 30))
+  },
+  confirmLink: input => {
+    dispatch((dispatch, getState) => {
+      const {editorState} = getState()
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'LINK',
+        'MUTABLE',
+        {url: input.value}
+      );
+      console.log("url",input.value)
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity })
+      const selection = newEditorState.getSelection()
+      let nextEditorState =  RichUtils.toggleLink(
+          newEditorState,
+          selection,
+          entityKey
+      )
+      dispatch(change_editor_state(
+        EditorState.forceSelection(nextEditorState, selection)
+      ))
+      dispatch(hide_link_input())
+      input.value = ""
     })
   }
 })

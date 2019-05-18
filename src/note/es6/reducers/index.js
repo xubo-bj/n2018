@@ -7,6 +7,8 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    SHOW_LINK_INPUT,
+    HIDE_LINK_INPUT,
     USE_INLINE_STYLE,
     SAVE_INLINE_STYLE,
     SHOW_FONT_FAMILY_MENU,
@@ -407,17 +409,17 @@ const showMask = (flag = false, action) => {
         );
       }
 
-      const Link = (props) => {
-        const {url} = props.contentState.getEntity(props.entityKey).getData();
-        return React.createElement("a", {
-            href: url,
-            style: {
-                color: '#3b5998',
-                textDecoration: 'underline'
-            }
-        }, props.children);
-
-        };
+      function Link(props){
+          const { url } = props.contentState.getEntity(props.entityKey).getData();
+          return React.createElement("a", {
+              href: url,
+              ["data-href"]:"draftjs",
+              style: {
+                  color: '#3b5998',
+                  textDecoration: 'underline'
+              }
+          }, props.children)
+      }
 
     const decorator = new CompositeDecorator([{
         strategy: findLinkEntities,
@@ -695,19 +697,46 @@ const fontFamilyMenu = (obj={display:"none", clientX:0,clientY:0},action)=>{
     }
 }
 
-const inlineStyle = (arr=[],action)=>{
+const copiedInlineStyle = (obj={flag:false,arr:[]},action)=>{
     switch(action.type){
         case SAVE_INLINE_STYLE:{
-            return action.stylesArray
+            return {
+                flag:true,
+                arr:action.stylesArray
+            }
         }
         case USE_INLINE_STYLE:{
-            return []
+            return {
+                flag:false,
+                arr:[]
+            }
         }
         default:
-        return arr
+        return obj
     }
 }
 
+const linkInputBox = (obj={display:"none",clientX:0,clientY:0},action)=>{
+    switch(action.type){
+        case SHOW_LINK_INPUT:{
+            return{
+                display:"flex",
+                clientX:action.clientX,
+                clientY:action.clientY,
+            }
+        }
+        case HIDE_LINK_INPUT:{
+            return{
+                display:"none",
+                clientX:0,
+                clientY:0
+            }
+        }
+        default:{
+            return obj
+        }
+    }
+}
 
 
 module.exports = combineReducers({
@@ -728,5 +757,6 @@ module.exports = combineReducers({
     showMask,
     folderNameState,
     renameFileState,
-    inlineStyle,
+    copiedInlineStyle,
+    linkInputBox,
 })
