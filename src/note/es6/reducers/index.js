@@ -437,7 +437,7 @@ const editorState = (state = null, action) => {
         case GET_FILE_SUCCESS:
         case GET_FILE_FROM_LOCAL:
             {
-                return EditorState.createWithContent(convertFromRaw(action.content))
+                return EditorState.createWithContent(convertFromRaw(action.content),decorator)
             }
         case CREATE_NEW_FILE_SUCCESS:
             {
@@ -450,7 +450,7 @@ const editorState = (state = null, action) => {
                 if (rawContentState == null) {
                     return null
                 } else {
-                    return EditorState.createWithContent(convertFromRaw(rawContentState))
+                    return EditorState.createWithContent(convertFromRaw(rawContentState),decorator)
                 }
             }
         default:

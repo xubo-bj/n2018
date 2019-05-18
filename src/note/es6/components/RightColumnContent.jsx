@@ -40,6 +40,12 @@ class RightColumnCotent extends React.Component {
 
   }
   componentDidUpdate() {
+    let linkArray = document.querySelectorAll("[data-href=draftjs]")
+    for (let i = 0; i < linkArray.length; i++) {
+      linkArray[i].onmousedown= function(){
+        window.open(linkArray[i].href)
+      }
+    }
   }
   render() {
     let { editorState, onChangeEditorState, toggleInlineStyle, handleKeyCommand,
@@ -254,7 +260,7 @@ const mapDispatchToProps = dispatch => ({
         return Modifier.removeInlineStyle(contentState, selectionState, color)
       }, currentContentState);
       dispatch(change_editor_state(
-        EditorState.forceSelection(EditorState.createWithContent(nextContentState), selectionState)))
+        EditorState.forceSelection(EditorState.createWithContent(nextContentState,decorator), selectionState)))
     })
   },
   customStyleFn: (inlineStyle) => {
@@ -307,7 +313,7 @@ const mapDispatchToProps = dispatch => ({
       }, currentContentState);
       let finalContentState = Modifier.applyInlineStyle(nextContentState, selectionState, `${target}${cssValue}`)
       dispatch(change_editor_state(
-        EditorState.forceSelection(EditorState.createWithContent(finalContentState), selectionState))
+        EditorState.forceSelection(EditorState.createWithContent(finalContentState,decorator), selectionState))
       )
 
     })
@@ -352,7 +358,7 @@ const mapDispatchToProps = dispatch => ({
               return Modifier.applyInlineStyle(nextContentState, selectionState, elem)
             }, nextContentState)
             dispatch(change_editor_state(
-              EditorState.forceSelection(EditorState.createWithContent(nextContentState), selectionState))
+              EditorState.forceSelection(EditorState.createWithContent(nextContentState,decorator), selectionState))
             )
           }
           dispatch(use_inline_style())
@@ -368,22 +374,26 @@ const mapDispatchToProps = dispatch => ({
     dispatch((dispatch, getState) => {
       const {editorState} = getState()
       const contentState = editorState.getCurrentContent();
+      const selectionState = editorState.getSelection()
       const contentStateWithEntity = contentState.createEntity(
         'LINK',
         'MUTABLE',
         {url: input.value}
       );
-      console.log("url",input.value)
+
+
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity })
-      const selection = newEditorState.getSelection()
-      let nextEditorState =  RichUtils.toggleLink(
-          newEditorState,
-          selection,
-          entityKey
-      )
+const contentStateWithLink = Modifier.applyEntity(
+  contentStateWithEntity,
+  selectionState,
+  entityKey
+);
+
+const newEditorState = EditorState.push(editorState,  contentStateWithLink);
+
+
       dispatch(change_editor_state(
-        EditorState.forceSelection(nextEditorState, selection)
+        EditorState.forceSelection(newEditorState, selectionState)
       ))
       dispatch(hide_link_input())
       input.value = ""

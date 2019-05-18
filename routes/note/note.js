@@ -29,6 +29,33 @@ const {
 
 const React = require("react")
 
+function findLinkEntities(contentBlock, callback, contentState) {
+    contentBlock.findEntityRanges(
+        (character) => {
+            const entityKey = character.getEntity();
+            return (
+                entityKey !== null &&
+                contentState.getEntity(entityKey).getType() === 'LINK'
+            );
+        },
+        callback
+    );
+}
+
+function Link(props) {
+    const {
+        url
+    } = props.contentState.getEntity(props.entityKey).getData();
+    return React.createElement("a", {
+        href: url,
+        ["data-href"]: "draftjs",
+        style: {
+            color: '#3b5998',
+            textDecoration: 'underline'
+        }
+    }, props.children)
+}
+
 router.get('/', async (ctx, next) => {
     let dbConn = await client.connect()
     let userdirsCol = dbConn.db(dbName).collection(userdirs)
@@ -444,46 +471,24 @@ router.delete("/delete-folder", async (ctx, next) => {
         }
     })
     let pall = null
-    if(p3 != null){
-    pall = [p1,p2,p3,p4,p5]
-    }else{
-        pall = [p1,p2,p4,p5]
+    if (p3 != null) {
+        pall = [p1, p2, p3, p4, p5]
+    } else {
+        pall = [p1, p2, p4, p5]
     }
     let r = await Promise.all(pall)
-    for(let i =0; i<r.length-1;i++){
-        console.log(i," :",r[i].deletedCount)
+    for (let i = 0; i < r.length - 1; i++) {
+        console.log(i, " :", r[i].deletedCount)
     }
-    console.log(r.length-1," :",r[r.length-1].modifiedCount)
-    ctx.body = {success:"ok"}
+    console.log(r.length - 1, " :", r[r.length - 1].modifiedCount)
+    ctx.body = {
+        success: "ok"
+    }
 
 })
 
 
 
-      function findLinkEntities(contentBlock, callback, contentState) {
-        contentBlock.findEntityRanges(
-          (character) => {
-            const entityKey = character.getEntity();
-            return (
-              entityKey !== null &&
-              contentState.getEntity(entityKey).getType() === 'LINK'
-            );
-          },
-          callback
-        );
-      }
-
-      function Link(props){
-          const { url } = props.contentState.getEntity(props.entityKey).getData();
-          return React.createElement("a", {
-              href: url,
-              ["data-href"]:"draftjs",
-              style: {
-                  color: '#3b5998',
-                  textDecoration: 'underline'
-              }
-          }, props.children)
-      }
 
 
 module.exports = router
