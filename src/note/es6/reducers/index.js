@@ -7,6 +7,8 @@ import {
 } from 'draft-js';
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 const {
+    USE_INLINE_STYLE,
+    SAVE_INLINE_STYLE,
     SHOW_FONT_FAMILY_MENU,
     HIDE_FONT_FAMILY_MENU,
     HIDE_FONT_SIZE_MENU,
@@ -655,8 +657,6 @@ const renameFileState = (obj = {
 }
 
 
-
-
 const fontSizeMenu = (obj={display:"none", clientX:0,clientY:0},action)=>{
     switch(action.type){
         case SHOW_FONT_SIZE_MENU:{
@@ -695,6 +695,19 @@ const fontFamilyMenu = (obj={display:"none", clientX:0,clientY:0},action)=>{
     }
 }
 
+const inlineStyle = (arr=[],action)=>{
+    switch(action.type){
+        case SAVE_INLINE_STYLE:{
+            return action.stylesArray
+        }
+        case USE_INLINE_STYLE:{
+            return []
+        }
+        default:
+        return arr
+    }
+}
+
 
 
 module.exports = combineReducers({
@@ -715,4 +728,5 @@ module.exports = combineReducers({
     showMask,
     folderNameState,
     renameFileState,
+    inlineStyle,
 })

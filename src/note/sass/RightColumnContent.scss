@@ -172,3 +172,14 @@
 .font-family-menu{
   width: 140px;
 }
+.separator {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(0, 0, 0, .05);
+  margin-left: 9px;
+  margin-right: 9px;
+}
+.format-painter{
+  composes:icon;
+      background-position: 100% 69.36936936936937%;
+}

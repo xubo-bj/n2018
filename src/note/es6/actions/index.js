@@ -429,3 +429,20 @@ export const hide_font_family_menu = ()=>{
         type:HIDE_FONT_FAMILY_MENU
     }
 }
+
+export const SAVE_INLINE_STYLE = "SAVE_INLINE_STYLE"
+export const save_inline_style = (stylesArray)=>{
+    console.log(SAVE_INLINE_STYLE)
+    return{
+        type:SAVE_INLINE_STYLE,
+        stylesArray
+    }
+}
+
+export const USE_INLINE_STYLE = "USE_INLINE_STYLE"
+export const use_inline_style = ()=>{
+    console.log(USE_INLINE_STYLE)
+    return{
+        type:USE_INLINE_STYLE
+    }
+}

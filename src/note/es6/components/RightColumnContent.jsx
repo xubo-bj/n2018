@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import { connect } from 'react-redux'
 import { Editor,CompositeDecorator, EditorState, RichUtils, Modifier } from 'draft-js';
 import styles from "../../sass/RightColumnContent.scss"
-import { show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
+import {save_inline_style,use_inline_style, show_font_family_menu, show_font_size_menu, change_editor_state } from "../actions"
 import { getFileFromServer } from "./utility"
 const shinelonId = require("../../../../config").note.mongodb.shinelonId
 
@@ -42,7 +42,7 @@ class RightColumnCotent extends React.Component {
     let { editorState, onChangeEditorState, toggleInlineStyle, handleKeyCommand,
       color, customStyleFn, applyInlineStyle, bgColor, clearStyle, fontSizeMenu,
       undo, redo, undoStackSize, redoStackSize, showFontSizeMenu, fontSize,
-      showFontFamilyMenu, fontFamilyMenu, fontFamily,
+      showFontFamilyMenu, fontFamilyMenu, fontFamily,copyFormat,
     } = this.props,
       fontNames = ["微软雅黑", "宋体", "新宋体", "仿宋", "楷体", "黑体", "Arial", "Arial Black", "Times New Roman", "Courier New"]
     return (
@@ -51,6 +51,9 @@ class RightColumnCotent extends React.Component {
           <i className={undoStackSize > 0 ? styles["undo"] : styles["no-undo"]} onClick={undo} />
           <i className={redoStackSize > 0 ? styles["redo"] : styles["no-redo"]} onClick={redo} />
           <i className={styles["clear-style"]} onClick={clearStyle} />
+          <i className={styles["format-painter"]} onClick={copyFormat}/>
+
+
           <i className={styles["separator"]} />
           <i className={styles["font-family"]} onClick={showFontFamilyMenu} data-desc="showFontFamily">
             <span className={styles["font-name"]}>{fontFamily}</span>
@@ -63,6 +66,7 @@ class RightColumnCotent extends React.Component {
           <i className={styles["bold"]} onClick={() => toggleInlineStyle("BOLD")} />
           <i className={styles["italic"]} onClick={() => toggleInlineStyle("ITALIC")} />
           <i className={styles["underline"]} onClick={() => toggleInlineStyle("UNDERLINE")} />
+          <i className={styles["separator"]} />
           <i className={styles["color"]} onClick={() => applyInlineStyle("text", color)}>
             <span className={styles["color-line"]} style={{ backgroundColor: color }} />
           </i>
@@ -294,6 +298,17 @@ const mapDispatchToProps = dispatch => ({
   },
   showFontFamilyMenu: e => {
     dispatch(show_font_family_menu(e.clientX, e.clientY))
+  },
+  copyFormat:()=>{
+    dispatch((dispatch,getState)=>{
+      let { editorState } = getState(),
+        inlineStyle = editorState.getCurrentInlineStyle(),
+        arr = []
+      for (let value of inlineStyle) {
+        arr.push(value)
+      }
+      dispatch(save_inline_style(arr))
+    })
   }
 })
 export default connect(mapStateToProps, mapDispatchToProps)(RightColumnCotent)
