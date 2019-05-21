@@ -1,2 +1,2 @@
 let arr ="012345"
-console.log(arr.substr(3))
+console.log(`abc` + arr)

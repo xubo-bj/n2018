@@ -2,6 +2,7 @@ require("@babel/register");
 const path = require('path')
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require("mongodb").ObjectID
+const Binary = require("mongodb").Binary
 const {
     createStore
 } = require("redux")
@@ -15,6 +16,8 @@ const mongodb = require("../../config").note.mongodb
 const shinelonId = mongodb.shinelonId
 const userdirs = mongodb.collections.userdirs
 const userfiles = mongodb.collections.userfiles
+const userimages = mongodb.collections.userimages
+const getRawBody = require('raw-body')
 
 
 const ejsPath = 'note/'
@@ -486,6 +489,37 @@ router.delete("/delete-folder", async (ctx, next) => {
     }
 
 })
+
+router.post("/upload-image", async (ctx, next) => {
+    console.log("there is -------------------------------")
+    ctx.rawBody = await getRawBody(ctx.req, {
+        length: ctx.req.headers['content-length'],
+        limit: '1mb'
+    })
+
+    let dbConn = await client.connect()
+    let userImagesColl = dbConn.db(dbName).collection(userimages)
+    let r0 = await userImagesColl.insertOne({
+        binData: new Binary(ctx.rawBody)
+    })
+    if (r0.insertedCount === 1) {
+        ctx.body = r0.insertedId
+    } else {
+        ctx.body = "failure"
+    }
+})
+
+router.get("/image/:id", async (ctx, next) => {
+    console.log("_id ===============    :",ctx.params.id)
+    let dbConn = await client.connect()
+    let userImagesColl = dbConn.db(dbName).collection(userimages)
+    let r = await userImagesColl.findOne({
+        _id: new ObjectID(ctx.params.id)
+    })
+    ctx.type = 'image/jpg'
+    ctx.body = r.binData.buffer
+})
+
 
 
 
