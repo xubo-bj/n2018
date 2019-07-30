@@ -4,11 +4,11 @@ module.exports = {
     mode:"development",
     devtool:"source-map",
     entry: {
-        main: path.resolve(__dirname, 'src/note/es6/main.js')
+        main: path.resolve('src/note/es6/main.js')
     },
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname , 'public/note/es5')
+        path: path.resolve('public/note/es5')
     },
     module: {
         rules: [{
