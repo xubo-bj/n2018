@@ -10,6 +10,7 @@ const index = require('./routes/index')
 const users = require('./routes/users')
 const ctrip = require('./routes/ctrip')
 const note = require("./routes/note/note.js")
+const baidu = require("./routes/baidu/baidu.js")
 
 // error handler
 onerror(app)
@@ -39,6 +40,7 @@ app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(ctrip.routes(), ctrip.allowedMethods())
 app.use(note.routes(), note.allowedMethods())
+app.use(baidu.routes(), baidu.allowedMethods())
 
 
 // error-handling

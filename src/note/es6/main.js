@@ -14,8 +14,6 @@ const store = createStore(reducer,preloadedState,applyMiddleware(thunk))
 store.subscribe(() => {
   // console.log('store :', store.getState())
 })
-// console.log('initial store',store.getState());
-
 ReactDOM.render(
   <Provider store={store}>
     <App />
