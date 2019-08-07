@@ -1,40 +1,31 @@
-<!-- src/components/Hello.vue -->
-
 <template>
-    <div>
-        <div class="greeting">Hello {{name}}{{exclamationMarks}}</div>
-        <button @click="decrement">-</button>
-        <button @click="increment">+</button>
-    </div>
+<div>{{message}} : {{reversedMessage}}</div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+
+import Vue from "vue"
 
 export default Vue.extend({
-    props: ['name', 'initialEnthusiasm'],
-    data() {
-        return {
-            enthusiasm: this.initialEnthusiasm,
+    data(){
+        return{
+            message:"this is success"
         }
     },
-    methods: {
-        increment() { this.enthusiasm++; },
-        decrement() {
-            if (this.enthusiasm > 1) {
-                this.enthusiasm--;
-            }
-        },
-    },
+
     computed: {
-        exclamationMarks(): string {
-            return Array(this.enthusiasm + 1).join('!');
-        }
+    // 计算属性的 getter
+    reversedMessage:function():string{
+      // `this` 指向 vm 实例
+      console.log("output" ,this.message)
+      return this.message + "abc"
     }
+  }
 });
+
 </script>
 
-<style>
+<style lang="scss" scoped>
 .greeting {
     font-size: 40px;
 }

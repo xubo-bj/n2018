@@ -51,28 +51,29 @@ module.exports = {
 
             {
                 test: /\.scss$/,
-                use: [{
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // you can specify a publicPath here
-                            // by default it use publicPath in webpackOptions.output
-                            publicPath: '../'
-                        }
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: true,
-                            localIdentName: '[local]__[hash:base64]'
-                            // localIdentName: '[path][name]__[local]--[hash:base64:5]'
-                        },
-                    }, {
-                        loader: "sass-loader",
-                        // options: {
-                        //     includePaths: [path.join(__dirname, "src/note/sass")]
-                        // }
-                    }
-                ]
+                use: [MiniCssExtractPlugin.loader,'css-loader', 'sass-loader']
+                // use: [{
+                //         loader: MiniCssExtractPlugin.loader,
+                //         options: {
+                //             // you can specify a publicPath here
+                //             // by default it use publicPath in webpackOptions.output
+                //             publicPath: '../'
+                //         }
+                //     },
+                //     {
+                //         loader: "css-loader",
+                //         options: {
+                //             // modules: true,
+                //             // localIdentName: '[local]__[hash:base64]'
+                //             // localIdentName: '[path][name]__[local]--[hash:base64:5]'
+                //         },
+                //     }, {
+                //         loader: "sass-loader",
+                //         // options: {
+                //         //     includePaths: [path.join(__dirname, "src/note/sass")]
+                //         // }
+                //     }
+                // ]
             }
         ]
     },

@@ -22,6 +22,6 @@ const watching = compiler.watch({
 
     console.log("=====================================")
     console.log("Hash :",stats.compilation.hash)
-    console.log("stats :",stats.compilation.errors)
+    console.log("error:",stats.compilation.errors)
     console.log("\n")
 });
