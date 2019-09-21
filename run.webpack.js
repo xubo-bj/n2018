@@ -1,14 +1,11 @@
-let arg = process.argv[2]
-const note = require("./config/note.webpack.config")
-const baidu= require("./config/baidu.webpack.config")
-const configMap = {
-    note,
-    baidu
-}
+/*
+** node run.webpack.js "project_name"
+*/
 
+let project_name = process.argv[2]
 const webpack = require('webpack');
+const compiler = webpack(require(`./config/${project_name}.webpack.config`))
 
-const compiler = webpack(configMap[arg]);
 
 const watching = compiler.watch({
     // Example watchOptions
@@ -19,7 +16,7 @@ const watching = compiler.watch({
     // console.log("err :",err)
     // console.log("stats :",Object.keys(stats))
     // console.log("stats :",Object.keys(stats.compilation))
-
+    console.log("Hash :",stats.compilation.name)
     console.log("=====================================")
     console.log("Hash :",stats.compilation.hash)
     console.log("error:",stats.compilation.errors)

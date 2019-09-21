@@ -3,18 +3,20 @@ var webpack = require('webpack')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
+
 module.exports = {
     entry: {
-        main: path.resolve('src/baidu/index.ts')
+        main: path.resolve('src/blog/index.ts')
     },
     output: {
         filename: '[name].js',
-        path: path.resolve('public/baidu/es5')
+        path: path.resolve('public/blog/es5')
     },
     module: {
         rules: [{
                 test: /\.vue$/,
                 loader: 'vue-loader',
+                exclude:/node_modules/,
                 options: {
                     loaders: {
                         // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
@@ -29,7 +31,7 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
-                exclude: /node_modules/,
+                exclude:/node_modules/,
                 options: {
                     onlyCompileBundledFiles:true,
                     appendTsSuffixTo: [/\.vue$/],

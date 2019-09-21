@@ -1,5 +1,5 @@
 <template>
-<div>{{message}} : {{reversedMessage}}</div>
+<div class="greeting">{{message}} : {{reversedMessage}}</div>
 </template>
 
 <script lang="ts">
@@ -29,6 +29,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .greeting {
-    font-size: 40px;
+    font-size: 60px;
 }
 </style>
