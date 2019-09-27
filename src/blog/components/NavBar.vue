@@ -4,8 +4,15 @@
 
 
 <script lang="ts">
+/// <reference path="node.d.ts"/>
 import Vue from 'vue'
+let xy:fire = {
+    a:56,
+    b:"ok"
+}
+
 export default Vue.extend({
+    
     
 })
 </script>
