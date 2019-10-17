@@ -1,5 +1,23 @@
-.greeting[data-v-609e5e3d] {
-  font-size: 60px;
+.app-container[data-v-14234e68] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding-left: 235px;
+}
+.side-bar[data-v-14234e68] {
+  position: absolute;
+  left: 0;
+  width: 235px;
+  height: 100%;
+  background: #323232;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.work-space[data-v-14234e68] {
+  border: 1px solid #00f;
+  height: 100%;
 }
 
 
