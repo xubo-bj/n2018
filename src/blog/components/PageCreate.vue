@@ -1,7 +1,6 @@
 <template>
-   <router-view></router-view>
+	<div>PageCreate</div>
 </template>
-
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({});

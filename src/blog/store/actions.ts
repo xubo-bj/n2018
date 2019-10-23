@@ -1,15 +1,10 @@
-export const getAllMessages = ({ commit }) => {
-	api.getAllMessages(messages => {
-		commit("receiveAll", messages);
-	});
-};
+import Vue from "vue";
+import { SELECT_TAB } from "./mutation-types";
+import { stateShape } from "./state";
+import { ActionContext } from "vuex";
 
-export const sendMessage = ({ commit }, payload) => {
-	api.createMessage(payload, message => {
-		commit("receiveMessage", message);
-	});
-};
-
-export const switchThread = ({ commit }, payload) => {
-	commit("switchThread", payload);
+export default {
+	[SELECT_TAB]({ commit }: ActionContext<stateShape, any>, payload: object) {
+		commit(SELECT_TAB, payload);
+	}
 };
