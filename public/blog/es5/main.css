@@ -4,10 +4,17 @@
   border: 1px solid #000;
 }
 
-.router-link[data-v-7a63eae7] {
-  display: block;
-  height: 50px;
-  border: 1px solid #000;
+.v-enter-active[data-v-7a63eae7],
+.v-leave-active[data-v-7a63eae7] {
+  transition: height 1s;
+}
+.v-enter[data-v-7a63eae7],
+.v-leave-to[data-v-7a63eae7] {
+  height: 0px;
+}
+.v-leave[data-v-7a63eae7],
+.v-enter-to[data-v-7a63eae7] {
+  height: 100px;
 }
 
 .app-container[data-v-14234e68] {
