@@ -1,6 +1,6 @@
 <template>
 	<div @click="emit_select_tab" :data-href="to">
-		<router-link class="router-link" :to="to">
+		<router-link class="router-link icon" :class="[linkClass]" :to="to">
 			{{ linkName }}
 		</router-link>
 	</div>
@@ -11,12 +11,13 @@ import Component from "vue-class-component";
 import { mapState } from "vuex";
 
 @Component({
-	props: ["linkName", "to"],
+	props: ["linkName", "to", "linkClass"],
 	computed: mapState(["currentTab"])
 })
 export default class RouterLinkWrapper extends Vue {
 	to!: string;
 	linkName!: string;
+	linkClass!: string;
 	get newTab() {
 		return this.to.slice(6).split("/");
 	}
@@ -28,8 +29,10 @@ export default class RouterLinkWrapper extends Vue {
 <style lang="scss" scoped>
 .router-link {
 	display: block;
-	// color: rgba(255, 255, 255, 0.5);
 	height: 50px;
-	border: 1px solid #000;
+	color: #999;
+	font-size: 14px;
+	line-height: 48px;
+	border-bottom: 1px solid #434343;
 }
 </style>

@@ -1,12 +1,15 @@
 .router-link[data-v-22f47a1b] {
   display: block;
   height: 50px;
-  border: 1px solid #000;
+  color: #999;
+  font-size: 14px;
+  line-height: 48px;
+  border-bottom: 1px solid #434343;
 }
 
 .v-enter-active[data-v-7a63eae7],
 .v-leave-active[data-v-7a63eae7] {
-  transition: height 1s;
+  transition: height 0.4s;
 }
 .v-enter[data-v-7a63eae7],
 .v-leave-to[data-v-7a63eae7] {
@@ -15,6 +18,9 @@
 .v-leave[data-v-7a63eae7],
 .v-enter-to[data-v-7a63eae7] {
   height: 100px;
+}
+.trans-elem[data-v-7a63eae7] {
+  overflow: hidden;
 }
 
 .app-container[data-v-14234e68] {
@@ -30,7 +36,7 @@
   left: 0;
   width: 235px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: #323232;
   overflow-x: hidden;
   overflow-y: auto;
 }

@@ -32,9 +32,7 @@ export default Vue.extend({
 	left: 0;
 	width: 235px;
 	height: 100%;
-	// background: #323232;
-	background-color: rgba(0, 0, 0, 0.3);
-
+	background: #323232;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
