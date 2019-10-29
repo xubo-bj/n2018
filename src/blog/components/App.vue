@@ -1,7 +1,11 @@
 <template>
 	<div class="app-container">
 		<side-bar class="side-bar" />
-		<work-space class="work-space" />
+
+		<div class="content">
+			<tab-names class="tab-names" />
+			<work-space class="work-space" />
+		</div>
 	</div>
 </template>
 
@@ -9,10 +13,12 @@
 import Vue from "vue";
 import SideBar from "./SideBar.vue";
 import WorkSpace from "./WorkSpace.vue";
+import TabNames from "./TabNames.vue";
 
 export default Vue.extend({
 	components: {
 		SideBar,
+		TabNames,
 		WorkSpace
 	}
 });
@@ -36,8 +42,20 @@ export default Vue.extend({
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+.content {
+	height: 100%;
+	position: relative;
+	padding-top: 50px;
+}
+.tab-names {
+	position: absolute;
+	top: 0;
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #d5d5d5;
+	line-height: 48px;
+}
 .work-space {
-	border: 1px solid #00f;
 	height: 100%;
 }
 </style>
