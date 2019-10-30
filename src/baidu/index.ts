@@ -1,19 +1,9 @@
 import Vue from "vue";
-import HelloComponent from "./components/Hello.vue";
-// import NavBar from "./components/NavBar.vue"
+import store from "./store";
+import App from "./components/App.vue";
 
-
-
-
-let v = new Vue({
+new Vue({
     el: "#app",
-    template: `
-    <div>
-    <hello-component/>
-
-    </div>
-    `,
-    components: {
-      HelloComponent
-    }
+    store,
+    render: h => h(App)
 });
