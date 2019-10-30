@@ -1,2 +1,3 @@
-export const SELECT_TAB: string = "SELECT_TAB";
-export const UPDATE_TAGNAME: string = "UPDATE_TAGNAME";
+export const SELECT_TAB = "SELECT_TAB";
+export const UPDATE_TAGNAME = "UPDATE_TAGNAME";
+export const UPDATE_TAGLISTS = "UPDATE_TAGLISTS";

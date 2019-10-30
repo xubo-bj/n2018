@@ -95,7 +95,6 @@
 						currentTab[0] === 'tag' && currentTab[1] === 'create'
 					"
 					@select_tab="select_tab"
-					@clear_tagname="clear_tagname"
 				/>
 			</div>
 		</transition>
@@ -105,30 +104,35 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions, mapState } from "vuex";
-import { SELECT_TAB, UPDATE_TAGNAME } from "../store/mutation-types.ts";
+import {
+	SELECT_TAB,
+	UPDATE_TAGNAME,
+	UPDATE_TAGLISTS
+} from "../store/mutation-types.ts";
 import Component from "vue-class-component";
 import VueRouter from "vue-router";
 import RouterLinkWrapper from "./RouterLinkWrapper";
 import { stateShape } from "../store/state";
+import { tagNameShape, tabShape, tagListsShape } from "../store/mutations";
 
 @Component({
 	computed: mapState(["currentTab"]),
-	methods: mapActions([SELECT_TAB]),
+	methods: mapActions([SELECT_TAB, UPDATE_TAGNAME, UPDATE_TAGLISTS]),
 	components: { RouterLinkWrapper }
 })
 export default class SideBar extends Vue {
-	SELECT_TAB!: (obj: object) => void;
-	UPDATE_TAGNAME!: (obj: object) => void;
+	SELECT_TAB!: (obj: tabShape) => void;
+	UPDATE_TAGNAME!: (obj: tagNameShape) => void;
+	UPDATE_TAGLISTS!: () => void;
 	currentTab!: (state: stateShape) => string[];
-	select_tab(obj: any) {
-		// console.log("obj  :", obj);
+	select_tab(obj: tabShape) {
 		this.SELECT_TAB(obj);
-	}
-	clear_tagname() {
-		this.UPDATE_TAGNAME({ tagName: "" });
-	}
-	updated() {
-		console.log("updated", this.currentTab);
+		if (obj.currentTab[0] === "tag" && obj.currentTab[1] === "create") {
+			this.UPDATE_TAGNAME({ tagName: "" });
+		}
+		if (obj.currentTab[0] === "tag" && obj.currentTab[1] === "list") {
+			this.UPDATE_TAGLISTS();
+		}
 	}
 }
 </script>

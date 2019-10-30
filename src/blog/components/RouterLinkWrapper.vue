@@ -27,7 +27,7 @@ export default class RouterLinkWrapper extends Vue {
 	get newTab() {
 		return this.to.slice(6).split("/");
 	}
-	emit_select_tab(e: any) {
+	emit_select_tab() {
 		this.$emit("select_tab", { currentTab: this.newTab });
 	}
 }

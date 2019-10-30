@@ -10,6 +10,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { UPDATE_TAGNAME } from "../store/mutation-types.ts";
+import axios from "axios";
 
 @Component({
 	computed: {
@@ -24,8 +25,20 @@ import { UPDATE_TAGNAME } from "../store/mutation-types.ts";
 	}
 })
 export default class TagCreate extends Vue {
+	tagName!: string;
 	showContent() {
-		console.log(this.$store.state.tagName);
+		let that = this;
+		axios
+			.post("/blog/tag/create", {
+				tagName: this.tagName.trim()
+			})
+			.then(function(response) {
+				console.log(response);
+				// console.log(response.data);
+			})
+			.catch(function(error) {
+				console.log("404", error);
+			});
 	}
 }
 </script>
