@@ -1,4 +1,19 @@
-import Vue from "vue";
+// import Vue from "vue";
+import { stateShape } from "./state";
+import { UPDATE_SEARCH_INPUT } from "./mutation-types";
+const visionLine = "------------------:  ";
+export interface searchKeyWordShape {
+	searchKeyWord: string;
+}
+export default {
+	[UPDATE_SEARCH_INPUT](state: stateShape, payload: searchKeyWordShape) {
+		console.log(visionLine, UPDATE_SEARCH_INPUT);
+		console.log(payload.searchKeyWord);
+		state.searchKeyWord = payload.searchKeyWord;
+	}
+};
+
+/*
 import { stateShape, tagShape } from "./state";
 import { SELECT_TAB, UPDATE_TAGNAME, UPDATE_TAGLISTS } from "./mutation-types";
 export interface tagNameShape {
@@ -24,3 +39,5 @@ export default {
 		state.tagLists = payload.tagLists;
 	}
 };
+
+*/

@@ -1,3 +1,4 @@
+/*
 export interface tagShape {
     id: string;
     name: string;
@@ -12,6 +13,13 @@ const state: stateShape = {
     currentTab: ["dashboard"],
     tagName: "",
     tagLists: []
+};
+*/
+export interface stateShape {
+	searchKeyWord: string;
+}
+const state: stateShape = {
+	searchKeyWord: ""
 };
 
 export default state;

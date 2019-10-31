@@ -1,5 +1,7 @@
 <template>
-	<div class="logo"></div>
+	<div class="logo">
+		<img class="logo-pic" src="/baidu/images/baidu_logo.png" alt="" />
+	</div>
 </template>
 
 <script lang="ts">
@@ -11,5 +13,10 @@ export default Vue.extend({});
 .logo {
 	height: 87px;
 	padding-bottom: 30px;
+	text-align: center;
+	.logo-pic {
+		max-width: 217px;
+		height: 100%;
+	}
 }
 </style>
