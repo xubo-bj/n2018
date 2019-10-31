@@ -1,5 +1,31 @@
-.container[data-v-5c5c3956] {
-  border: 5px solid #000;
+.top-bar[data-v-fa0b950c] {
+  display: flex;
+  justify-content: space-between;
+  height: 52px;
+  margin-bottom: 9px;
+}
+.btn[data-v-fa0b950c] {
+  flex-basis: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn .user-icon[data-v-fa0b950c] {
+    width: 20px;
+    height: 20px;
+    background-image: url(/baidu/images/btn_icon_1.png);
+    background-size: contain;
+}
+.btn .menu-icon[data-v-fa0b950c] {
+    width: 16px;
+    height: 16px;
+    background-image: url(/baidu/images/btn_icon_2.png);
+    background-size: contain;
+}
+
+.logo[data-v-c36e41b2] {
+  height: 87px;
+  padding-bottom: 30px;
 }
 
 
