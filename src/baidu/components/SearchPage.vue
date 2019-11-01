@@ -5,7 +5,12 @@
 			<div class="search-form">
 				<span class="bear-paw-icon" />
 				<span class="input-wrapper">
-					<input class="search-input" type="text" v-model="keyword" />
+					<input
+						class="search-input"
+						type="text"
+						v-model="keyword"
+						v-focus
+					/>
 				</span>
 				<span
 					class="clear-btn"
@@ -14,6 +19,7 @@
 				<span class="confirm-btn">百度一下</span>
 			</div>
 		</div>
+		<script :src="src" />
 	</div>
 </template>
 
@@ -22,22 +28,41 @@ import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import Component from "vue-class-component";
 import { UPDATE_SEARCH_INPUT } from "../store/mutation-types";
+import axios from "axios";
+import { searchKeyWordShape } from "../store/mutations";
 @Component({
-	computed: {
-		keyword: {
-			get() {
-				return this.$store.state.searchKeyWord;
-			},
-			set(value) {
-				this.$store.commit(UPDATE_SEARCH_INPUT, {
-					searchKeyWord: value
-				});
+	computed: mapState(["searchKeyWord"]),
+	methods: mapMutations([UPDATE_SEARCH_INPUT]),
+	directives: {
+		focus: {
+			inserted: function(el, { value }) {
+				// console.log(el, { value });
+				// if (value) {
+				el.focus();
+				// }
 			}
 		}
-	},
-	methods: mapMutations([UPDATE_SEARCH_INPUT])
+	}
 })
-export default class SearchPage extends Vue {}
+export default class SearchPage extends Vue {
+	searchKeyWord!: string;
+	UPDATE_SEARCH_INPUT!: (searchKeyWord: searchKeyWordShape) => void;
+	get keyword() {
+		return this.searchKeyWord;
+	}
+	set keyword(value) {
+		if (value !== this.searchKeyWord) {
+			console.log("value   :", value);
+			this.UPDATE_SEARCH_INPUT({ searchKeyWord: value });
+		}
+	}
+	get src() {
+		let w = this.searchKeyWord.trim();
+		return w.length > 0
+			? "https://www.baidu.com/su?&wd=" + encodeURI(w) + "&p=3&cb=jsonp"
+			: null;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

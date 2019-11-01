@@ -7,8 +7,8 @@ export interface searchKeyWordShape {
 }
 export default {
 	[UPDATE_SEARCH_INPUT](state: stateShape, payload: searchKeyWordShape) {
-		console.log(visionLine, UPDATE_SEARCH_INPUT);
-		console.log(payload.searchKeyWord);
+		// console.log(visionLine, UPDATE_SEARCH_INPUT);
+		// console.log(payload.searchKeyWord);
 		state.searchKeyWord = payload.searchKeyWord;
 	}
 };
