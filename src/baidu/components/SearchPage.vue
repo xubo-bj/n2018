@@ -19,7 +19,7 @@
 				<span class="confirm-btn">百度一下</span>
 			</div>
 		</div>
-		<script :src="src" />
+		<div class="search-result"></div>
 	</div>
 </template>
 
@@ -30,16 +30,14 @@ import Component from "vue-class-component";
 import { UPDATE_SEARCH_INPUT } from "../store/mutation-types";
 import axios from "axios";
 import { searchKeyWordShape } from "../store/mutations";
+
 @Component({
 	computed: mapState(["searchKeyWord"]),
 	methods: mapMutations([UPDATE_SEARCH_INPUT]),
 	directives: {
 		focus: {
-			inserted: function(el, { value }) {
-				// console.log(el, { value });
-				// if (value) {
+			inserted: function(el) {
 				el.focus();
-				// }
 			}
 		}
 	}
@@ -60,7 +58,26 @@ export default class SearchPage extends Vue {
 		let w = this.searchKeyWord.trim();
 		return w.length > 0
 			? "https://www.baidu.com/su?&wd=" + encodeURI(w) + "&p=3&cb=jsonp"
-			: null;
+			: "";
+	}
+	updated() {
+		let body = document.querySelector("body");
+		var newScriptNode = document.createElement("script");
+		newScriptNode.className = "target-script";
+		newScriptNode.src = this.src;
+		if (body != null) {
+			let oldScriptNode = document.querySelector(".target-script");
+			if (oldScriptNode != null) {
+				body.replaceChild(newScriptNode, oldScriptNode);
+			} else {
+				body.appendChild(newScriptNode);
+			}
+		} else {
+			console.log("can't find a body element");
+		}
+
+		// Replace existing node sp2 with the new span element sp1
+		// parentDiv.replaceChild(sp1, sp2);
 	}
 }
 </script>
@@ -146,5 +163,9 @@ export default class SearchPage extends Vue {
 	border-left: 1px solid #cbcbcb;
 	color: #38f;
 	font-weight: 700;
+}
+.search-result {
+	padding: 0 17px;
+	border: 1px solid #0f0;
 }
 </style>
