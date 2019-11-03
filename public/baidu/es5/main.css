@@ -81,6 +81,46 @@
   position: relative;
 }
 
+.search-list[data-v-4424df62] {
+  border-bottom: 1px solid #f1f1f1;
+  line-height: 24px;
+  font-size: 18px;
+  min-height: 45px;
+  height: 46px;
+  display: flex;
+}
+.list-container[data-v-4424df62] {
+  display: flex;
+  flex-grow: 1;
+}
+.list-container .magnifier-icon[data-v-4424df62] {
+    width: 15px;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAMAAAANxBKoAAAAUVBMVEUAAADNzc3Nzc3Nzc3MzMzMzMzMzMzNzc3Q0NDb29vNzc3Nzc3MzMzMzMzMzMzNzc3Nzc3Nzc3Ozs7Pz8/Q0NDMzMzOzs7Ozs7MzMzNzc3MzMyjngBVAAAAGnRSTlMA9Vgt/Nyjjg0H4FDOw7+2rYhiQCYeFXzjewzxqiMAAAEsSURBVEjHlZVZFoMgDEUDVIRirVOd9r/QGk5TrFgw78uDF3gJkMBBatF1IURR60VBWqos1p2KMjHhpddI+nXO2lasJxKtPYHHx+dv0/WDMUPfNZ/ZjzF2fF9RlbO73VzlB+/qCAs/LOEg6RcRv/joB58GIpmnX2ZvxnrPJZyq9N53BtsIjvA25FmgDfgrNCO+edfozPynDUalKR+4k4SEJBIq+KogqSrEhRfJpWmHV+xrRNg0bQVZmbaPBjJqNmiijHQ5uqOs1NtHn6P7DaopyCFHDxQmBmBytMFU8GieE16UvAyyTmfhnTzrVvFuLO81sF4a7xWzKgSv+jAq200yqibilyvyjfBL1V4Sfq2TEH6tSwU83wFjPEhN1F0nQgPuIK+Az8DAGTS4eXZvXiowQ7wpXsEAAAAASUVORK5CYII=);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 15px 15px;
+}
+.list-container .list-text[data-v-4424df62] {
+    background-color: #fff;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    color: #333;
+    padding-left: 14px;
+}
+.list-container .list-text em[data-v-4424df62] {
+      font-style: normal;
+      font-weight: 400;
+      color: #878787;
+}
+.arrow-icon[data-v-4424df62] {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACcAAAAnBAMAAAB+jUwGAAAAKlBMVEUAAADR0dHMzMzPz8/Nzc3Nzc3Nzc3MzMzMzMzMzMzNzc3Ozs7MzMzMzMwenBEEAAAADXRSTlMABNkZr/ijVTTxlX1u3UxzJQAAAI1JREFUKM+Fy7EJQkEQRdEnNmBmFSZ2YBNmvwRBOxBsxCbMLUIFg+1FBeGwO8GfZJjLmdxaP/tVkqkNc0zSZqL37378tvnLXY0bVNyi4hIVg0ZEIwaNiEZERbSLqIiK6BBRERVRERULFVERFVERFUcqoiIqomJPp2cqPbxS6fqUQp3o3YVeU+n7XOPikg+2ELMK5oFHHwAAAABJRU5ErkJggg==);
+  width: 34px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 12px 12px;
+}
+
 .search-page[data-v-272a30d3] {
   position: fixed;
   top: 0;
@@ -162,7 +202,6 @@
 }
 .search-result[data-v-272a30d3] {
   padding: 0 17px;
-  border: 1px solid #0f0;
 }
 
 

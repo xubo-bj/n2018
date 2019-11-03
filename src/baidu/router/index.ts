@@ -5,15 +5,15 @@ import SearchPage from "../components/SearchPage.vue";
 Vue.use(VueRouter);
 
 export default new VueRouter({
-	mode: "history",
-	routes: [
-		{
-			path: "/baidu",
-			component: HomePage
-		},
-		{
-			path: "/baidu/searchpage",
-			component: SearchPage
-		}
-	]
+    mode: "history",
+    routes: [
+        {
+            path: "/baidu",
+            component: HomePage
+        },
+        {
+            path: "/baidu/searchpage",
+            component: SearchPage
+        }
+    ]
 });
