@@ -1,6 +1,8 @@
 <template>
 	<div class="search-entry">
-		<router-link class="entry" to="/baidu/searchpage"> </router-link>
+		<span class="entry" @click="SHOW_SEARCH_PAGE">{{
+			keyWordSearchedBefore
+		}}</span>
 		<span class="mic">
 			<img class="mic-icon" src="/baidu/images/mic.svg" alt="" />
 		</span>
@@ -13,11 +15,22 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import Component from "vue-class-component";
+import { SHOW_SEARCH_PAGE } from "../store/mutation-types";
 
-@Component({})
-export default class SearchEntry extends Vue {}
+@Component({
+	computed: mapState(["keyWordInSearch"]),
+	methods: mapMutations([SHOW_SEARCH_PAGE])
+})
+export default class SearchEntry extends Vue {
+	keyWordInSearch!: string;
+	get keyWordSearchedBefore() {
+		return this.keyWordInSearch != null
+			? this.keyWordInSearch
+			: sessionStorage.getItem("baidu_xubo");
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -29,6 +42,15 @@ export default class SearchEntry extends Vue {}
 }
 .entry {
 	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	padding-left: 15px;
+	font-size: 18px;
+	color: #333;
+	font-weight: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .mic {
 	width: 40px;

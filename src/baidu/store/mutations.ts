@@ -1,15 +1,40 @@
 // import Vue from "vue";
-import { stateShape } from "./state";
-import { UPDATE_SEARCH_INPUT } from "./mutation-types";
+import {
+	stateShape,
+	searchKeyWordShape,
+	searchResultShape,
+	keyWordInSearchShape
+} from "./state";
+import {
+	UPDATE_SEARCH_INPUT,
+	SHOW_SEARCH_PAGE,
+	HIDE_SEARCH_PAGE,
+	UPDATE_SEARCH_RESULT,
+	START_SEARCH
+} from "./mutation-types";
 const visionLine = "------------------:  ";
-export interface searchKeyWordShape {
-	searchKeyWord: string;
-}
 export default {
 	[UPDATE_SEARCH_INPUT](state: stateShape, payload: searchKeyWordShape) {
-		// console.log(visionLine, UPDATE_SEARCH_INPUT);
-		// console.log(payload.searchKeyWord);
+		console.log(visionLine, UPDATE_SEARCH_INPUT);
 		state.searchKeyWord = payload.searchKeyWord;
+	},
+	[SHOW_SEARCH_PAGE](state: stateShape) {
+		console.log(visionLine, SHOW_SEARCH_PAGE);
+		state.displaySearchPage = true;
+	},
+	[HIDE_SEARCH_PAGE](state: stateShape, payload: searchKeyWordShape) {
+		console.log(visionLine, HIDE_SEARCH_PAGE);
+		state.displaySearchPage = false;
+		state.keyWordInSearch = payload.searchKeyWord;
+	},
+	[START_SEARCH](state: stateShape, payload: keyWordInSearchShape) {
+		console.log(visionLine, START_SEARCH);
+		state.displaySearchPage = false;
+		state.keyWordInSearch = payload.keyWordInSearch;
+	},
+	[UPDATE_SEARCH_RESULT](state: stateShape, payload: searchResultShape) {
+		console.log(visionLine, UPDATE_SEARCH_RESULT);
+		state.searchResult = payload.searchResult;
 	}
 };
 

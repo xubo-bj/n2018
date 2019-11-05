@@ -15,11 +15,30 @@ const state: stateShape = {
     tagLists: []
 };
 */
-export interface stateShape {
+
+export interface searchKeyWordShape {
 	searchKeyWord: string;
 }
+export interface displaySearchPageShape {
+	displaySearchPage: boolean;
+}
+export interface searchResultShape {
+	searchResult: string[];
+}
+export interface keyWordInSearchShape {
+	keyWordInSearch: string | null;
+}
+export interface stateShape
+	extends searchKeyWordShape,
+		displaySearchPageShape,
+		searchResultShape,
+		keyWordInSearchShape {}
+
 const state: stateShape = {
-	searchKeyWord: ""
+	searchKeyWord: "",
+	displaySearchPage: false,
+	searchResult: [],
+	keyWordInSearch: null
 };
 
 export default state;
