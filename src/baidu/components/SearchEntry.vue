@@ -9,7 +9,12 @@
 		<span class="camera">
 			<img class="camera-icon" src="/baidu/images/camera.svg" alt="" />
 		</span>
-		<button class="btn-icon">百度一下</button>
+		<button
+			class="btn-icon"
+			@click="openSearchResult(keyWordSearchedBefore)"
+		>
+			百度一下
+		</button>
 	</div>
 </template>
 
@@ -29,6 +34,11 @@ export default class SearchEntry extends Vue {
 		return this.keyWordInSearch != null
 			? this.keyWordInSearch
 			: sessionStorage.getItem("baidu_xubo");
+	}
+	openSearchResult(keyWordInSearch: string) {
+		window.location.href = `https://m.baidu.com/s?word=${encodeURI(
+			keyWordInSearch
+		)}`;
 	}
 }
 </script>
@@ -85,5 +95,6 @@ export default class SearchEntry extends Vue {
 	letter-spacing: -1px;
 	color: #38f;
 	background-color: #fff;
+	outline: none;
 }
 </style>

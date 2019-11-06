@@ -1,30 +1,44 @@
 <template>
 	<div class="search-list">
-		<a class="list-container" href="http://baidu.com">
+		<a class="list-container" @click="openSearchResult(value)">
 			<span class="magnifier-icon"></span>
 			<button class="list-text" v-html="rawHtml"></button>
 		</a>
-		<span class="arrow-icon"></span>
+		<span
+			class="arrow-icon"
+			@click="UPDATE_SEARCH_INPUT({ searchKeyWord: value })"
+		></span>
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
+import { UPDATE_SEARCH_INPUT, START_SEARCH } from "../store/mutation-types";
 import Component from "vue-class-component";
+import { keyWordInSearchShape } from "../store/state";
 @Component({
 	props: ["value"],
-	computed: mapState(["searchKeyWord"])
+	computed: mapState(["searchKeyWord"]),
+	methods: mapMutations([UPDATE_SEARCH_INPUT, START_SEARCH])
 })
 export default class SearchList extends Vue {
 	value!: string;
 	searchKeyWord!: string;
+	START_SEARCH!: (keyWordInSearch: keyWordInSearchShape) => void;
 	get rawHtml() {
 		var regex1 = RegExp(this.searchKeyWord, "g");
 		return this.value.replace(
 			regex1,
 			`<em style="font-style:normal;font-weight:400;color:#878787">${this.searchKeyWord}</em>`
 		);
+	}
+	openSearchResult(searchKeyWord: string) {
+		this.START_SEARCH({ keyWordInSearch: searchKeyWord });
+		sessionStorage.setItem("baidu_xubo", searchKeyWord);
+		window.location.href = `https://m.baidu.com/s?word=${encodeURI(
+			searchKeyWord
+		)}`;
 	}
 }
 </script>

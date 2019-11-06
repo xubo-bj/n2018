@@ -1,7 +1,10 @@
 <template>
 	<div class="search-page" v-show="displaySearchPage">
 		<div class="search-box">
-			<span class="return-homepage" @click="xyz"></span>
+			<span
+				class="return-homepage"
+				@click="HIDE_SEARCH_PAGE({ searchKeyWord })"
+			></span>
 			<div class="search-form">
 				<span class="bear-paw-icon" />
 				<span class="input-wrapper">
@@ -106,9 +109,6 @@ export default class SearchPage extends Vue {
 				this.UPDATE_SEARCH_RESULT({ searchResult: [] });
 			}
 		}
-	}
-	xyz() {
-		this.HIDE_SEARCH_PAGE({ searchKeyWord: this.searchKeyWord });
 	}
 	openSearchResult(searchKeyWord: string) {
 		this.START_SEARCH({ keyWordInSearch: searchKeyWord });
