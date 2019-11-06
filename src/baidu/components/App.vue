@@ -3,7 +3,7 @@
 		<top-bar />
 		<logo />
 		<search-entry />
-		<search-page/>
+		<search-page />
 	</div>
 </template>
 
@@ -15,9 +15,11 @@ import SearchEntry from "./SearchEntry";
 import SearchPage from "./SearchPage";
 import Component from "vue-class-component";
 @Component({
-	components: { TopBar, Logo, SearchEntry,SearchPage }
+	components: { TopBar, Logo, SearchEntry, SearchPage }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+	mounted() {}
+}
 </script>
 
 <style lang="scss" scoped>

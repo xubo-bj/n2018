@@ -31,8 +31,16 @@
 				v-for="item in searchResult"
 				:key="item"
 				:value="item"
+				v-on:open-search-result="openSearchResult"
 			/>
 		</div>
+		<search-history
+			v-show="keyword.trim().length == 0"
+			v-on:open-search-result="openSearchResult"
+			v-for="record in historyRecord"
+			:key="record"
+			:searchRecord="record"
+		/>
 	</div>
 </template>
 
@@ -44,24 +52,33 @@ import {
 	UPDATE_SEARCH_INPUT,
 	HIDE_SEARCH_PAGE,
 	UPDATE_SEARCH_RESULT,
-	START_SEARCH
+	UPDATE_HISTORY_RECORD
+	// START_SEARCH
 } from "../store/mutation-types";
 import axios from "axios";
 import {
 	searchKeyWordShape,
-	keyWordInSearchShape,
-	searchResultShape
+	searchResultShape,
+	historyRecordShape
 } from "../store/state";
 import SearchList from "./SearchList";
+import SearchHistory from "./SearchHistory";
+import Test from "./Test";
 
 @Component({
-	components: { SearchList },
-	computed: mapState(["searchKeyWord", "displaySearchPage", "searchResult"]),
+	components: { SearchList, SearchHistory, Test },
+	computed: mapState([
+		"searchKeyWord",
+		"displaySearchPage",
+		"searchResult",
+		"historyRecord"
+	]),
 	methods: mapMutations([
 		UPDATE_SEARCH_INPUT,
 		HIDE_SEARCH_PAGE,
 		UPDATE_SEARCH_RESULT,
-		START_SEARCH
+		UPDATE_HISTORY_RECORD
+		// START_SEARCH
 	]),
 	directives: {
 		focus: {
@@ -73,10 +90,12 @@ import SearchList from "./SearchList";
 })
 export default class SearchPage extends Vue {
 	searchKeyWord!: string;
+	historyRecord!: string[];
 	UPDATE_SEARCH_INPUT!: (searchKeyWord: searchKeyWordShape) => void;
 	UPDATE_SEARCH_RESULT!: (searchResult: searchResultShape) => void;
-	START_SEARCH!: (keyWordInSearch: keyWordInSearchShape) => void;
+	// START_SEARCH!: (keyWordInSearch: keyWordInSearchShape) => void;
 	HIDE_SEARCH_PAGE!: (searchKeyWord: searchKeyWordShape) => void;
+	UPDATE_HISTORY_RECORD!: (historyRecord: historyRecordShape) => void;
 
 	get keyword() {
 		return this.searchKeyWord;
@@ -111,25 +130,43 @@ export default class SearchPage extends Vue {
 		}
 	}
 	openSearchResult(searchKeyWord: string) {
-		this.START_SEARCH({ keyWordInSearch: searchKeyWord });
-		sessionStorage.setItem("baidu_xubo", searchKeyWord);
-		window.location.href = `https://m.baidu.com/s?word=${encodeURI(
-			searchKeyWord
-		)}`;
-	}
-	/*
-	get src() {
-		let w = this.searchKeyWord.trim();
-		return w.length > 0
-			? "https://www.baidu.com/su?&wd=" + encodeURI(w) + "&p=3&cb=global_jsonp"
-			: "";
-	}
-	updated() {
+		// this.START_SEARCH({ keyWordInSearch: searchKeyWord });
+		sessionStorage.setItem("baidu_xubo_word", searchKeyWord);
+		let s = searchKeyWord.trim();
+		let index = this.historyRecord.indexOf(s);
+		if (index !== -1) {
+			let historyRecordCopy = [...this.historyRecord];
+			historyRecordCopy.splice(index, 1);
+			historyRecordCopy.unshift(s);
+			this.UPDATE_HISTORY_RECORD({ historyRecord: historyRecordCopy });
+			localStorage.setItem(
+				"baidu_xubo_history",
+				JSON.stringify(historyRecordCopy)
+			);
+		} else {
+			if (this.historyRecord.length >= 10) {
+				let newHistoryRecord = this.historyRecord.slice(0, 8);
+				newHistoryRecord.unshift(s);
+				this.UPDATE_HISTORY_RECORD({ historyRecord: newHistoryRecord });
+				localStorage.setItem(
+					"baidu_xubo_history",
+					JSON.stringify(newHistoryRecord)
+				);
+			} else {
+				let historyRecordCopy = [...this.historyRecord];
+				historyRecordCopy.unshift(s);
+				this.UPDATE_HISTORY_RECORD({
+					historyRecord: historyRecordCopy
+				});
+				localStorage.setItem(
+					"baidu_xubo_history",
+					JSON.stringify(historyRecordCopy)
+				);
+			}
+		}
 
-		// Replace existing node sp2 with the new span element sp1
-		// parentDiv.replaceChild(sp1, sp2);
+		window.location.href = `https://m.baidu.com/s?word=${encodeURI(s)}`;
 	}
-	*/
 }
 </script>
 
@@ -215,7 +252,8 @@ export default class SearchPage extends Vue {
 	color: #38f;
 	font-weight: 700;
 }
-.search-result {
+.search-result,
+.search-history-record {
 	padding: 0 17px;
 }
 </style>

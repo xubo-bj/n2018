@@ -14,18 +14,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { UPDATE_SEARCH_INPUT, START_SEARCH } from "../store/mutation-types";
+import { UPDATE_SEARCH_INPUT } from "../store/mutation-types";
 import Component from "vue-class-component";
-import { keyWordInSearchShape } from "../store/state";
 @Component({
 	props: ["value"],
 	computed: mapState(["searchKeyWord"]),
-	methods: mapMutations([UPDATE_SEARCH_INPUT, START_SEARCH])
+	methods: mapMutations([UPDATE_SEARCH_INPUT])
 })
 export default class SearchList extends Vue {
 	value!: string;
 	searchKeyWord!: string;
-	START_SEARCH!: (keyWordInSearch: keyWordInSearchShape) => void;
 	get rawHtml() {
 		var regex1 = RegExp(this.searchKeyWord, "g");
 		return this.value.replace(
@@ -33,12 +31,9 @@ export default class SearchList extends Vue {
 			`<em style="font-style:normal;font-weight:400;color:#878787">${this.searchKeyWord}</em>`
 		);
 	}
+
 	openSearchResult(searchKeyWord: string) {
-		this.START_SEARCH({ keyWordInSearch: searchKeyWord });
-		sessionStorage.setItem("baidu_xubo", searchKeyWord);
-		window.location.href = `https://m.baidu.com/s?word=${encodeURI(
-			searchKeyWord
-		)}`;
+		this.$emit("open-search-result", searchKeyWord);
 	}
 }
 </script>

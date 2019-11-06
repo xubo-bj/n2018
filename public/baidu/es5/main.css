@@ -122,6 +122,42 @@
   background-size: 12px 12px;
 }
 
+.search-history[data-v-13175280] {
+  padding: 0 17px;
+  border-bottom: 1px solid #f1f1f1;
+  line-height: 24px;
+  font-size: 18px;
+  min-height: 45px;
+  height: 46px;
+  display: flex;
+}
+.history-container[data-v-13175280] {
+  display: flex;
+  flex-grow: 1;
+}
+.history-container .search-history-icon[data-v-13175280] {
+    width: 15px;
+    background-image: url(/baidu/images/search_history.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 15px 15px;
+}
+.history-container .history-text[data-v-13175280] {
+    background-color: #fff;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    color: #333;
+    padding-left: 14px;
+}
+.delete-icon[data-v-13175280] {
+  background-image: url(/baidu/images/delete_history.png);
+  width: 34px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 12px 12px;
+}
+
 .search-page[data-v-272a30d3] {
   position: fixed;
   top: 0;
@@ -201,7 +237,8 @@
   color: #38f;
   font-weight: 700;
 }
-.search-result[data-v-272a30d3] {
+.search-result[data-v-272a30d3],
+.search-history-record[data-v-272a30d3] {
   padding: 0 17px;
 }
 

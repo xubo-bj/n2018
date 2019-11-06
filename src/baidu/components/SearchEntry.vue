@@ -1,8 +1,6 @@
 <template>
 	<div class="search-entry">
-		<span class="entry" @click="SHOW_SEARCH_PAGE">{{
-			keyWordSearchedBefore
-		}}</span>
+		<span class="entry" @click="SHOW_SEARCH_PAGE">{{ searchKeyWord }}</span>
 		<span class="mic">
 			<img class="mic-icon" src="/baidu/images/mic.svg" alt="" />
 		</span>
@@ -22,22 +20,57 @@
 import Vue from "vue";
 import { mapMutations, mapState } from "vuex";
 import Component from "vue-class-component";
-import { SHOW_SEARCH_PAGE } from "../store/mutation-types";
+import { searchKeyWordShape, historyRecordShape } from "../store/state";
+import {
+	SHOW_SEARCH_PAGE,
+	UPDATE_SEARCH_INPUT,
+	UPDATE_HISTORY_RECORD
+} from "../store/mutation-types";
 
 @Component({
-	computed: mapState(["keyWordInSearch"]),
-	methods: mapMutations([SHOW_SEARCH_PAGE])
+	computed: mapState(["searchKeyWord", "historyRecord"]),
+	methods: mapMutations([SHOW_SEARCH_PAGE, UPDATE_HISTORY_RECORD])
 })
 export default class SearchEntry extends Vue {
-	keyWordInSearch!: string;
-	get keyWordSearchedBefore() {
-		return this.keyWordInSearch != null
-			? this.keyWordInSearch
-			: sessionStorage.getItem("baidu_xubo");
-	}
-	openSearchResult(keyWordInSearch: string) {
+	historyRecord!: string[];
+	UPDATE_HISTORY_RECORD!: (historyRecord: historyRecordShape) => void;
+	openSearchResult(searchKeyWord: string) {
+		sessionStorage.setItem("baidu_xubo_word", searchKeyWord);
+		let s = searchKeyWord.trim();
+		let index = this.historyRecord.indexOf(s);
+		if (index !== -1) {
+			let historyRecordCopy = [...this.historyRecord];
+			historyRecordCopy.splice(index, 1);
+			historyRecordCopy.unshift(s);
+			this.UPDATE_HISTORY_RECORD({ historyRecord: historyRecordCopy });
+			localStorage.setItem(
+				"baidu_xubo_history",
+				JSON.stringify(historyRecordCopy)
+			);
+		} else {
+			if (this.historyRecord.length >= 10) {
+				let newHistoryRecord = this.historyRecord.slice(0, 8);
+				newHistoryRecord.unshift(s);
+				this.UPDATE_HISTORY_RECORD({ historyRecord: newHistoryRecord });
+				localStorage.setItem(
+					"baidu_xubo_history",
+					JSON.stringify(newHistoryRecord)
+				);
+			} else {
+				let historyRecordCopy = [...this.historyRecord];
+				historyRecordCopy.unshift(s);
+				this.UPDATE_HISTORY_RECORD({
+					historyRecord: historyRecordCopy
+				});
+				localStorage.setItem(
+					"baidu_xubo_history",
+					JSON.stringify(historyRecordCopy)
+				);
+			}
+		}
+
 		window.location.href = `https://m.baidu.com/s?word=${encodeURI(
-			keyWordInSearch
+			searchKeyWord
 		)}`;
 	}
 }
