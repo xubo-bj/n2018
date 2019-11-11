@@ -26,7 +26,10 @@
 				>
 			</div>
 		</div>
-		<div class="search-result">
+		<div
+			class="search-result"
+			v-show="searchKeyWord && searchKeyWord.length > 0"
+		>
 			<search-list
 				v-for="item in searchResult"
 				:key="item"
@@ -34,13 +37,21 @@
 				v-on:open-search-result="openSearchResult"
 			/>
 		</div>
-		<search-history
-			v-show="keyword.trim().length == 0"
-			v-on:open-search-result="openSearchResult"
-			v-for="record in historyRecord"
-			:key="record"
-			:searchRecord="record"
-		/>
+		<div v-show="keyword.trim().length == 0">
+			<search-history
+				v-on:open-search-result="openSearchResult"
+				v-for="record in historyRecord"
+				:key="record"
+				:searchRecord="record"
+			/>
+			<div
+				class="clear-history"
+				v-show="historyRecord.length > 0"
+				@click="clearHistory"
+			>
+				清空历史
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -96,6 +107,10 @@ export default class SearchPage extends Vue {
 	// START_SEARCH!: (keyWordInSearch: keyWordInSearchShape) => void;
 	HIDE_SEARCH_PAGE!: (searchKeyWord: searchKeyWordShape) => void;
 	UPDATE_HISTORY_RECORD!: (historyRecord: historyRecordShape) => void;
+	clearHistory() {
+		this.UPDATE_HISTORY_RECORD({ historyRecord: [] });
+		localStorage.setItem("baidu_xubo_history", JSON.stringify([]));
+	}
 
 	get keyword() {
 		return this.searchKeyWord;
@@ -255,5 +270,12 @@ export default class SearchPage extends Vue {
 .search-result,
 .search-history-record {
 	padding: 0 17px;
+}
+.clear-history {
+	height: 42px;
+	font-size: 14px;
+	line-height: 42px;
+	color: #555;
+	text-align: center;
 }
 </style>

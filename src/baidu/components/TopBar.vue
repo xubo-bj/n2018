@@ -1,6 +1,8 @@
 <template>
 	<div class="top-bar">
-		<a class="user btn"><span class="user-icon"></span></a>
+		<a class="user btn" @click="SHOW_USER_INFO"
+			><span class="user-icon"></span
+		></a>
 		<a class="menu btn" href="https://m.baidu.com/usrprofile?action=square"
 			><span class="menu-icon"></span
 		></a>
@@ -8,7 +10,13 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({});
+import Component from "vue-class-component";
+import { mapMutations } from "vuex";
+import { SHOW_USER_INFO } from "../store/mutation-types";
+@Component({
+	methods: mapMutations([SHOW_USER_INFO])
+})
+export default class TopBar extends Vue {}
 </script>
 
 <style lang="scss" scoped>

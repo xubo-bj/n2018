@@ -1,18 +1,27 @@
 <template>
-	<div class="search-entry">
-		<span class="entry" @click="SHOW_SEARCH_PAGE">{{ searchKeyWord }}</span>
-		<span class="mic">
-			<img class="mic-icon" src="/baidu/images/mic.svg" alt="" />
-		</span>
-		<span class="camera">
-			<img class="camera-icon" src="/baidu/images/camera.svg" alt="" />
-		</span>
-		<button
-			class="btn-icon"
-			@click="openSearchResult(keyWordSearchedBefore)"
-		>
-			百度一下
-		</button>
+	<div class="search-area">
+		<div class="search-entry">
+			<span class="entry" @click="showSearchPage">{{
+				searchKeyWord
+			}}</span>
+			<span class="mic">
+				<img class="mic-icon" src="/baidu/images/mic.svg" alt="" />
+			</span>
+			<span class="camera">
+				<img
+					class="camera-icon"
+					src="/baidu/images/camera.svg"
+					alt=""
+				/>
+			</span>
+			<button
+				class="btn-icon"
+				@click="openSearchResult(keyWordSearchedBefore)"
+			>
+				百度一下
+			</button>
+		</div>
+		<div class="division-bar"></div>
 	</div>
 </template>
 
@@ -33,7 +42,33 @@ import {
 })
 export default class SearchEntry extends Vue {
 	historyRecord!: string[];
+	searchKeyWord!: string;
+	SHOW_SEARCH_PAGE!: () => void;
 	UPDATE_HISTORY_RECORD!: (historyRecord: historyRecordShape) => void;
+	showSearchPage() {
+		this.SHOW_SEARCH_PAGE();
+		let value = this.searchKeyWord.trim();
+		if (value.length > 0) {
+			let src = `https://www.baidu.com/su?&wd=${encodeURI(
+				value
+			)}&p=3&cb=global_jsonp`;
+			let body = document.querySelector("body");
+			var newScriptNode = document.createElement("script");
+			newScriptNode.className = "target-script";
+			newScriptNode.src = src;
+			if (body != null) {
+				let oldScriptNode = document.querySelector(".target-script");
+				if (oldScriptNode != null) {
+					body.replaceChild(newScriptNode, oldScriptNode);
+				} else {
+					body.appendChild(newScriptNode);
+				}
+			} else {
+				console.log("can't find a body element");
+			}
+			this.searchKeyWord.trim();
+		}
+	}
 	openSearchResult(searchKeyWord: string) {
 		sessionStorage.setItem("baidu_xubo_word", searchKeyWord);
 		let s = searchKeyWord.trim();
@@ -129,5 +164,10 @@ export default class SearchEntry extends Vue {
 	color: #38f;
 	background-color: #fff;
 	outline: none;
+}
+.division-bar {
+	height: 10px;
+	margin-top: 20px;
+	background-color: #f8f8f8;
 }
 </style>

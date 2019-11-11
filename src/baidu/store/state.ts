@@ -7,24 +7,25 @@ export interface displaySearchPageShape {
 export interface searchResultShape {
 	searchResult: string[];
 }
-// export interface keyWordInSearchShape {
-// 	keyWordInSearch: string | null;
-// }
 export interface historyRecordShape {
 	historyRecord: string[];
+}
+export interface displayUserInfoShape {
+	displayUserInfo: boolean;
 }
 export interface stateShape
 	extends searchKeyWordShape,
 		displaySearchPageShape,
 		searchResultShape,
+		displayUserInfoShape,
 		historyRecordShape {}
 
 const state: stateShape = {
 	searchKeyWord: "",
 	displaySearchPage: false,
 	searchResult: [],
-	// keyWordInSearch: null,
-	historyRecord: []
+	historyRecord: [],
+	displayUserInfo: false
 };
 
 export default state;

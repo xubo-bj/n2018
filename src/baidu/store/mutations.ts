@@ -9,7 +9,9 @@ import {
 	SHOW_SEARCH_PAGE,
 	HIDE_SEARCH_PAGE,
 	UPDATE_SEARCH_RESULT,
-	UPDATE_HISTORY_RECORD
+	UPDATE_HISTORY_RECORD,
+	SHOW_USER_INFO,
+	HIDE_USER_INFO
 } from "./mutation-types";
 const visionLine = "------------------:  ";
 export default {
@@ -21,7 +23,7 @@ export default {
 		console.log(visionLine, SHOW_SEARCH_PAGE);
 		state.displaySearchPage = true;
 	},
-	[HIDE_SEARCH_PAGE](state: stateShape, payload: searchKeyWordShape) {
+	[HIDE_SEARCH_PAGE](state: stateShape) {
 		console.log(visionLine, HIDE_SEARCH_PAGE);
 		state.displaySearchPage = false;
 	},
@@ -32,5 +34,13 @@ export default {
 	[UPDATE_HISTORY_RECORD](state: stateShape, payload: historyRecordShape) {
 		console.log(visionLine, UPDATE_HISTORY_RECORD);
 		state.historyRecord = payload.historyRecord;
+	},
+	[HIDE_USER_INFO](state: stateShape) {
+		console.log(visionLine, HIDE_USER_INFO);
+		state.displayUserInfo = false;
+	},
+	[SHOW_USER_INFO](state: stateShape) {
+		console.log(visionLine, SHOW_USER_INFO);
+		state.displayUserInfo = true;
 	}
 };
