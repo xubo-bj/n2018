@@ -2,7 +2,8 @@ import {
 	stateShape,
 	searchKeyWordShape,
 	searchResultShape,
-	historyRecordShape
+	historyRecordShape,
+	newsArrayShape
 } from "./state";
 import {
 	UPDATE_SEARCH_INPUT,
@@ -11,7 +12,8 @@ import {
 	UPDATE_SEARCH_RESULT,
 	UPDATE_HISTORY_RECORD,
 	SHOW_USER_INFO,
-	HIDE_USER_INFO
+	HIDE_USER_INFO,
+	ADD_NEWS
 } from "./mutation-types";
 const visionLine = "------------------:  ";
 export default {
@@ -42,5 +44,9 @@ export default {
 	[SHOW_USER_INFO](state: stateShape) {
 		console.log(visionLine, SHOW_USER_INFO);
 		state.displayUserInfo = true;
+	},
+	[ADD_NEWS](state: stateShape, payload: newsArrayShape) {
+		console.log(visionLine, ADD_NEWS);
+		state.newsArray = [...state.newsArray, ...payload.newsArray];
 	}
 };

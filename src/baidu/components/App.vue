@@ -3,6 +3,7 @@
 		<top-bar />
 		<logo />
 		<search-entry />
+		<news-area />
 		<search-page />
 		<user-info />
 		<user-mask />
@@ -17,9 +18,18 @@ import SearchEntry from "./SearchEntry";
 import SearchPage from "./SearchPage";
 import UserInfo from "./UserInfo";
 import UserMask from "./UserMask";
+import NewsArea from "./NewsArea";
 import Component from "vue-class-component";
 @Component({
-	components: { TopBar, Logo, SearchEntry, SearchPage, UserInfo, UserMask }
+	components: {
+		TopBar,
+		Logo,
+		SearchEntry,
+		SearchPage,
+		UserInfo,
+		UserMask,
+		NewsArea
+	}
 })
 export default class App extends Vue {}
 </script>

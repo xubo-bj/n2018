@@ -13,19 +13,25 @@ export interface historyRecordShape {
 export interface displayUserInfoShape {
 	displayUserInfo: boolean;
 }
+export interface newsArrayShape{
+	newsArray:object[];
+}
 export interface stateShape
 	extends searchKeyWordShape,
 		displaySearchPageShape,
 		searchResultShape,
 		displayUserInfoShape,
+		newsArrayShape,
 		historyRecordShape {}
+
 
 const state: stateShape = {
 	searchKeyWord: "",
 	displaySearchPage: false,
 	searchResult: [],
 	historyRecord: [],
-	displayUserInfo: false
+	displayUserInfo: false,
+	newsArray:[],
 };
 
 export default state;
