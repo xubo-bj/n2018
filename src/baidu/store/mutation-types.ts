@@ -7,3 +7,4 @@ export const UPDATE_HISTORY_RECORD = "UPDATE_HISTORY_RECORD";
 export const SHOW_USER_INFO = "SHOW_USER_INFO";
 export const HIDE_USER_INFO = "HIDE_USER_INFO";
 export const ADD_NEWS = "ADD_NEWS";
+export const DELETE_NEWS = "DELETE_NEWS"

@@ -14,6 +14,7 @@ let vueApp = new Vue({
 	el: "#app",
 	store,
 	beforeMount() {
+		console.log("vueApp beforeMount");
 		(function getStorage() {
 			let historyRecord = localStorage.getItem("baidu_xubo_history");
 			if (historyRecord != null) {
@@ -32,7 +33,7 @@ let vueApp = new Vue({
 					headers: {
 						"X-Requested-With": "axios"
 					},
-					timeout: 1000, // default is `0` (no timeout),
+					timeout: 1100, // default is `0` (no timeout),
 					responseType: "json" // default
 				})
 				.then((res: any) => {
@@ -46,7 +47,6 @@ let vueApp = new Vue({
 				});
 		})();
 	},
-	// router,
 	render: h => h(App)
 });
 

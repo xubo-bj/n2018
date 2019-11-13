@@ -21,7 +21,7 @@ router.get("/fetch_news", async (ctx, next) => {
 				responseType: "json" // default
 			}
 		);
-		console.log("res", res);
+		console.log("res legnth", res.data.result.data.length);
 		ctx.body = res.data.result.data;
 	} catch (e) {
 		console.log("err", e);
