@@ -1,11 +1,7 @@
 <template>
-	<div class="news-area">
-		<news-item
-			v-for="news in newsArray"
-			:key="news.uniquekey"
-			v-bind="news"
-		/>
-	</div>
+  <div class="news-area" ref="touchMoveArea">
+    <news-item v-for="news in newsArray" :key="news.uniquekey" v-bind="news" />
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -15,7 +11,7 @@ import NewsItem from "./NewsItem";
 import axios from "axios";
 const APPKEY = "a3978888f2d9f5614219a3e540b65378";
 const url =
-	"http://v.juhe.cn/toutiao/index?type=top&key=a3978888f2d9f5614219a3e540b65378";
+  "http://v.juhe.cn/toutiao/index?type=top&key=a3978888f2d9f5614219a3e540b65378";
 /*
 http://v.juhe.cn/toutiao/index?type=top&key=a3978888f2d9f5614219a3e540b65378
 类型,,top(头条，默认),shehui(社会),guonei(国内),guoji(国际),yule(娱乐),
@@ -23,8 +19,52 @@ tiyu(体育)junshi(军事),keji(科技),caijing(财经),shishang(时尚)
 */
 @Component({ components: { NewsItem }, computed: mapState(["newsArray"]) })
 export default class NewsArea extends Vue {
-	fetchNews() {
-		/*
+  mounted() {
+    console.log("newsArea  mounted  only once");
+    let targetElem = this.$refs.touchMoveArea as HTMLElement;
+    let cont = document.querySelector(".app-container") as HTMLElement;
+    console.log(targetElem);
+    let zoomout = (x: number) => Math.pow(x, 17 / 20);
+    let translateY = (distance: number) => {
+      if (CSS && CSS.supports("transform-style", "preserve-3d")) {
+        console.log(
+          "support",
+          document.body.scrollTop,
+          ":",
+          targetElem.scrollTop,
+          ":"
+        );
+        targetElem.style.transform = `translate3d(0,${distance}px,0)`;
+      } else {
+        console.log("not support");
+        targetElem.style.transform = `translateY(${distance}px)`;
+      }
+    };
+    this.$nextTick(() => {
+      let startPos = 0;
+      targetElem.addEventListener("touchstart", e => {
+        console.log("touchstart");
+        startPos = e.changedTouches[0].screenY;
+      });
+      targetElem.addEventListener("touchmove", e => {
+        let d = e.changedTouches[0].screenY - startPos;
+        if (d > 0) {
+          //   e.preventDefault();
+          translateY(zoomout(d));
+        }
+      });
+      targetElem.addEventListener("touchend", e => {
+        let d = e.changedTouches[0].screenY - startPos;
+        if (d > 0) {
+          //   e.preventDefault();
+          translateY(zoomout(0));
+        }
+      });
+    });
+  }
+
+  fetchNews() {
+    /*
         //  server code
 		axios
 			.get(`http://v.juhe.cn/toutiao/index?type=top&key=${APPKEY}`, {
@@ -42,30 +82,30 @@ export default class NewsArea extends Vue {
             });
             */
 
-		axios
-			.get("/baidu/fetch_news", {
-				headers: {
-					"X-Requested-With": "axios"
-				},
-				timeout: 1000, // default is `0` (no timeout),
-				responseType: "json" // default
-			})
-			.then((res: any) => {
-				if (res.success == "no") {
-				} else {
-					console.log("res", res.data);
-				}
-			})
-			.catch(err => {
-				console.log("err", err);
-			});
-	}
+    axios
+      .get("/baidu/fetch_news", {
+        headers: {
+          "X-Requested-With": "axios"
+        },
+        timeout: 1000, // default is `0` (no timeout),
+        responseType: "json" // default
+      })
+      .then((res: any) => {
+        if (res.success == "no") {
+        } else {
+          console.log("res", res.data);
+        }
+      })
+      .catch(err => {
+        console.log("err", err);
+      });
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .news-area {
-	padding-left: 16px;
-	padding-right: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 </style>

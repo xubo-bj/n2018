@@ -1,13 +1,13 @@
 <template>
-	<div class="container">
-		<top-bar />
-		<logo />
-		<search-entry />
-		<news-area />
-		<search-page />
-		<user-info />
-		<user-mask />
-	</div>
+  <div class="app-container">
+    <top-bar />
+    <logo />
+    <search-entry />
+    <news-area />
+    <search-page />
+    <user-info />
+    <user-mask />
+  </div>
 </template>
 
 <script lang="ts">
@@ -21,21 +21,21 @@ import UserMask from "./UserMask";
 import NewsArea from "./NewsArea";
 import Component from "vue-class-component";
 @Component({
-	components: {
-		TopBar,
-		Logo,
-		SearchEntry,
-		SearchPage,
-		UserInfo,
-		UserMask,
-		NewsArea
-	}
+  components: {
+    TopBar,
+    Logo,
+    SearchEntry,
+    SearchPage,
+    UserInfo,
+    UserMask,
+    NewsArea
+  }
 })
 export default class App extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-.container {
-	position: relative;
+.app-container {
+  position: relative;
 }
 </style>
