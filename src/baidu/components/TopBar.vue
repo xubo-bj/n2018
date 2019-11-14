@@ -1,5 +1,5 @@
 <template>
-	<div class="top-bar">
+	<div class="top-bar" ref="topBar">
 		<a class="user btn" @click="SHOW_USER_INFO"
 			><span class="user-icon"></span
 		></a>

@@ -33,7 +33,7 @@ let vueApp = new Vue({
 					headers: {
 						"X-Requested-With": "axios"
 					},
-					timeout: 1100, // default is `0` (no timeout),
+					timeout: 2100, // default is `0` (no timeout),
 					responseType: "json" // default
 				})
 				.then((res: any) => {
