@@ -127,7 +127,7 @@ export default class NewsItem extends Vue {}
 			color: #333;
 			font-size: 18px;
 			line-height: 25px;
-			height: 50px;
+			// height: 60px;
 			font-weight: normal;
 			overflow: hidden;
 			text-overflow: ellipsis;

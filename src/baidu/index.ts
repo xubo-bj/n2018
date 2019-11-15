@@ -6,7 +6,7 @@ import {
 	UPDATE_SEARCH_RESULT,
 	UPDATE_HISTORY_RECORD,
 	UPDATE_SEARCH_INPUT,
-	ADD_NEWS
+	ADD_NEWS_BEFORE_EXSITING
 } from "./store/mutation-types";
 import App from "./components/App.vue";
 
@@ -39,7 +39,9 @@ let vueApp = new Vue({
 				.then((res: any) => {
 					if (res.success == "no") {
 					} else {
-						store.commit(ADD_NEWS, { newsArray: res.data });
+						store.commit(ADD_NEWS_BEFORE_EXSITING, {
+							newsArray: res.data
+						});
 					}
 				})
 				.catch(err => {

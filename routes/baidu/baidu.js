@@ -8,11 +8,26 @@ router.prefix("/baidu");
 router.get("/", async (ctx, next) => {
 	await ctx.render(path.join(ejsPath, "index"));
 });
+
+const newsType = [
+	"top",
+	"shehui",
+	"guonei",
+	"guoji",
+	"yule",
+	"tiyu",
+	"junshi",
+	"keji",
+	"caijing",
+	"shishang"
+];
+let newsNum = 0;
 router.get("/fetch_news", async (ctx, next) => {
-	console.log("fetch_news 123");
 	try {
 		let res = await axios.get(
-			`http://v.juhe.cn/toutiao/index?type=top&key=${APPKEY}`,
+			`http://v.juhe.cn/toutiao/index?type=${
+				newsNum < 10 ? newsType[newsNum++] : newsType[newsNum - 10]
+			}&key=${APPKEY}`,
 			{
 				headers: {
 					"X-Requested-With": "axios"
@@ -21,10 +36,11 @@ router.get("/fetch_news", async (ctx, next) => {
 				responseType: "json" // default
 			}
 		);
-		console.log("res legnth", res.data.result.data.length);
+		console.log("res null", res);
+		// console.log("res legnth", res.data.result.data.length);
 		ctx.body = res.data.result.data;
 	} catch (e) {
-		console.log("err", e);
+		console.log("err this is ", e);
 		ctx.body = { success: "no" };
 	}
 });

@@ -12,7 +12,7 @@
 			</div>
 			<div class="progress-area">
 				<div class="progress-bar"></div>
-				<span class="progress-text"> 为您推荐30条更新</span>
+				<span class="progress-text"> </span>
 			</div>
 		</div>
 		<news-item
@@ -28,6 +28,11 @@ import Component from "vue-class-component";
 import { mapState, mapMutations } from "vuex";
 import NewsItem from "./NewsItem";
 import axios from "axios";
+import {
+	ADD_NEWS_BEFORE_EXSITING,
+	ADD_NEWS_AFTER_EXSITING
+} from "../store/mutation-types";
+import { newsArrayShape } from "../store/state";
 const APPKEY = "a3978888f2d9f5614219a3e540b65378";
 const url =
 	"http://v.juhe.cn/toutiao/index?type=top&key=a3978888f2d9f5614219a3e540b65378";
@@ -36,12 +41,30 @@ http://v.juhe.cn/toutiao/index?type=top&key=a3978888f2d9f5614219a3e540b65378
 类型,,top(头条，默认),shehui(社会),guonei(国内),guoji(国际),yule(娱乐),
 tiyu(体育)junshi(军事),keji(科技),caijing(财经),shishang(时尚)
 */
-@Component({ components: { NewsItem }, computed: mapState(["newsArray"]) })
+const newsType = [
+	"top",
+	"shehui",
+	"guonei",
+	"guoji",
+	"yule",
+	"tiyu",
+	"junshi",
+	"keji",
+	"caijing",
+	"shishang"
+];
+@Component({
+	components: { NewsItem },
+	computed: mapState(["newsArray"]),
+	methods: mapMutations([ADD_NEWS_BEFORE_EXSITING, ADD_NEWS_AFTER_EXSITING])
+})
 export default class NewsArea extends Vue {
+	ADD_NEWS_BEFORE_EXSITING!: (p: newsArrayShape) => void;
+	ADD_NEWS_AFTER_EXSITING!: (p: newsArrayShape) => void;
 	mounted() {
-		console.log("newsArea  mounted  only once");
 		this.$nextTick(() => {
-			let targetElem = this.$refs.touchMoveArea as HTMLElement,
+			let newsNum = 0,
+				targetElem = this.$refs.touchMoveArea as HTMLElement,
 				topBarElem = document.querySelector(".top-bar") as HTMLElement,
 				loadingText = document.querySelector(
 					".loading-text"
@@ -66,6 +89,7 @@ export default class NewsArea extends Vue {
 						targetElem.style.transform = `translateY(${distance}px)`;
 					}
 				},
+				fetch_news = () => {},
 				stopRotate: number,
 				degV = 0,
 				startRotate = () => {
@@ -79,6 +103,7 @@ export default class NewsArea extends Vue {
 				startPos = e.changedTouches[0].screenY;
 				progressBar.style.transitionDuration = "0.5s";
 				targetElem.style.transitionDuration = "0s";
+				loadingPrompt.style.display = "flex";
 			});
 			targetElem.addEventListener("touchmove", e => {
 				let d = e.changedTouches[0].screenY - startPos;
@@ -91,28 +116,95 @@ export default class NewsArea extends Vue {
 			targetElem.addEventListener("touchend", e => {
 				let d = e.changedTouches[0].screenY - startPos;
 				let top = topBarElem.getBoundingClientRect().top;
+				let btop = document.body.getBoundingClientRect().top;
 				if (d > 0 && top === 0) {
 					e.preventDefault();
-					translateY(22);
+					targetElem.style.transitionDuration = ".3s";
+					translateY(30);
 					startRotate();
 					loadingText.textContent = "正在刷新";
-					setTimeout(() => {
-						cancelAnimationFrame(stopRotate);
-						loadingPrompt.style.display = "none";
-						loadingText.textContent = "松开推荐";
-						progressText.style.visibility = "visible";
-						progressBar.style.transform = "scaleX(1)";
-					}, 1500);
+
+					axios
+						.get("/baidu/fetch_news", {
+							headers: {
+								"X-Requested-With": "axios"
+							},
+							timeout: 2100, // default is `0` (no timeout),
+							responseType: "json" // default
+						})
+						.then((res: any) => {
+							if (res.success == "no") {
+								progressText.textContent =
+									"暂时没有更新，休息一下吧";
+							} else {
+								this.ADD_NEWS_BEFORE_EXSITING({
+									newsArray: res.data
+								});
+								progressText.textContent = "为您推荐30条更新";
+							}
+							progressBar.style.transform = "scaleX(1)";
+							cancelAnimationFrame(stopRotate);
+							loadingPrompt.style.display = "none";
+							loadingText.textContent = "松开推荐";
+							progressText.style.visibility = "visible";
+						})
+						.catch(err => {
+							console.log("err", err);
+						});
 				}
 			});
 			progressBar.addEventListener("transitionend", e => {
 				progressText.style.visibility = "hidden";
 				progressBar.style.transitionDuration = "0s";
-				targetElem.style.transitionDuration = ".3s";
 				progressBar.style.transform = "scaleX(0)";
-				loadingPrompt.style.display = "flex";
 				translateY(0);
 			});
+
+			// let last_known_scroll_position = 0;
+			let ticking = false;
+			let vueInstance = this;
+
+			function doSomething() {
+				if (!ticking) {
+					window.requestAnimationFrame(() => {
+						let scrollHeight =
+								document.documentElement.scrollHeight,
+							scrollTop = window.scrollY;
+						if (scrollHeight - scrollTop < 1500) {
+							(axios as any)
+								.get("/baidu/fetch_news", {
+									headers: {
+										"X-Requested-With": "axios"
+									},
+									timeout: 2100, // default is `0` (no timeout),
+									responseType: "json" // default
+								})
+								.then((res: any) => {
+									if (res.success == "no") {
+									} else {
+										vueInstance.ADD_NEWS_AFTER_EXSITING({
+											newsArray: res.data
+										});
+									}
+								})
+								.catch((err: any) => {
+									console.log("err", err);
+								})
+								.finally(function() {
+									ticking = false;
+									// always executed
+								});
+						} else {
+							ticking = false;
+						}
+						// last_known_scroll_position = window.scrollY;
+					});
+
+					ticking = true;
+				}
+			}
+
+			window.addEventListener("scroll", doSomething);
 		});
 	}
 
@@ -166,12 +258,13 @@ export default class NewsArea extends Vue {
 }
 .pull-down-loading-bar {
 	position: absolute;
-	height: 24px;
-	top: -24px;
+	height: 30px;
+	top: -30px;
 	left: 16px;
 	right: 16px;
 	display: flex;
 	justify-content: center;
+	padding-top: 6px;
 	.loading-prompt {
 		align-self: center;
 		display: flex;
@@ -185,18 +278,22 @@ export default class NewsArea extends Vue {
 		// top: 3px;
 	}
 	.loading-text {
-		font-size: 12px;
+		margin: 3px;
+		font-size: 13px;
+		color: #666;
 	}
 	.progress-area {
 		position: absolute;
 		width: 100%;
-		height: 100%;
+		top: 6px;
+		bottom: 0;
 		text-align: center;
+		line-height: 28px;
 	}
 	.progress-bar {
-		// display: block;
 		position: absolute;
-		background-color: rgba(0, 0, 255, 0.2);
+		background-color: #38f;
+		opacity: 0.2;
 		width: 100%;
 		height: 100%;
 		transform: scaleX(0);
@@ -204,6 +301,8 @@ export default class NewsArea extends Vue {
 	}
 	.progress-text {
 		visibility: hidden;
+		color: #38f;
+		font-size: 14px;
 	}
 }
 </style>
