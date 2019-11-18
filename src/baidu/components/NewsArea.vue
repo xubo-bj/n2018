@@ -101,56 +101,73 @@ export default class NewsArea extends Vue {
 			targetElem.addEventListener("touchstart", e => {
 				console.log("touchstart");
 				startPos = e.changedTouches[0].screenY;
-				progressBar.style.transitionDuration = "0.5s";
+				progressBar.style.transitionDuration = "0.9s";
 				targetElem.style.transitionDuration = "0s";
 				loadingPrompt.style.display = "flex";
 			});
 			targetElem.addEventListener("touchmove", e => {
 				let d = e.changedTouches[0].screenY - startPos;
-				let top = topBarElem.getBoundingClientRect().top;
-				if (d > 0 && top === 0) {
-					e.preventDefault();
-					translateY(zoomout(d));
+				if (d > 0) {
+					// let top = topBarElem.getBoundingClientRect().top;
+					let top = document.body.getBoundingClientRect().top;
+					if (top === 0) {
+						e.preventDefault();
+						translateY(zoomout(d));
+					}
 				}
 			});
 			targetElem.addEventListener("touchend", e => {
 				let d = e.changedTouches[0].screenY - startPos;
-				let top = topBarElem.getBoundingClientRect().top;
-				let btop = document.body.getBoundingClientRect().top;
-				if (d > 0 && top === 0) {
-					e.preventDefault();
-					targetElem.style.transitionDuration = ".3s";
-					translateY(30);
-					startRotate();
-					loadingText.textContent = "正在刷新";
+				// let top = topBarElem.getBoundingClientRect().top;
+				// if (d > 0 && top === 0) {
+				if (d > 0) {
+					let btop = document.body.getBoundingClientRect().top;
+					if (btop === 0) {
+						e.preventDefault();
+						targetElem.style.transitionDuration = ".3s";
+						translateY(30);
+						startRotate();
+						loadingText.textContent = "正在刷新";
 
-					axios
-						.get("/baidu/fetch_news", {
-							headers: {
-								"X-Requested-With": "axios"
-							},
-							timeout: 2100, // default is `0` (no timeout),
-							responseType: "json" // default
-						})
-						.then((res: any) => {
-							if (res.success == "no") {
+						(axios as any)
+							.get("/baidu/fetch_news", {
+								headers: {
+									"X-Requested-With": "axios"
+								},
+								timeout: 2000, // default is `0` (no timeout),
+								responseType: "json" // default
+							})
+							.then((res: any) => {
+								if (res.success == "no") {
+									progressText.textContent =
+										"暂时没有更新，休息一下吧";
+								} else {
+									console.log("failure ", res.data);
+									try {
+										this.ADD_NEWS_BEFORE_EXSITING({
+											newsArray: res.data
+										});
+										progressText.textContent =
+											"为您推荐30条更新";
+									} catch (e) {
+										progressText.textContent =
+											"更新未成功，请再试一次";
+									}
+								}
+							})
+							.catch((err: any) => {
+								console.log("err", err);
 								progressText.textContent =
-									"暂时没有更新，休息一下吧";
-							} else {
-								this.ADD_NEWS_BEFORE_EXSITING({
-									newsArray: res.data
-								});
-								progressText.textContent = "为您推荐30条更新";
-							}
-							progressBar.style.transform = "scaleX(1)";
-							cancelAnimationFrame(stopRotate);
-							loadingPrompt.style.display = "none";
-							loadingText.textContent = "松开推荐";
-							progressText.style.visibility = "visible";
-						})
-						.catch(err => {
-							console.log("err", err);
-						});
+									"更新未成功，请再试一次";
+							})
+							.finally((x: any) => {
+								progressBar.style.transform = "scaleX(1)";
+								cancelAnimationFrame(stopRotate);
+								loadingPrompt.style.display = "none";
+								loadingText.textContent = "松开推荐";
+								progressText.style.visibility = "visible";
+							});
+					}
 				}
 			});
 			progressBar.addEventListener("transitionend", e => {
@@ -176,7 +193,7 @@ export default class NewsArea extends Vue {
 									headers: {
 										"X-Requested-With": "axios"
 									},
-									timeout: 2100, // default is `0` (no timeout),
+									timeout: 1500, // default is `0` (no timeout),
 									responseType: "json" // default
 								})
 								.then((res: any) => {
@@ -226,7 +243,7 @@ export default class NewsArea extends Vue {
 				console.log("err", err);
             });
             */
-
+		/*
 		axios
 			.get("/baidu/fetch_news", {
 				headers: {
@@ -244,6 +261,7 @@ export default class NewsArea extends Vue {
 			.catch(err => {
 				console.log("err", err);
 			});
+	*/
 	}
 }
 </script>
@@ -297,7 +315,7 @@ export default class NewsArea extends Vue {
 		width: 100%;
 		height: 100%;
 		transform: scaleX(0);
-		transition: transform 0.5s;
+		transition: transform 0.9s;
 	}
 	.progress-text {
 		visibility: hidden;

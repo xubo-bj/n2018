@@ -32,7 +32,7 @@ router.get("/fetch_news", async (ctx, next) => {
 				headers: {
 					"X-Requested-With": "axios"
 				},
-				timeout: 2000, // default is `0` (no timeout),
+				timeout: 1000, // default is `0` (no timeout),
 				responseType: "json" // default
 			}
 		);

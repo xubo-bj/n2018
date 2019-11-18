@@ -16,14 +16,22 @@
 					/>
 				</span>
 				<span
+					v-show="searchKeyWord && searchKeyWord.length !== 0"
 					class="clear-btn"
 					@click="UPDATE_SEARCH_INPUT({ searchKeyWord: '' })"
 				></span>
 				<span
+					v-show="searchKeyWord && searchKeyWord.length !== 0"
 					class="confirm-btn"
 					@click="openSearchResult(searchKeyWord)"
-					>百度一下</span
-				>
+					>百度一下
+				</span>
+				<span
+					class="return-homepage-2"
+					v-show="searchKeyWord.length === 0"
+					@click="HIDE_SEARCH_PAGE({ searchKeyWord: '' })"
+					>取消
+				</span>
 			</div>
 		</div>
 		<div
@@ -277,5 +285,11 @@ export default class SearchPage extends Vue {
 	line-height: 42px;
 	color: #555;
 	text-align: center;
+}
+.return-homepage-2 {
+	padding: 0 10px;
+	border-left: 1px solid #ccc;
+	align-self: center;
+	color: #666;
 }
 </style>

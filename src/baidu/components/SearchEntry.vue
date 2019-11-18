@@ -114,7 +114,7 @@ export default class SearchEntry extends Vue {
 <style lang="scss" scoped>
 .search-area {
 	position: relative;
-	z-index: 10;
+	z-index: 1;
 	background-color: #fff;
 }
 .search-entry {
