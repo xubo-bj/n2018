@@ -10,7 +10,7 @@ router.get("/", async (ctx, next) => {
 });
 
 const newsType = [
-	"top",
+	// "top",
 	"shehui",
 	"guonei",
 	"guoji",
@@ -26,13 +26,13 @@ router.get("/fetch_news", async (ctx, next) => {
 	try {
 		let res = await axios.get(
 			`http://v.juhe.cn/toutiao/index?type=${
-				newsNum < 10 ? newsType[newsNum++] : newsType[newsNum - 10]
+				newsNum < 9 ? newsType[newsNum++] : newsType[newsNum - 9]
 			}&key=${APPKEY}`,
 			{
 				headers: {
 					"X-Requested-With": "axios"
 				},
-				timeout: 1000, // default is `0` (no timeout),
+				timeout: 1500, // default is `0` (no timeout),
 				responseType: "json" // default
 			}
 		);

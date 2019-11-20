@@ -193,7 +193,7 @@ export default class NewsArea extends Vue {
 									headers: {
 										"X-Requested-With": "axios"
 									},
-									timeout: 1500, // default is `0` (no timeout),
+									timeout: 2000, // default is `0` (no timeout),
 									responseType: "json" // default
 								})
 								.then((res: any) => {
