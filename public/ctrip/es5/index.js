@@ -27,7 +27,7 @@ function () {
     this.canBeMoved = true;
 
     this.transitionEvent = function () {
-      if (_this.current >= 7) {
+      if (_this.current == 7) {
         _this.inner.style.transitionDuration = "0s";
 
         _this.translate("head"); // force browser reflow
@@ -39,7 +39,7 @@ function () {
         _this.current = 1;
       }
 
-      if (_this.current <= 0) {
+      if (_this.current == 0) {
         _this.inner.style.transitionDuration = "0s";
 
         _this.translate("tail"); // force browser reflow
@@ -58,18 +58,18 @@ function () {
   _createClass(Carousel, [{
     key: "init",
     value: function init() {
-      this.addTransition();
+      this.addTransitionEnd();
       this.cycle();
       this.addSlideControl();
     }
   }, {
-    key: "addTransition",
-    value: function addTransition() {
+    key: "addTransitionEnd",
+    value: function addTransitionEnd() {
       this.inner.addEventListener("transitionend", this.transitionEvent);
     }
   }, {
-    key: "removeTransition",
-    value: function removeTransition() {
+    key: "removeTransitionEnd",
+    value: function removeTransitionEnd() {
       this.inner.removeEventListener("transitionend", this.transitionEvent);
     }
   }, {
@@ -80,40 +80,46 @@ function () {
       this.inner.addEventListener("touchstart", function (e) {
         _this2.pause();
 
-        _this2.start = e.changedTouches[0].screenX;
-        _this2.picWidth = _this2.outer.offsetWidth;
+        if (_this2.current !== 7 && _this2.current !== 0) {
+          _this2.start = e.changedTouches[0].screenX;
+          _this2.picWidth = _this2.outer.offsetWidth;
 
-        _this2.removeTransition();
+          _this2.removeTransitionEnd();
 
-        _this2.inner.style.transitionDuration = "0s";
-        _this2.inner.offsetHeight;
+          _this2.inner.style.transitionDuration = "0s";
+          _this2.inner.offsetHeight;
+        }
       });
       this.inner.addEventListener("touchmove", function (e) {
-        if (_this2.canBeMoved) {
-          var distance = e.changedTouches[0].screenX - _this2.start;
+        if (_this2.current !== 7 && _this2.current !== 0) {
+          if (_this2.canBeMoved) {
+            var distance = e.changedTouches[0].screenX - _this2.start;
 
-          _this2.translate(distance);
+            _this2.translate(distance);
+          }
         }
       });
       this.inner.addEventListener("touchend", function (e) {
-        var distance = e.changedTouches[0].screenX - _this2.start;
+        if (_this2.current !== 7 && _this2.current !== 0) {
+          var distance = e.changedTouches[0].screenX - _this2.start;
 
-        if (distance > 70) {
-          _this2.current--;
-          _this2.next = _this2.current + 1;
-        } else if (distance < -70) {
-          _this2.current++;
-          _this2.next = _this2.current + 1;
-        } else {}
+          if (distance > 70) {
+            _this2.current--;
+            _this2.next = _this2.current + 1;
+          } else if (distance < -70) {
+            _this2.current++;
+            _this2.next = _this2.current + 1;
+          }
 
-        _this2.addTransition();
+          _this2.addTransitionEnd();
 
-        _this2.translate("current");
+          _this2.translate("current");
 
-        _this2.inner.style.transitionDuration = "0.2s";
-        _this2.inner.offsetHeight;
+          _this2.inner.style.transitionDuration = "0.2s";
+          _this2.inner.offsetHeight;
 
-        _this2.cycle();
+          _this2.cycle();
+        }
       });
     }
   }, {
@@ -140,6 +146,7 @@ function () {
         case "current":
           {
             translate("".concat(-12.5 * this.current, "%"));
+            this.canBeMoved = false;
             break;
           }
 
@@ -171,7 +178,7 @@ function () {
       var _this4 = this;
 
       this.timer = setInterval(function () {
-        _this4.translate('next');
+        _this4.translate("next");
 
         _this4.current = _this4.next;
         _this4.next++;
@@ -206,7 +213,7 @@ function () {
     this.searchPage = this.$("#search-page");
     this.searchBtn = this.$("#header .search");
     this.input = this.$("#search-page .input");
-    this.url = 'https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=';
+    this.url = "https://m.ctrip.com/restapi/h5api/searchapp/search?source=mobileweb&action=autocomplete&contentType=json&keyword=";
     this.noInput = this.$("#search-page .no-input");
     this.inputExist = this.$("#search-page .input-exist");
     this.back = this.$("#search-page .back");
@@ -343,13 +350,13 @@ function () {
     }(function (value) {
       var _this6 = this;
 
-      console.log('fetch', value);
+      console.log("fetch", value);
       var htmlStr = "";
       return fetch("".concat(this.url).concat(value)).then(function (res) {
         return res.json();
       }).then(function (res) {
         var d = res.data;
-        console.log('d', d);
+        console.log("d", d);
 
         for (var i = 0; i < d.length; i++) {
           if (d[i].price != null) {
@@ -365,7 +372,7 @@ function () {
       }).then(function (r) {
         _this6.lastValue = value;
       }).catch(function (e) {
-        console.log('e', e);
+        console.log("e", e);
       });
     })
   }, {
