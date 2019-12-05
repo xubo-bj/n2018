@@ -16,12 +16,16 @@ export interface displayUserInfoShape {
 export interface newsArrayShape {
 	newsArray: object[];
 }
+export interface browserModalShape{
+	browserModal:boolean;
+}
 export interface stateShape
 	extends searchKeyWordShape,
 		displaySearchPageShape,
 		searchResultShape,
 		displayUserInfoShape,
 		newsArrayShape,
+		browserModalShape,
 		historyRecordShape {}
 
 const state: stateShape = {
@@ -30,7 +34,8 @@ const state: stateShape = {
 	searchResult: [],
 	historyRecord: [],
 	displayUserInfo: false,
-	newsArray: []
+	newsArray: [],
+	browserModal:false
 };
 
 export default state;

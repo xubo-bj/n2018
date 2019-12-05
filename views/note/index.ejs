@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="/note/es5/main.css">
-</head>
-<body>
-    <div id="root"></div>
-    <script>
-            window.__PRELOADED_STATE__ = <%- preloadedState %>;
-    </script>
-    <script src="/note/es5/main.js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Document</title>
+		<link rel="stylesheet" href="/note/es5/main.css" />
+		<style>
+			.DraftEditor-root {
+				padding-bottom: 550px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			window.__PRELOADED_STATE__ = <%- preloadedState %>;
+		</script>
+		<script src="/note/es5/main.js"></script>
+	</body>
 </html>

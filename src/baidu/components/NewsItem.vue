@@ -127,14 +127,15 @@ export default class NewsItem extends Vue {}
 			color: #333;
 			font-size: 18px;
 			line-height: 25px;
-			// height: 60px;
+			height: 60px;
 			font-weight: normal;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			display: --webkit-box;
 			-webkit-line-clamp: 2;
 			-webkit-box-orient: vertical;
-			padding-top: 5px;
-			padding-bottom: 5px;
+			padding-top: 9px;
+			padding-bottom: 9px;
 			// margin: 5px 0;
 		}
 		.news-origin {
@@ -173,7 +174,7 @@ export default class NewsItem extends Vue {}
 		color: #333;
 		font-size: 18px;
 		line-height: 25px;
-		// height: 50px;
+		height: 66px;
 		font-weight: normal;
 		overflow: hidden;
 		text-overflow: ellipsis;

@@ -15,7 +15,9 @@ import {
 	HIDE_USER_INFO,
 	ADD_NEWS_BEFORE_EXSITING,
 	ADD_NEWS_AFTER_EXSITING,
-	DELETE_NEWS
+	DELETE_NEWS,
+	SHOW_BROWSER_MODAL,
+	HIDE_BROWSER_MODAL
 } from "./mutation-types";
 const visionLine = "------------------:  ";
 
@@ -61,7 +63,14 @@ export default {
 		let newsArray = state.newsArray.filter(
 			(elem: any) => elem.uniquekey != payload
 		);
-		console.log("mu length", newsArray.length);
 		state.newsArray = newsArray;
+	},
+	[SHOW_BROWSER_MODAL](state: stateShape) {
+		console.log(visionLine, SHOW_BROWSER_MODAL);
+		state.browserModal = true;
+	},
+	[HIDE_BROWSER_MODAL](state: stateShape) {
+		console.log(visionLine, HIDE_BROWSER_MODAL);
+		state.browserModal = false;
 	}
 };

@@ -1,4 +1,4 @@
-/// <reference path="./types/index.d.ts" />
+/// <reference  path="./types/index.d.ts" />
 import Vue from "vue";
 import store from "./store";
 import axios from "axios";
@@ -6,9 +6,11 @@ import {
 	UPDATE_SEARCH_RESULT,
 	UPDATE_HISTORY_RECORD,
 	UPDATE_SEARCH_INPUT,
-	ADD_NEWS_BEFORE_EXSITING
+	ADD_NEWS_BEFORE_EXSITING,
+	SHOW_BROWSER_MODAL
 } from "./store/mutation-types";
 import App from "./components/App.vue";
+import UserAgent from "express-useragent";
 
 let vueApp = new Vue({
 	el: "#app",
@@ -47,6 +49,12 @@ let vueApp = new Vue({
 				.catch(err => {
 					console.log("err", err);
 				});
+		})();
+		(function detect_useragent() {
+			var userAgent = UserAgent.parse(navigator.userAgent);
+			if (!userAgent.isMobile) {
+				store.commit(SHOW_BROWSER_MODAL);
+			}
 		})();
 	},
 	render: h => h(App)
