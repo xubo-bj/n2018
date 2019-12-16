@@ -238,7 +238,6 @@ class addScroll {
     }
     useGpuOrNot() {
         if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-            console.log("func")
             return distance => {
                 this.scroller.style.transform = `translate3d(0,${distance}px,0)`
             }

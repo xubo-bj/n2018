@@ -1,11 +1,215 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>EJS Welcome to <%= title %></p>
-  </body>
+    <head>
+        <title><%= title %></title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0,  user-scalable=no"
+        />
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+    </head>
+    <style>
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            margin: 0;
+            /* padding-top: 100px; */
+            background-color: gray;
+            /* background-image: linear-gradient(#ccc, #aff); */
+            /* background-image: linear-gradient(to bottom, #fff, #cff, #6ff); */
+            background-image: linear-gradient(to top, #eee, #cff, #aff);
+            /* background-image: linear-gradient(#fff, #888); */
+            /* background-size: cover; */
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+        }
+        .site {
+            background-color: #fff;
+            /* border: 1px solid rgba(0, 0, 0, 0.125); */
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 10px 10px 5px #888888;
+        }
+        .mobile-site {
+            display: block;
+            width: 24%;
+        }
+        .desktop-site {
+            display: block;
+            width: 31.25%;
+        }
+        .desktop-img {
+            height: 400px;
+            width: 100%;
+        }
+        .img-section {
+            display: flex;
+            height: 400px;
+            justify-content: space-around;
+        }
+        img {
+            width: 46%;
+            /* box-shadow: 10px 10px 5px #888888; */
+            border: 1px solid rgba(0, 0, 0, 0.25);
+        }
+        .content {
+            margin-top: 30px;
+            padding: 0px 28px 0px;
+            font-size: 16px;
+            color: #444;
+            font-weight: 500;
+        }
+        .header {
+            position: relative;
+        }
+        .header-title {
+            letter-spacing: 0.4em;
+            font-size: 80px;
+            color: #fafafa;
+            text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777,
+                0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444,
+                0px 7px 0px #333, 0px 8px 7px #001135;
+            text-align: center;
+            padding-top: 30px;
+            padding-bottom: 40px;
+        }
+        .header-content {
+            padding-bottom: 60px;
+            font-size: 24px;
+            text-align: center;
+            color: gray;
+        }
+        .github {
+            color: rgba(0, 0, 255, 0.5);
+        }
+        .github:hover {
+            text-decoration: underline;
+        }
+        @media screen and (max-width: 1661px) {
+            .header-title {
+                letter-spacing: 0.4em;
+                font-size: 70px;
+                padding-top: 20px;
+                padding-bottom: 30px;
+            }
+            .header-content {
+                padding-bottom: 40px;
+                font-size: 22px;
+                text-align: center;
+                color: gray;
+            }
+            .content {
+                margin-top: 30px;
+                padding: 0px 10px 0px;
+                font-size: 14px;
+                color: #444;
+                font-weight: 500;
+            }
+        }
+        @media screen and (max-height: 900px) {
+            .desktop-img {
+                height: 360px;
+            }
+            .img-section {
+                height: 360px;
+            }
+        }
+        @media screen and (max-height: 800px) {
+            .desktop-img {
+                height: 320px;
+            }
+            .img-section {
+                height: 320px;
+            }
+        }
+        @media screen and (max-height: 768px) {
+            .content {
+                color: #f00;
+            }
+            .desktop-img {
+                height: 300px;
+            }
+            .img-section {
+                height: 300px;
+            }
+        }
+    </style>
+    <body>
+        <div class="header">
+            <div class="header-title">前端开发</div>
+            <div class="header-content">
+                后端服务基于百度云应用引擎BAE的Node.js环境，代码托管于<a
+                    class="github"
+                    href="https://github.com/xubo-bj/n2018"
+                    >GitHub</a
+                >
+            </div>
+        </div>
+        <div class="container">
+            <a href="/ctrip" class="mobile-site site">
+                <div class="img-section">
+                    <img src="/images/11.jpg" alt="" />
+                    <img src="/images/22.jpg" alt="" />
+                </div>
+                <div class="content">
+                    <p>
+                        采用原生JS开发，使用Sass编写CSS。
+                    </p>
+                    <p>
+                        搜索功能是通过Ajax调用携程网的接口实现。
+                    </p>
+                    <p>
+                        后端基于Node.js的Web框架Koa2开发。
+                    </p>
+                </div>
+            </a>
+            <a href="/note" class="desktop-site site">
+                <!-- <div class="img-section">
+                    <img src="/images/baidu1.png" alt="" />
+                    <img src="/images/baidu2.png" alt="" />
+                </div> -->
+                <img src="/images/note.png" alt="" class="desktop-img" />
+                <div class="content">
+                    <p>
+                        基于React和Redux开发。
+                    </p>
+                    <p>
+                        使用MongoDB存储数据。
+                    </p>
+                    <p>
+                        实现了有道云笔记的基本功能，自动保存编辑过的内容。
+                    </p>
+                    <p></p>
+                </div>
+            </a>
+            <a href="/baidu" class="mobile-site site">
+                <div class="img-section">
+                    <img src="/images/33.jpg" alt="" />
+                    <img src="/images/44.jpg" alt="" />
+                </div>
+                <div class="content">
+                    <p>
+                        基于Vue和Vuex框架构建，使用Typescript开发。
+                    </p>
+                    <p>
+                        搜索功能是通过JSONP调用百度查询接口实现。
+                    </p>
+                    <p>
+                        新闻内容是通过Ajax调用“聚合数据”接口引入。
+                    </p>
+                </div>
+            </a>
+        </div>
+        <script>
+            console.log(document.title, "----");
+        </script>
+    </body>
 </html>
