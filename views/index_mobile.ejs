@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>EJS Welcome to <%= title %></p>
-  </body>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/homepage/css/index_mobile.css" />
+	</head>
+	<body>
+		<div class="head-title">
+			前端开发
+		</div>
+
+		<a href="/ctrip" class="mobile-site">
+			<div class="img-section">
+				<img src="/images/11.jpg" alt="" />
+				<img src="/images/22.jpg" alt="" />
+			</div>
+			<div class="content">
+				<p>
+					采用原生JS开发，使用Sass编写CSS。
+				</p>
+				<p>
+					搜索功能是通过Ajax调用携程网的接口实现。
+				</p>
+				<p>
+					后端基于Node.js的Web框架Koa2开发。
+				</p>
+			</div>
+		</a>
+		<a href="/baidu" class="mobile-site">
+			<div class="img-section">
+				<img src="/images/33.jpg" alt="" />
+				<img src="/images/44.jpg" alt="" />
+			</div>
+			<div class="content">
+				<p>
+					基于Vue和Vuex框架构建，使用Typescript开发。
+				</p>
+				<p>
+					搜索功能是通过JSONP调用百度查询接口实现。
+				</p>
+				<p>
+					新闻内容是通过Ajax调用“聚合数据”接口引入。
+				</p>
+			</div>
+		</a>
+	</body>
 </html>
