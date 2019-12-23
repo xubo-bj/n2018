@@ -8,8 +8,16 @@
 		<link rel="stylesheet" href="/homepage/css/index_mobile.css" />
 	</head>
 	<body>
-		<div class="head-title">
+		<div class="header-title">
 			前端开发
+		</div>
+
+		<div class="header-content">
+			此网站后端基于百度云应用引擎BAE提供的Node.js运行环境，代码托管于<a
+				class="github"
+				href="https://github.com/xubo-bj/n2018"
+				>GitHub</a
+			>
 		</div>
 
 		<a href="/ctrip" class="mobile-site">
@@ -36,15 +44,68 @@
 			</div>
 			<div class="content">
 				<p>
-					基于Vue和Vuex框架构建，使用Typescript开发。
+					基于Vue和Vuex构建，使用Typescript开发。
 				</p>
 				<p>
-					搜索功能是通过JSONP调用百度查询接口实现。
+					搜索功能是通过JSONP调用百度接口实现。
 				</p>
 				<p>
-					新闻内容是通过Ajax调用“聚合数据”接口引入。
+					新闻内容是通过Ajax调用“聚合数据”引入。
 				</p>
 			</div>
 		</a>
+
+		<a class="mobile-site note-site">
+			<div class="img-section one-pic">
+				<img src="/images/note.png" alt="" />
+			</div>
+			<div class="content">
+				<p>
+					实现了有道云笔记的基本功能。
+				</p>
+				<p>
+					基于React和Redux开发。
+				</p>
+				<p>使用MongoDB存储数据。</p>
+				<p>
+					自动保存编辑过的内容。
+				</p>
+			</div>
+		</a>
+		<div class="footer">
+			<a href="mailto:xubo_bj@163.com" class="e-mail"
+				>邮箱：xubo_bj@163.com</a
+			><a href="tel:15810675398" class="contact"> 手机：15810675398</a>
+		</div>
+		<div class="prompt">
+			<div class="prompt-box">
+				<div class="content">
+					<p>此站点为PC网站</p>
+					<p>请使用桌面浏览器</p>
+				</div>
+				<div class="btn">确定</div>
+			</div>
+			<div class="prompt-mask"></div>
+		</div>
+		<script>
+			let prompt = document.querySelector(".prompt"),
+				noteSite = document.querySelector(".note-site"),
+				promptBtn = prompt.querySelector(".btn"),
+				mask = prompt.querySelector(".prompt-mask");
+			prompt.addEventListener("touchstart", e => {
+				e.preventDefault();
+			});
+			noteSite.onclick = () => {
+				prompt.style.display = "block";
+			};
+			console.log("pr", promptBtn);
+			promptBtn.onclick = () => {
+				console.log("btn");
+				// window.location.href = "/note";
+			};
+			mask.onclick = () => {
+				console.log("mask");
+			};
+		</script>
 	</body>
 </html>
