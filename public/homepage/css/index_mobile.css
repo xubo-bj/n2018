@@ -16,14 +16,15 @@ body {
   text-align: center;
   letter-spacing: 0.4em;
   font-size: 40px;
-  padding: 10px 0;
-  text-shadow: #f6f 0px 0px 2px; }
+  padding: 30px 0 10px;
+  color: #333;
+  text-shadow: rgba(255, 0, 0, 0.5) 0px 0px 2px; }
 
 .header-content {
   padding: 20px 36px 30px;
   font-size: 16px;
   text-align: left;
-  color: gray; }
+  color: #666; }
   .header-content .github {
     color: rgba(0, 0, 255, 0.6); }
 
@@ -53,7 +54,7 @@ body {
     font-size: 14px; }
 
 .footer {
-  background-color: #aff;
+  background-color: #cff;
   text-align: center;
   font-size: 12px;
   color: #333; }
@@ -62,7 +63,7 @@ body {
     padding: 5px 0;
     display: inline-block; }
   .footer .contact {
-    margin-left: 20px; }
+    margin-left: 30px; }
 
 .prompt {
   position: relative;

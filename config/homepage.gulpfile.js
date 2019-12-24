@@ -43,53 +43,11 @@ function refresh(cb1) {
 	cb1();
 }
 
-// var sourcemaps = require("gulp-sourcemaps");
-// var babel = require("gulp-babel");
-// var concat = require("gulp-concat");
-
-/**
- * babel中是 @babel/preset-env   而babel-gulp中是 @babel/env
- */
-
-// function es6ToEs5() {
-// 	console.log("es6 to es5");
-// 	return (
-// 		src(`${srcPath}/es6/*.js`)
-// 			.pipe(sourcemaps.init())
-// 			.pipe(
-// 				babel({
-// 					presets: ["@babel/preset-env"]
-// 				})
-// 			)
-// 			// .pipe(concat("all.js"))
-// 			.pipe(sourcemaps.write("."))
-// 			.pipe(dest(`${destPath}/es5`))
-// 	);
-// }
-
-// function watchEs6ToEs5(cb) {
-// 	watch(
-// 		`${srcPath}/es6/**`,
-// 		{
-// 			events: ["change"]
-// 		},
-// 		es6ToEs5
-// 	);
-// 	cb();
-// }
-
 const del = require("delete");
 
 function delOldCss(cb) {
 	// Use the `delete` module directly, instead of using gulp-rimraf
 	del([`${destPath}/stylesheets/**`], cb);
 }
-// function delOldEs5(cb) {
-// 	del([`${destPath}/es5/**`], cb);
-// }
 
-exports.default = parallel(
-	series(delOldCss, sassToCss, watch_sass),
-	// series(delOldEs5, es6ToEs5, watchEs6ToEs5),
-	refresh
-);
+exports.default = parallel(series(delOldCss, sassToCss, watch_sass), refresh);
