@@ -9,7 +9,8 @@ body {
   position: relative;
   height: 100%;
   margin: 0;
-  background-image: url(/images/linux1.jpg); }
+  background-image: url(/images/bgi.jpg);
+  background-size: cover; }
 
 .container {
   display: flex;
@@ -18,8 +19,9 @@ body {
 .site {
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #aaa;
-  border-style: dotted; }
+  border: 1px solid #aaa; }
+  .site:hover {
+    box-shadow: 0px 0px 15px #ff0; }
 
 .mobile-site {
   display: block;
@@ -95,43 +97,6 @@ img {
       border-radius: 20px;
       z-index: -1; }
 
-.github {
-  color: rgba(0, 0, 255, 0.5); }
-
-.github:hover {
-  text-decoration: underline; }
-
-@media screen and (max-width: 1600px) {
-  .header {
-    padding: 0 200px; }
-  .content {
-    margin-top: 30px;
-    padding: 0px 10px 0px;
-    font-size: 18px;
-    color: #444;
-    font-weight: 500; } }
-
-@media screen and (max-height: 900px) {
-  .desktop-img {
-    height: 360px; }
-  .img-section {
-    height: 360px; } }
-
-@media screen and (max-height: 800px) {
-  .desktop-img {
-    height: 320px; }
-  .img-section {
-    height: 320px; } }
-
-@media screen and (max-height: 768px) {
-  /* .content {
-                color: #f00;
-            } */
-  .desktop-img {
-    height: 300px; }
-  .img-section {
-    height: 300px; } }
-
 .footer {
   position: fixed;
   bottom: 0;
@@ -140,6 +105,78 @@ img {
   padding-bottom: 20px;
   text-align: center;
   color: #aaa; }
-  .footer .contact {
-    margin-left: 30px;
-    color: #eee; }
+
+@media screen and (max-width: 1600px) {
+  .header {
+    padding: 0 200px; }
+  .content {
+    margin-top: 30px;
+    padding: 0px 10px 0px;
+    font-size: 18px; } }
+
+@media screen and (max-height: 900px) {
+  .desktop-img {
+    height: 340px; }
+  .img-section {
+    height: 340px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; } }
+
+@media screen and (max-height: 800px) {
+  .desktop-img {
+    height: 300px; }
+  .img-section {
+    height: 300px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; }
+  .footer {
+    display: none; } }
+
+@media screen and (max-height: 768px) {
+  .desktop-img {
+    height: 260px; }
+  .img-section {
+    height: 260px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; }
+  .footer {
+    display: none; } }
