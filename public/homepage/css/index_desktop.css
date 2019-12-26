@@ -85,7 +85,8 @@ img {
       height: 30px; }
     .header .other-info-text {
       margin-left: 10px;
-      font-size: 18px; }
+      font-size: 18px;
+      user-select: none; }
     .header .other-info .bgc {
       position: absolute;
       top: 0;

@@ -9,8 +9,8 @@ body {
   position: relative;
   margin: 0;
   height: 100%;
-  background-image: linear-gradient(to top, #eee, #cff, #aff);
-  background-repeat: no-repeat; }
+  background-image: url(/images/bgm2.jpg);
+  background-size: contain; }
 
 .header-title {
   text-align: center;
@@ -33,11 +33,10 @@ body {
   margin: 0 auto;
   margin-bottom: 30px;
   width: 80%;
-  background-color: #fff;
   /* border: 1px solid rgba(0, 0, 0, 0.125); */
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 10px 10px 5px #888888; }
+  border: 1px solid #aaa; }
   .mobile-site .img-section {
     text-align: center; }
     .mobile-site .img-section img {
