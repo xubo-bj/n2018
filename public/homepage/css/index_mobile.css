@@ -1,6 +1,5 @@
 a {
-  text-decoration: none;
-  color: #333; }
+  text-decoration: none; }
 
 .html {
   height: 100%; }
@@ -9,34 +8,82 @@ body {
   position: relative;
   margin: 0;
   height: 100%;
-  background-image: url(/images/bgm2.jpg);
+  background-image: url(/homepage/images/bgm2.jpg);
   background-size: contain; }
 
-.header-title {
-  text-align: center;
-  letter-spacing: 0.4em;
-  font-size: 40px;
-  padding: 30px 0 10px;
-  color: #333;
-  text-shadow: rgba(255, 0, 0, 0.5) 0px 0px 2px; }
+.body-bottom-layer {
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #fff;
+  opacity: 0.1; }
 
-.header-content {
-  padding: 20px 36px 30px;
-  font-size: 16px;
-  text-align: left;
-  color: #666; }
-  .header-content .github {
-    color: rgba(0, 0, 255, 0.6); }
+.header {
+  display: flex;
+  padding: 50px 0;
+  align-items: center;
+  justify-content: space-around;
+  color: #fff; }
+  .header .portrait {
+    display: flex;
+    align-items: center; }
+    .header .portrait-img {
+      width: 110px;
+      height: auto;
+      border-radius: 50%; }
+  .header .info-item {
+    color: #fff;
+    display: block;
+    font-size: 14px;
+    line-height: 28px; }
+    .header .info-item .colon {
+      display: inline-block;
+      text-align: center;
+      width: 30px; }
+  .header .other-info {
+    margin-top: 6px; }
+  .header .info-btn {
+    display: inline-block;
+    color: #fff;
+    padding: 2px 10px;
+    position: relative;
+    z-index: 9; }
+    .header .info-btn .svg-icon {
+      width: 16px;
+      height: 16px;
+      position: relative;
+      top: 3px; }
+    .header .info-btn-text {
+      margin-left: 3px;
+      font-size: 14px;
+      user-select: none; }
+    .header .info-btn .bgc {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      opacity: 0.2;
+      border-radius: 20px;
+      z-index: -1; }
+    .header .info-btn.second {
+      margin-left: 10px; }
 
 .mobile-site {
+  position: relative;
+  z-index: 1;
   display: block;
   margin: 0 auto;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   width: 80%;
-  /* border: 1px solid rgba(0, 0, 0, 0.125); */
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #aaa; }
+  border: 1px solid #aaa;
+  box-shadow: 0 0 15px #ffc; }
   .mobile-site .img-section {
     text-align: center; }
     .mobile-site .img-section img {
@@ -50,13 +97,25 @@ body {
       height: auto;
       border: 1px solid #ccc; }
   .mobile-site .content {
-    font-size: 14px; }
+    font-size: 14px;
+    padding-left: 3px;
+    color: #fff; }
+  .mobile-site .site-bg {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #000;
+    opacity: 0.2;
+    border-radius: 10px; }
 
 .footer {
-  background-color: #cff;
   text-align: center;
+  padding-bottom: 20px;
   font-size: 12px;
-  color: #333; }
+  color: #aaa; }
   .footer .contact,
   .footer .e-mail {
     padding: 5px 0;

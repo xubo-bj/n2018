@@ -31,7 +31,7 @@ function refresh(cb1) {
 		proxy: `127.0.0.1:${appPort}`
 	});
 	watch(
-		["./views/*.ejs", `${destPath}/**`],
+		["./views/homepage/*.ejs", `${destPath}/**`],
 		{
 			events: ["change"]
 		},

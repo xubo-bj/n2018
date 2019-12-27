@@ -637,20 +637,21 @@
   margin-top: 150px;
   width: 500px;
   background-color: #fff;
+  border-radius: 15px;
 }
 .modal-box .hide-btn[data-v-d24fbe3e] {
     position: absolute;
-    right: 0px;
-    padding: 0 7px;
-    font-size: 24px;
+    top: 2px;
+    right: 5px;
+    padding: 7px;
+    font-size: 34px;
     font-weight: 700;
     color: #000;
     opacity: 0.5;
-    text-shadow: 0 1px 0 #fff;
+    cursor: pointer;
 }
 .modal-box .modal-content[data-v-d24fbe3e] {
     padding: 40px 0;
-    border-bottom: 1px solid #dee2e6;
     text-align: center;
     font-size: 20px;
 }

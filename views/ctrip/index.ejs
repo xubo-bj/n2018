@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>仿携程旅行</title>
     <link rel="stylesheet" href="/ctrip/css/index.css">
+    <script defer src="/common/javascripts/express-useragent.min.js"></script>
 </head>
 
 <body>
@@ -211,13 +212,39 @@
         </div>
     </section>
     <div id="mask"></div>
-    <script>
-        (function detectBrowser(){
-            
-        })();
-    </script>
+
+	<div class="browser-modal" >
+		<div class="modal-box">
+			<div class="hide-btn">×</div>
+			<div class="modal-content">
+				请使用移动浏览器，获得良好的浏览效果
+			</div>
+		</div>
+		<div class="modal-mask"></div>
+	</div>
+
     <script src="/ctrip/es5/index.js"></script>
     <script src="/ctrip/es5/country.js"></script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            if(UserAgent){
+                var userAgent = new UserAgent().parse(navigator.userAgent);
+                if(userAgent.isDesktop && (!userAgent.isMobile)){
+                    let browserModal = document.querySelector(".browser-modal"),
+                    hideBtn = browserModal.querySelector(".hide-btn"),
+                    modalMask = browserModal.querySelector(".modal-mask")
+                    browserModal.style.display = "block"
+                    hideBtn.addEventListener("click",e=>{
+                    browserModal.style.display = "none"
+                    })
+                    modalMask.addEventListener("click",e=>{
+                    browserModal.style.display = "none"
+                    })
+                }
+            }
+});
+    </script>
 </body>
 
 </html>

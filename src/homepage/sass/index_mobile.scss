@@ -1,6 +1,5 @@
 a {
 	text-decoration: none;
-	color: #333;
 }
 .html {
 	height: 100%;
@@ -9,41 +8,93 @@ body {
 	position: relative;
 	margin: 0;
 	height: 100%;
-	// background-image: linear-gradient(to top, #eee, #cff, #aff);
-	background-image: url(/images/bgm2.jpg);
+	background-image: url(/homepage/images/bgm2.jpg);
 	background-size: contain;
-	// background-repeat: no-repeat;
 }
-.header-title {
-	text-align: center;
-	letter-spacing: 0.4em;
-	font-size: 40px;
-	padding: 30px 0 10px;
-	color: #333;
-	// text-shadow: #ff0 0px 0px 2px;
-	text-shadow: rgba(255, 0, 0, 0.5) 0px 0px 2px;
+.body-bottom-layer {
+	position: absolute;
+	z-index: -1;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #fff;
+	opacity: 0.1;
 }
-.header-content {
-	padding: 20px 36px 30px;
-	font-size: 16px;
-	text-align: left;
-	color: #666;
-	.github {
-		color: rgba(0, 0, 255, 0.6);
+.header {
+	display: flex;
+	padding: 50px 0;
+	align-items: center;
+	justify-content: space-around;
+	color: #fff;
+	.portrait {
+		display: flex;
+		align-items: center;
+		&-img {
+			width: 110px;
+			height: auto;
+			border-radius: 50%;
+		}
+	}
+
+	.info-item {
+		color: #fff;
+		display: block;
+		font-size: 14px;
+		line-height: 28px;
+		.colon {
+			display: inline-block;
+			text-align: center;
+			width: 30px;
+		}
+	}
+	.other-info {
+		margin-top: 6px;
+	}
+	.info-btn {
+		display: inline-block;
+		color: #fff;
+		padding: 2px 10px;
+		position: relative;
+		z-index: 9;
+		.svg-icon {
+			width: 16px;
+			height: 16px;
+			position: relative;
+			top: 3px;
+		}
+		&-text {
+			margin-left: 3px;
+			font-size: 14px;
+			user-select: none;
+		}
+		.bgc {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: #fff;
+			opacity: 0.2;
+			border-radius: 20px;
+			z-index: -1;
+		}
+		&.second {
+			margin-left: 10px;
+		}
 	}
 }
 .mobile-site {
+	position: relative;
+	z-index: 1;
 	display: block;
 	margin: 0 auto;
-	margin-bottom: 30px;
+	margin-bottom: 50px;
 	width: 80%;
-
-	// background-color: #fff;
-	/* border: 1px solid rgba(0, 0, 0, 0.125); */
 	padding: 10px;
 	border-radius: 10px;
 	border: 1px solid #aaa;
-	// box-shadow: 10px 10px 5px #888888;
+	box-shadow: 0 0 15px #ffc;
 	.img-section {
 		text-align: center;
 		img {
@@ -64,13 +115,28 @@ body {
 	}
 	.content {
 		font-size: 14px;
+		padding-left: 3px;
+		color: #fff;
+	}
+	.site-bg {
+		position: absolute;
+		z-index: -1;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		// background-color: rgb(255, 255, 255);
+		// background-color: #ffc;
+		background-color: #000;
+		opacity: 0.2;
+		border-radius: 10px;
 	}
 }
 .footer {
-	background-color: #cff;
 	text-align: center;
+	padding-bottom: 20px;
 	font-size: 12px;
-	color: #333;
+	color: #aaa;
 	.contact,
 	.e-mail {
 		padding: 5px 0;

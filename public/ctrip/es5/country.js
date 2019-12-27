@@ -285,7 +285,6 @@ function () {
       var _this3 = this;
 
       if (CSS && CSS.supports("transform-style", "preserve-3d")) {
-        console.log("func");
         return function (distance) {
           _this3.scroller.style.transform = "translate3d(0,".concat(distance, "px,0)");
         };
