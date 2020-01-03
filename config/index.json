@@ -1,5 +1,5 @@
 {
-	"appPort": "18080",
+	"appPort": "80",
 	"note": {
 		"mongodb": {
 			"db": "note",
