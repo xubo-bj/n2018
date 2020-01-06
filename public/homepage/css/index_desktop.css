@@ -35,6 +35,25 @@ body {
   height: 400px;
   width: 100%; }
 
+.img-section-wrapper {
+  position: relative; }
+  .img-section-wrapper .qr-code {
+    display: flex;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.65);
+    transition: opacity 0.3s;
+    opacity: 0; }
+
+.mobile-site:hover .qr-code {
+  opacity: 1; }
+
 .img-section {
   display: flex;
   height: 400px;
