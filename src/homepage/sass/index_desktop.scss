@@ -9,11 +9,8 @@ body {
 	position: relative;
 	height: 100%;
 	margin: 0;
-	// background-image: linear-gradient(to top, #eee, #cff, #aff);
 	background-image: url(/homepage/images/bgi_c.jpg);
 	background-size: cover;
-}
-.resume {
 }
 .container {
 	display: flex;
@@ -30,6 +27,13 @@ body {
 .mobile-site {
 	display: block;
 	width: 24%;
+
+	img {
+		width: 48%;
+		/* box-shadow: 10px 10px 5px #888888; */
+		border: 1px solid rgba(0, 0, 0, 0.25);
+		// opacity: 0.9;
+	}
 }
 .desktop-site {
 	display: block;
@@ -74,12 +78,6 @@ body {
 	justify-content: space-between;
 	// position: relative;
 }
-img {
-	width: 48%;
-	/* box-shadow: 10px 10px 5px #888888; */
-	border: 1px solid rgba(0, 0, 0, 0.25);
-	// opacity: 0.9;
-}
 .content {
 	margin-top: 30px;
 	padding: 0px 28px 0px;
@@ -88,7 +86,7 @@ img {
 }
 .header {
 	position: relative;
-	padding: 0 300px;
+	padding: 0 240px;
 	height: 260px;
 	display: flex;
 	justify-content: space-around;
@@ -144,6 +142,9 @@ img {
 			z-index: -1;
 		}
 	}
+	.qr-code-homepage {
+		width: 150px;
+	}
 }
 
 .footer {
@@ -166,7 +167,17 @@ img {
 		font-size: 18px;
 	}
 }
+@media screen and (max-width: 1324px) {
+	.header {
+		padding: 0 100px;
+	}
+}
 
+@media screen and (max-width: 1024px) {
+	.header {
+		padding: 0 50px;
+	}
+}
 @media screen and (max-height: 900px) {
 	.desktop-img {
 		height: 340px;
