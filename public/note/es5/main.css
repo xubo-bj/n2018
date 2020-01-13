@@ -506,7 +506,9 @@
   cursor: url("/note/images/painter.cur"), auto; }
 
 .toolbar__2Vglke_6HAes5QHkg6_8F6 {
+  position: absolute;
   height: 46px;
+  z-index: 40;
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05); }

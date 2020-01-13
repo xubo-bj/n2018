@@ -26,7 +26,9 @@
 }
 
 .toolbar {
+	position: absolute;
 	height: 46px;
+	z-index: 40;
 	display: flex;
 	align-items: center;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
