@@ -68,7 +68,7 @@ function fetch_news() {
 		fetch_news();
 	}, 1000 * 60 * 60 * 3);
 }
-fetch_news();
+// fetch_news();
 
 let nextData = null;
 function generateNextData() {
