@@ -496,6 +496,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 30;
   overflow-y: scroll;
   font-size: 14px; }
   .editor__1cJVz4KB-5ids5MZXPvojU [data-href="draftjs"] {
@@ -618,7 +619,6 @@
 .font-size-menu__32SbfX4FIXtqP6BoAl0Uos,
 .font-family-menu__OJ3HLkdXTFEhl9g54UnZO {
   position: fixed;
-  z-index: 11;
   font-size: 12px;
   border-radius: 2px;
   box-shadow: 0px 1px 16px 0 rgba(90, 109, 122, 0.41); }
@@ -626,7 +626,8 @@
   .font-family-menu__OJ3HLkdXTFEhl9g54UnZO .li__39dvXgIuIUbm3YQ6bhDuHa {
     height: 30px;
     line-height: 34px;
-    text-align: center; }
+    text-align: center;
+    background-color: #fff; }
     .font-size-menu__32SbfX4FIXtqP6BoAl0Uos .li__39dvXgIuIUbm3YQ6bhDuHa:hover,
     .font-family-menu__OJ3HLkdXTFEhl9g54UnZO .li__39dvXgIuIUbm3YQ6bhDuHa:hover {
       cursor: pointer;

@@ -41,6 +41,7 @@ let vueApp = new Vue({
 				.then((res: any) => {
 					if (res.success == "no") {
 					} else {
+						console.log("bobo data", res.data);
 						store.commit(ADD_NEWS_BEFORE_EXSITING, {
 							newsArray: res.data
 						});
