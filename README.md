@@ -4,7 +4,7 @@
 
 [项目主页](http://xubo.ren)
 
-<img alt="网址二维码" src="http://xubo.ren/homepage/images/qr-black.png"  height="150" width="150">
+<img alt="网址二维码" src="https://github.com/xubo-bj/images/blob/master/qr-black.png"  height="150" width="150">
 
 ## 二、技术栈
 
@@ -18,7 +18,7 @@
 
 [展示网址](http://xubo.ren/ctrip)
 
-<img alt="网址二维码" src="http://xubo.ren/homepage/images/ctrip.png"  height="150" width="150">
+<img alt="网址二维码" src="https://github.com/xubo-bj/images/blob/master/ctrip.png"  height="150" width="150">
 
 **2. 仿百度移动网站**
 
