@@ -28,7 +28,7 @@
 
 * 新闻内容是通过Ajax调用“聚合数据”的新闻接口获取。
 
-[展示网址](http://xubo.ren/ctrip)
+[展示网址](http://xubo.ren/baidu)
 
 <img alt="网址二维码" src="http://xubo.ren/homepage/images/baidu.png"  height="150" width="150">
 
