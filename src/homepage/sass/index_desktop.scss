@@ -4,6 +4,7 @@ a {
 }
 html {
 	height: 100%;
+	background-color: #181818;
 }
 body {
 	position: relative;
@@ -14,11 +15,17 @@ body {
 	background-size: cover;
 }
 .container {
+	width: 1366px;
+	margin: 0 auto;
 	display: flex;
 	justify-content: space-around;
+	& + & {
+		margin-top: 50px;
+	}
+	// justify-content: space-between;
 }
 .site {
-	padding: 10px;
+	padding: 20px;
 	border-radius: 10px;
 	border: 1px solid #aaa;
 	&:hover {
@@ -27,8 +34,7 @@ body {
 }
 .mobile-site {
 	display: block;
-	width: 24%;
-
+	width: 40%;
 	img {
 		width: 48%;
 		/* box-shadow: 10px 10px 5px #888888; */
@@ -38,7 +44,7 @@ body {
 }
 .desktop-site {
 	display: block;
-	width: 31.25%;
+	width: 40%;
 }
 .desktop-img {
 	height: 400px;
@@ -87,7 +93,8 @@ body {
 }
 .header {
 	position: relative;
-	padding: 0 240px;
+	margin: 0 auto;
+	width: 1366px;
 	height: 260px;
 	display: flex;
 	justify-content: space-around;
@@ -149,15 +156,11 @@ body {
 }
 
 .footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding-bottom: 20px;
+	padding: 30px 0;
 	text-align: center;
 	color: #aaa;
 }
-
+/*
 @media screen and (max-width: 1600px) {
 	.header {
 		padding: 0 200px;
@@ -301,3 +304,4 @@ body {
 		display: none;
 	}
 }
+*/

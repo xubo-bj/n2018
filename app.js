@@ -11,6 +11,7 @@ const ctrip = require("./routes/ctrip");
 const note = require("./routes/note/note.js");
 const baidu = require("./routes/baidu/baidu.js");
 const blog = require("./routes/blog/blog.js");
+const d3 = require("./routes/d3");
 
 // error handler
 onerror(app);
@@ -45,6 +46,7 @@ app.use(ctrip.routes(), ctrip.allowedMethods());
 app.use(note.routes(), note.allowedMethods());
 app.use(baidu.routes(), baidu.allowedMethods());
 app.use(blog.routes(), blog.allowedMethods());
+app.use(d3.routes(), d3.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

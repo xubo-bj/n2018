@@ -1,0 +1,212 @@
+a {
+  text-decoration: none;
+  color: #000; }
+
+html {
+  height: 100%; }
+
+body {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  background-color: #181818;
+  background-image: url(/homepage/images/bgi_c.jpg);
+  background-size: cover; }
+
+.container {
+  display: flex;
+  justify-content: space-around; }
+
+.site {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #aaa; }
+  .site:hover {
+    box-shadow: 0px 0px 15px #ff0; }
+
+.mobile-site {
+  display: block;
+  width: 24%; }
+  .mobile-site img {
+    width: 48%;
+    /* box-shadow: 10px 10px 5px #888888; */
+    border: 1px solid rgba(0, 0, 0, 0.25); }
+
+.desktop-site {
+  display: block;
+  width: 31.25%; }
+
+.desktop-img {
+  height: 400px;
+  width: 100%; }
+
+.img-section-wrapper {
+  position: relative; }
+  .img-section-wrapper .qr-code {
+    display: flex;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.65);
+    transition: opacity 0.3s;
+    opacity: 0; }
+
+.mobile-site:hover .qr-code {
+  opacity: 1; }
+
+.img-section {
+  display: flex;
+  height: 400px;
+  justify-content: space-between; }
+
+.content {
+  margin-top: 30px;
+  padding: 0px 28px 0px;
+  font-size: 18px;
+  color: #eee; }
+
+.header {
+  position: relative;
+  padding: 0 240px;
+  height: 260px;
+  display: flex;
+  justify-content: space-around;
+  color: #fff;
+  align-items: center; }
+  .header .portrait-img {
+    width: 160px;
+    height: auto;
+    border-radius: 50%; }
+  .header .info-item {
+    font-size: 20px;
+    line-height: 40px; }
+    .header .info-item .colon {
+      display: inline-block;
+      text-align: center;
+      width: 30px; }
+  .header .other-info {
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 9; }
+    .header .other-info:hover .bgc {
+      opacity: 0.3; }
+    .header .other-info .svg-icon {
+      width: 30px;
+      height: 30px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 18px;
+      user-select: none; }
+    .header .other-info .bgc {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      opacity: 0.1;
+      border-radius: 20px;
+      z-index: -1; }
+  .header .qr-code-homepage {
+    width: 150px; }
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 20px;
+  text-align: center;
+  color: #aaa; }
+
+@media screen and (max-width: 1600px) {
+  .header {
+    padding: 0 200px; }
+  .content {
+    margin-top: 30px;
+    padding: 0px 10px 0px;
+    font-size: 18px; } }
+
+@media screen and (max-width: 1324px) {
+  .header {
+    padding: 0 100px; } }
+
+@media screen and (max-width: 1024px) {
+  .header {
+    padding: 0 50px; } }
+
+@media screen and (max-height: 900px) {
+  .desktop-img {
+    height: 340px; }
+  .img-section {
+    height: 340px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; } }
+
+@media screen and (max-height: 800px) {
+  .desktop-img {
+    height: 300px; }
+  .img-section {
+    height: 300px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; }
+  .footer {
+    display: none; } }
+
+@media screen and (max-height: 768px) {
+  .desktop-img {
+    height: 260px; }
+  .img-section {
+    height: 260px; }
+  .site .content {
+    font-size: 14px; }
+  .header {
+    height: 180px; }
+    .header .portrait-img {
+      width: 120px; }
+    .header .info-item {
+      font-size: 16px;
+      line-height: 35px; }
+    .header .other-info .svg-icon {
+      width: 25px;
+      height: 25px; }
+    .header .other-info-text {
+      margin-left: 10px;
+      font-size: 16px; }
+  .footer {
+    display: none; } }

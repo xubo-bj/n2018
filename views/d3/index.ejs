@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title><%= title %></title>
+		<script src="/d3/es5/d3.js"></script>
+		<style>
+			html {
+				height: 100%;
+			}
+			body {
+				background: #000;
+				height: 100%;
+				margin: 0;
+			}
+			svg {
+				/* border: 1px solid #fff; */
+			}
+			.svg2 {
+				width: 0;
+				height: 0;
+				position: absolute;
+				top: -1000px;
+			}
+			.container {
+				border: 1px solid #fff;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+			>
+				<defs>
+					<linearGradient
+						id="myGradient"
+						gradientTransform="rotate(90)"
+					>
+						<stop offset="30%" stop-color="yellow" />
+						<stop offset="70%" stop-color="red" />
+						<stop offset="100%" stop-color="blue" />
+					</linearGradient>
+				</defs>
+			</svg>
+		</div>
+		<svg class="svg2">
+			<defs id="clip-path"></defs>
+		</svg>
+		<script>
+			let AudioContext = window.AudioContext || window.webkitAudioContext;
+			let audioCtx = AudioContext ? new AudioContext() : "";
+			let dataArray = null;
+			let analyser = null;
+
+			let soundBuffer = {
+				getBuffer(link) {
+					return new Promise((resolve, reject) => {
+						if (audioCtx) {
+							let request = new XMLHttpRequest();
+							request.open("GET", link, true);
+							request.responseType = "arraybuffer";
+							request.onload = function() {
+								audioCtx.decodeAudioData(
+									request.response,
+									function(buffer) {
+										resolve(buffer);
+									},
+									function(e) {
+										console.log("reject");
+										reject(e);
+									}
+								);
+							};
+							request.send();
+						} else {
+							reject("not support AudioContext");
+						}
+					});
+				},
+				createSound(buffer) {
+					/*
+					if (audioCtx.state != "running") {
+						console.log("重启audioCtx");
+						audioCtx.resume();
+					}
+					*/
+
+					analyser = audioCtx.createAnalyser();
+					analyser.fftSize = 2048;
+					var bufferLength = analyser.frequencyBinCount;
+					dataArray = new Uint8Array(bufferLength);
+					// analyser.getByteTimeDomainData(dataArray);
+
+					// let gainNode = audioCtx.createGain();
+					let source = audioCtx.createBufferSource();
+					source.buffer = buffer;
+					source.connect(analyser);
+					// analyser.connect(gainNode);
+					// gainNode.connect(audioCtx.destination);
+					analyser.connect(audioCtx.destination);
+
+					return source;
+				}
+			};
+			let xyz = null;
+			soundBuffer.getBuffer("/d3/audio/eminem.mp3").then(function(res) {
+				soundBuffer.createSound(res).start();
+			});
+
+			window.onclick = function() {
+				if (audioCtx.state === "suspended") {
+					console.log("ok");
+					audioCtx.resume();
+					console.log(audioCtx.state);
+				}
+				if (audioCtx.state === "running") {
+					audioCtx.suspend();
+				}
+			};
+			let count = 40;
+			var svg = d3.select("body").select("svg");
+			let svgHeight = 360,
+				svgWidth = 12 * 40 * 2;
+
+			svg.attr("height", svgHeight).attr("width", svgWidth);
+			let barWidth = 10;
+			let musicArr = new Array(79);
+			let clipPathDefs = document.querySelector("#clip-path");
+
+			function paint() {
+				if (analyser != null) {
+					analyser.getByteFrequencyData(dataArray);
+					var step = Math.round(dataArray.length / count);
+					for (var i = 0; i < count; i++) {
+						musicArr[39 - i] = dataArray[step * i];
+						if (i !== 0) {
+							musicArr[39 + i] = dataArray[step * i];
+						}
+					}
+					let str = "";
+					musicArr.forEach(function(d, i) {
+						str += createClipPath(d, i);
+					});
+					clipPathDefs.innerHTML = str;
+
+					let bar = svg.selectAll("rect").data(musicArr);
+					bar.enter()
+						.append("rect")
+						.merge(bar)
+						.each(function(d, i) {
+							d3.select(this)
+								.attr("x", i * 12)
+								.attr("width", barWidth)
+								.attr("height", 256)
+								.attr("fill", "url('#myGradient')")
+								.attr("clip-path", `url(#cut-bottom-${i})`);
+						});
+				}
+
+				requestAnimationFrame(paint);
+			}
+			paint();
+
+			function createClipPath(d, i) {
+				return `<clipPath id="cut-bottom-${i}">
+			      <rect x="${i * 12}" y="${256 - d}" width="${barWidth}" height="${d}" />
+			    </clipPath>`;
+			}
+		</script>
+	</body>
+</html>
