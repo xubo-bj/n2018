@@ -10,7 +10,7 @@
     "ctrip": "npm start & gulp ctrip"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "debug": "^2.6.3",
     "draft-js": "^0.10.5",
     "ejs": "~2.3.3",
